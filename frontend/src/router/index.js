@@ -13,7 +13,17 @@ const router = createRouter({
       path: '/addTrip',
       name: 'AddTrip',
       component: () => import('@/views/trip/AddTrip.vue')
-    }
+    },
+    {
+      path: '/travelPlans',
+      name: 'TravelPlans',
+      component: () => import('@/views/trip/TravelPlans.vue')
+    },
+    {
+      path: '/travelPlans/:planId',
+      name: 'TravelPlan',
+      component: () => import('@/views/trip/TravelPlan.vue')
+    },
   ]
 })
 
