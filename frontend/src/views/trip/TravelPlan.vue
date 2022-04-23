@@ -6,10 +6,10 @@ import { storeToRefs } from 'pinia'
 import Map from "@/components/map/Map.vue"
 import SearchPlace from "@/components/common/SearchPlace.vue"
 import PlaceDetailPanel from "@/components/map/PlaceDetailPanel.vue"
-import DayPlanInfo from "@/components/travel/DayPlanInfo.vue"
+import DailyPlanInfo from "@/components/travel/DailyPlanInfo.vue"
 
 const travelStore = useTravelStore()
-const { nowPlanInfo, nowDayPlanId, dayPlanSelectList, nowDayPlan, placeDetail } = storeToRefs(travelStore)
+const { nowPlanInfo, nowDailyPlanId, dailyPlanSelectList, nowDailyPlan, placeDetail } = storeToRefs(travelStore)
 
 const route = useRoute()
 const planId = ref(null)
@@ -34,20 +34,20 @@ onMounted(() => {
           <!-- <SearchPlace @searchTextHandler="searchTextHandler"></SearchPlace> -->
           <h1 class="font-bold mb-[20px] mt-[40px] text-white">{{ nowPlanInfo.title }}</h1>
           <!-- 天數列表 -->
-          <select v-model="nowDayPlanId" class="w-full py-1 px-2 outline-none">
+          <select v-model="nowDailyPlanId" class="w-full py-1 px-2 outline-none">
             <option :value="null">總旅程</option>
-            <option v-for="plan in dayPlanSelectList" :key="plan.dayPlanId" :value="plan.dayPlanId">{{ plan.date }} {{ plan.day }}</option>
+            <option v-for="plan in dailyPlanSelectList" :key="plan.dailyPlanId" :value="plan.dailyPlanId">{{ plan.date }} {{ plan.day }}</option>
           </select>
 
-          <!-- <pre>{{ nowDayPlan.planList }}</pre> -->
-          <DayPlanInfo :nowDayPlanList="nowDayPlan.planList"></DayPlanInfo>
+          <!-- <pre>{{ nowDailyPlan.planList }}</pre> -->
+          <DailyPlanInfo :nowDailyPlanList="nowDailyPlan.planList"></DailyPlanInfo>
         </div>
       </div>
       <!-- 詳細資訊面板 -->
       <PlaceDetailPanel :placeDetail="placeDetail"></PlaceDetailPanel>
       <!-- 地圖 -->
       <div class="w-[70%] h-screen">
-        <Map :planList="nowDayPlan.planList"></Map>
+        <Map :planList="nowDailyPlan.planList"></Map>
       </div>
     </div>
 

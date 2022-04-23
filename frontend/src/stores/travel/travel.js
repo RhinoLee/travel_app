@@ -43,7 +43,7 @@ export const useTravelStore = defineStore('travel', {
         endDate: "2022-01-05",
         intro: "內容內容內容內容內容內容內容內容內容內容內容內容內容內容",
       },
-      nowDayPlanList: [
+      nowDailyPlanList: [
         {
           id: 1,
           date: "2022-01-01",
@@ -128,7 +128,7 @@ export const useTravelStore = defineStore('travel', {
           ]
         }
       ],
-      nowDayPlanId: null,
+      nowDailyPlanId: null,
       placeDetail: null
     }
   },
@@ -144,15 +144,15 @@ export const useTravelStore = defineStore('travel', {
       return dutationDays
     },
     // 該計畫底下的日期選擇列表
-    dayPlanSelectList(state) {
+    dailyPlanSelectList(state) {
       const list = []
-      if (state.nowDayPlanList) {
-        state.nowDayPlanList.forEach(plan => {
-          const dayPlanId = plan.id
+      if (state.nowDailyPlanList) {
+        state.nowDailyPlanList.forEach(plan => {
+          const dailyPlanId = plan.id
           const date = plan.date
           const day = dateHandler.getDayOfWeek(date)
           const obj = {
-            dayPlanId,
+            dailyPlanId,
             date,
             day
           }
@@ -163,19 +163,20 @@ export const useTravelStore = defineStore('travel', {
 
       return list
     },
-    nowDayPlan(state) {
-      let dayPlan = { planList: [] }
-      if (Number.isInteger(state.nowDayPlanId)) {
-        dayPlan.planList = state.nowDayPlanList.filter(plan => plan.id === state.nowDayPlanId)
+    // 總旅程裡的當日計畫
+    nowDailyPlan(state) {
+      let dailyPlan = { planList: [] }
+      if (Number.isInteger(state.nowDailyPlanId)) {
+        dailyPlan.planList = state.nowDailyPlanList.filter(plan => plan.id === state.nowDailyPlanId)
       } else {
-        dayPlan.planList = state.nowDayPlanList
+        dailyPlan.planList = state.nowDailyPlanList
       }
-      return dayPlan
+      return dailyPlan
     }
   },
   actions: {
-    getDayPlan(dayPlanId) {
-      this.nowDayPlanId = dayPlanId
+    getDailyPlan(dailyPlanId) {
+      this.nowDailyPlanId = dailyPlanId
     },
     async getLocationInfo(placeId) {
       console.log("placeId", placeId);

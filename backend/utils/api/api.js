@@ -5,11 +5,18 @@ const mapRequest = axios.create({
   baseURL: "https://maps.googleapis.com/maps/api/"
 })
 
+const placeImageRequest = axios.create({
+  encoding : null,
+  baseURL: "https://maps.googleapis.com/maps/api/",
+  headers: {'Content-type'  : 'image/jpg'}
+})
+
 
 // google map 
 const apiHandler = {
   apiPlaceSearch: (params) => mapRequest.get("/place/findplacefromtext/json", { params }),
-  apiGetPlaceDetail: (params) => mapRequest.get("/place/details/json", { params })
+  apiGetPlaceDetail: (params) => mapRequest.get("/place/details/json", { params }),
+  // apiGetPlacePhotos: (params) => placeImageRequest.get("/place/photo", { params }),
 }
 
 // module.exports = apiPlaceSearch = (params) => mapRequest.get("/place/autocomplete/json", { params })
