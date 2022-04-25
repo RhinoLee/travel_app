@@ -1,4 +1,3 @@
-const Buffer = require('buffer/').Buffer
 const apiHandler = require("../../utils/api/api.js")
 const responseHandler = require("../../utils/response.js")
 

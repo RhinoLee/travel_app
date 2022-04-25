@@ -6,9 +6,13 @@ const port = process.env.PORT || 5003;
 const bodyParser = require("body-parser");
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const jsonParser = bodyParser.json();
+const { validationResult } = require("express-validator");
+const validateRequest = require("./middleware/validateRequest")
+const registerRules = require("./validates/registerRules")
 
 // controller
 const mapController = require("./controller/map/mapController")
+const memberController = require("./controller/member/memberController")
 
 const corsOptions = {
   origin: process.env.CLIENT_ORIGIN,
@@ -20,6 +24,13 @@ app.use(urlencodedParser);
 // Map
 app.post("/api/placeSearch", mapController.searhPlace)
 app.post("/api/placeDetail", mapController.getPlaceDetail)
+
+// Member
+app.post("/api/memberRegister",
+registerRules,
+validateRequest.register,
+memberController.register
+)
 
 
 app.listen(port, () => {
