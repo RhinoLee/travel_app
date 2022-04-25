@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 import { apiGetPlaceId, apiGetPlaceDetail, apiPlaceSearch } from "@/utils/api/api"
 import { dateHandler } from "@/utils/dateTransform"
+import { errorHandler } from "../../utils/api/errorHandler"
 
 export const useTravelStore = defineStore('travel', {
   state: () => {
@@ -9,6 +10,7 @@ export const useTravelStore = defineStore('travel', {
         startDate: "",
         endDate: "",
       },
+      // 既有總旅程計畫列表
       plansList: [
         {
           id: 1,
@@ -35,6 +37,7 @@ export const useTravelStore = defineStore('travel', {
           intro: "內容內容內容內容內容內容內容內容內容內容內容內容內容內容",
         },
       ],
+      // 總旅程計畫的資訊
       nowPlanInfo: {
         id: 1,
         pic: "https://picsum.photos/480/260?random=1",
@@ -43,12 +46,14 @@ export const useTravelStore = defineStore('travel', {
         endDate: "2022-01-05",
         intro: "內容內容內容內容內容內容內容內容內容內容內容內容內容內容",
       },
+      // 總旅程計畫底下的每日行程
       nowDailyPlanList: [
         {
           id: 1,
           date: "2022-01-01",
           plans: [
             {
+              id: 1,
               title: "吃早餐",
               startTime: "08:00",
               endTime: "09:00",
@@ -61,6 +66,7 @@ export const useTravelStore = defineStore('travel', {
               note: "早餐好好吃"
             },
             {
+              id: 2,
               title: "吃午餐",
               startTime: "11:00",
               endTime: "12:00",
@@ -79,6 +85,7 @@ export const useTravelStore = defineStore('travel', {
           date: "2022-01-02",
           plans: [
             {
+              id: 3,
               title: "看海",
               startTime: "09:00",
               endTime: "10:00",
@@ -102,6 +109,7 @@ export const useTravelStore = defineStore('travel', {
           date: "2022-01-04",
           plans: [
             {
+              id: 4,
               title: "跑跑卡丁車",
               startTime: "14:00",
               endTime: "15:00",
@@ -114,6 +122,7 @@ export const useTravelStore = defineStore('travel', {
               note: "卡丁車好好玩"
             },
             {
+              id: 5,
               title: "吃晚餐",
               startTime: "18:00",
               endTime: "19:00",
@@ -128,7 +137,11 @@ export const useTravelStore = defineStore('travel', {
           ]
         }
       ],
+      // 單日計畫 ID
       nowDailyPlanId: null,
+      // 單日計畫底下的單一計畫 ID
+      nowPlanId: null,
+      // 目前選取到地點的相關資訊
       placeDetail: null
     }
   },
@@ -179,17 +192,25 @@ export const useTravelStore = defineStore('travel', {
       this.nowDailyPlanId = dailyPlanId
     },
     async getLocationInfo(placeId) {
-      console.log("placeId", placeId);
       const params = {
         place_id: placeId
       }
-      const placeDetailRes = await apiGetPlaceDetail(params)
 
-      if (placeDetailRes && placeDetailRes.data.success) {
-        this.placeDetail = placeDetailRes.data.results
-      } else {
+      try {
+        const placeDetailRes = await apiGetPlaceDetail(params)
+
+        console.log("placeDetailRes result", result);
+
+        if (placeDetailRes && placeDetailRes.data.success) {
+          this.placeDetail = placeDetailRes.data.results
+        } else {
+          this.placeDetail = {}
+        }
+      } catch (err) {
         this.placeDetail = {}
+        errorHandler.catchError(err)
       }
+
     },
     async placeSearch(searchTxt) {
       try {
