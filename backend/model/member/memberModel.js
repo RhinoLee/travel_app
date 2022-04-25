@@ -3,7 +3,7 @@ const db = require("../../db")
 const memberModel = {
   findMemberByEmail: async (email) => {
     const query = {
-      text: "SELECT id FROM member WHERE email = $1",
+      text: "SELECT * FROM member WHERE email = $1",
       values: [email]
     }
 

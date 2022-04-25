@@ -22,15 +22,17 @@ app.use(jsonParser);
 app.use(urlencodedParser);
 
 // Map
-app.post("/api/placeSearch", mapController.searhPlace)
-app.post("/api/placeDetail", mapController.getPlaceDetail)
+app.post("/api/placeSearch", validateRequest.checkJWT, mapController.searhPlace)
+app.post("/api/placeDetail", validateRequest.checkJWT, mapController.getPlaceDetail)
 
 // Member
 app.post("/api/memberRegister",
-registerRules,
-validateRequest.register,
-memberController.register
+  registerRules,
+    validateRequest.register,
+  memberController.register
 )
+
+app.post("/api/memberLogin", memberController.login)
 
 
 app.listen(port, () => {

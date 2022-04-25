@@ -1,4 +1,6 @@
 const bcrypt = require("bcrypt")
+const jwt = require('jsonwebtoken');
+
 const memberModel = require("../../model/member/memberModel")
 
 const memberController = {
@@ -35,6 +37,54 @@ const memberController = {
           return res.status(500).json(json)
         }
       }
+    })
+  },
+  login: async (req, res) => {
+    let json;
+    const findMemberResult = await memberModel.findMemberByEmail(req.body.email)
+    if (findMemberResult.rows.length < 1) {
+      json = {
+        success: false,
+        error: "認證失敗"
+      }
+
+      return res.status(401).json(json)
+    }
+
+    bcrypt.compare(req.body.password, findMemberResult.rows[0].password, (bcryptErr, bcryptRes) => {
+      if (!bcryptRes) {
+        json = {
+          success: false,
+          error: "認證失敗"
+        }
+
+        return res.status(401).json(json)
+      }
+
+      const jwtData = {
+        id: findMemberResult.rows[0].id,
+        email: findMemberResult.rows[0].email,
+      }
+
+      jwt.sign(jwtData, process.env.JWT_KEY, { expiresIn: 60 * 60 }, function (jwtErr, jwtToken) {
+        if (!jwtToken) {
+          json = {
+            success: false,
+            error: jwtErr
+          }
+
+          return res.status(500).json(json)
+        }
+
+        json = {
+          success: true,
+        }
+
+        res.setHeader("Access-Control-Expose-Headers", "Authorization")
+        res.setHeader('Authorization', 'Bearer ' + jwtToken);
+
+        return res.status(200).json(json)
+      });
     })
   }
 }
