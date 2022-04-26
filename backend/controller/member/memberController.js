@@ -66,7 +66,7 @@ const memberController = {
         email: findMemberResult.rows[0].email,
       }
 
-      jwt.sign(jwtData, process.env.JWT_KEY, { expiresIn: 60 * 60 }, function (jwtErr, jwtToken) {
+      jwt.sign(jwtData, process.env.JWT_KEY, { expiresIn: 60 * 60 * 24 }, function (jwtErr, jwtToken) {
         if (!jwtToken) {
           json = {
             success: false,
@@ -86,6 +86,38 @@ const memberController = {
         return res.status(200).json(json)
       });
     })
+  },
+  getMemberInfo: async (req, res) => {
+    let json;
+    const { id, email } = req.jwtData
+    console.log("getMemberInfo JWT info", id, email);
+
+    try {
+      const result = await memberModel.findMemberByEmail(email)
+      if (result && result.rows.length === 1) {
+        json = {
+          success: true,
+          memberInfo: {
+            id: result.rows[0].id,
+            email: result.rows[0].email,
+          }
+        }
+        return res.status(200).json(json)
+      } else {
+        json = {
+          success: false,
+          error: "認證錯誤"
+        }
+        return res.status(401).json(json)
+      }
+    } catch (error) {
+      json = {
+        success: false,
+        error
+      }
+      return res.status(500).json(json)
+    }
+
   }
 }
 

@@ -13,6 +13,7 @@ const registerRules = require("./validates/registerRules")
 // controller
 const mapController = require("./controller/map/mapController")
 const memberController = require("./controller/member/memberController")
+const travelController = require("./controller/travelController")
 
 const corsOptions = {
   origin: process.env.CLIENT_ORIGIN,
@@ -33,6 +34,10 @@ app.post("/api/memberRegister",
 )
 
 app.post("/api/memberLogin", memberController.login)
+app.post("/api/memberInfo", validateRequest.checkJWT, memberController.getMemberInfo)
+
+// Travel
+app.post("/api/travelCreate", validateRequest.checkJWT, travelController.create)
 
 
 app.listen(port, () => {
