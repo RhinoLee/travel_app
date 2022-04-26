@@ -8,12 +8,15 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const jsonParser = bodyParser.json();
 const { validationResult } = require("express-validator");
 const validateRequest = require("./middleware/validateRequest")
+
+// Rules of Validate
 const registerRules = require("./validates/registerRules")
+const mainScheduleRules = require("./validates/mainScheduleRules")
 
 // controller
 const mapController = require("./controller/map/mapController")
 const memberController = require("./controller/member/memberController")
-const travelController = require("./controller/travelController")
+const mainScheduleController = require("./controller/mainScheduleController")
 
 const corsOptions = {
   origin: process.env.CLIENT_ORIGIN,
@@ -29,15 +32,23 @@ app.post("/api/placeDetail", validateRequest.checkJWT, mapController.getPlaceDet
 // Member
 app.post("/api/memberRegister",
   registerRules,
-    validateRequest.register,
+  validateRequest.validates,
   memberController.register
 )
 
 app.post("/api/memberLogin", memberController.login)
 app.post("/api/memberInfo", validateRequest.checkJWT, memberController.getMemberInfo)
 
-// Travel
-app.post("/api/travelCreate", validateRequest.checkJWT, travelController.create)
+// Travel Schedule
+app.post("/api/mainScheduleCreate", 
+  validateRequest.checkJWT,
+  mainScheduleRules,
+  validateRequest.validates,
+  mainScheduleController.create
+)
+
+app.get("/api/mainSchedules", validateRequest.checkJWT, mainScheduleController.getAllSchedules)
+app.get("/api/mainSchedule/:id", validateRequest.checkJWT, mainScheduleController.getSchedule)
 
 
 app.listen(port, () => {

@@ -6,18 +6,18 @@ const responseHandler = {
     };
     return res.status(200).json(json);
   },
-  responseErr: (res, errMsg) => {
+  responseErr: (res, error) => {
     const json = {
       success: false,
-      errMsg,
+      error,
     };
 
     return res.status(400).json(json);
   },
-  catchErr: (res, err) => {
+  catchErr: (res, error) => {
     const json = {
       success: false,
-      errMsg: err
+      error,
     }
     return res.status(400).json(json);
   }

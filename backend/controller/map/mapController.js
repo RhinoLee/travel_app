@@ -14,8 +14,8 @@ const mapController = {
         return responseHandler.responseErr(res, placeSearchRes.data.error_message)
       }
       return responseHandler.success(res, placeSearchRes.data.candidates)
-    } catch (err) {
-      return responseHandler.catchErr(res, err)
+    } catch (error) {
+      return responseHandler.catchErr(res, error)
     }
   },
   getPlaceDetail: async (req, res) => {
@@ -60,9 +60,9 @@ const mapController = {
       } else {
         return responseHandler.responseErr(res, placeDetailRes.data.error_message)
       }
-    } catch (err) {
-      console.log("getPlaceDetail err", err);
-      return responseHandler.catchErr(res, err)
+    } catch (error) {
+      console.log("getPlaceDetail err", error);
+      return responseHandler.catchErr(res, error)
     }
   },
 }
