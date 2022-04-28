@@ -1,26 +1,26 @@
-const mainScheduleModel = require("../model/mainScheduleModel")
+const singleScheduleModel = require("../model/singleScheduleModel")
 const responseHandler = require("../utils/response.js")
 
-const mainScheduleController = {
+const singleScheduleController = {
   create: async (req, res) => {
     try {
-      const { title, startDate, endDate, memberId } = req.body
-      const result = await mainScheduleModel.create({ title, startDate, endDate, memberId })
-      console.log("mainScheduleController.create result", result);
+      const { title, place_name, place_id, date, start_time, end_time, member_id, main_schedule_id } = req.body
+      const result = await singleScheduleModel.create({ title, place_name, place_id, date, start_time, end_time, member_id, main_schedule_id })
+      console.log("singleScheduleController.create result", result);
       if (result && result.rows.length === 1) {
-        return responseHandler.success(res, { id: result.rows[0].id })
+        return responseHandler.success(res, { id: result.rows[0] })
       }
 
       responseHandler.responseErr(res, "新增資料失敗")
     } catch (error) {
-      console.log("mainScheduleController.create error", error);
+      console.log("singleScheduleController.create error", error);
       return responseHandler.catchErr(res, error)
     }
   },
   getAllSchedules: async (req, res) => {
     try {
       const member_id = req.jwtData.id
-      const result = await mainScheduleModel.getAllSchedules(member_id)
+      const result = await singleScheduleModel.getAllSchedules(member_id)
       if (result && result.rows.length >= 0) {
         return responseHandler.success(res, { mainScheduleList: result.rows })
       }
@@ -36,7 +36,7 @@ const mainScheduleController = {
     console.log("getSchedule id", req.params.id);
     try {
       const schedule_id = req.params.id
-      const result = await mainScheduleModel.getSchedule(schedule_id)
+      const result = await singleScheduleModel.getSchedule(schedule_id)
       if (result && result.rows.length === 1) {
         return responseHandler.success(res, { mainscheduleInfo: result.rows[0] })
       }
@@ -49,4 +49,4 @@ const mainScheduleController = {
   },
 }
 
-module.exports = mainScheduleController
+module.exports = singleScheduleController

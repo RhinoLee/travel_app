@@ -47,6 +47,7 @@ const mapController = {
 
         const obj = {
           name: placeDetailRes.data.result.name,
+          place_id:  placeDetailRes.data.result.place_id,
           address: placeDetailRes.data.result.formatted_address,
           icon: placeDetailRes.data.result.icon,
           phone_number: placeDetailRes.data.result.formatted_phone_number,

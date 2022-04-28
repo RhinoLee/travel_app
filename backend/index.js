@@ -12,11 +12,13 @@ const validateRequest = require("./middleware/validateRequest")
 // Rules of Validate
 const registerRules = require("./validates/registerRules")
 const mainScheduleRules = require("./validates/mainScheduleRules")
+const singleScheduleRules = require("./validates/singleScheduleRules")
 
 // controller
 const mapController = require("./controller/map/mapController")
 const memberController = require("./controller/member/memberController")
 const mainScheduleController = require("./controller/mainScheduleController")
+const singleScheduleController = require("./controller/singleScheduleController")
 
 const corsOptions = {
   origin: process.env.CLIENT_ORIGIN,
@@ -45,6 +47,13 @@ app.post("/api/mainScheduleCreate",
   mainScheduleRules,
   validateRequest.validates,
   mainScheduleController.create
+)
+
+app.post("/api/singleScheduleCreate", 
+  validateRequest.checkJWT,
+  singleScheduleRules,
+  validateRequest.validates,
+  singleScheduleController.create
 )
 
 app.get("/api/mainSchedules", validateRequest.checkJWT, mainScheduleController.getAllSchedules)
