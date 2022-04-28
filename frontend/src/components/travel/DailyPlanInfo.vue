@@ -3,7 +3,7 @@ import { ref } from "vue"
 import { useTravelStore } from "@/stores/travel/travel"
 const travelStore = useTravelStore()
 const props = defineProps({
-  nowDailyPlanList: {
+  singleScheduleList: {
     type: Array
   }
 })
@@ -23,8 +23,8 @@ async function getLocationInfo(placeId, planId) {
 
 <template>
   <div>
-    <!-- <pre>{{ nowDailyPlanList }}</pre> -->
-    <div v-for="dailyPlan in props.nowDailyPlanList" :key="dailyPlan.id" class="py-[20px] text-white border-t">
+    <!-- <pre>{{ singleScheduleList }}</pre> -->
+    <div v-for="dailyPlan in props.singleScheduleList" :key="dailyPlan.id" class="py-[20px] text-white border-t">
       <div class="font-bold text-lg">
         <span>日期：</span>
         <span>{{ dailyPlan.date }}</span>

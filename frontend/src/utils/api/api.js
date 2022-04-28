@@ -64,6 +64,12 @@ export const apiGetMainSchedule = (id) => scheduleRequest.get(`/mainSchedule/${i
   },
 })
 
+export const apiGetSingleSchedule = (id) => scheduleRequest.get(`/mainSchedule/${id}/singleSchedules`, {
+  headers: {
+    "Authorization": `Bearer ${localStorage.getItem("token")}`
+  },
+})
+
 export const apiCreateSingleSchedule = (params) => scheduleRequest.post("/singleScheduleCreate", params, {
   headers: {
     "Authorization": `Bearer ${localStorage.getItem("token")}`

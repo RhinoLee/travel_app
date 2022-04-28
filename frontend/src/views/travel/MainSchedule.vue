@@ -11,7 +11,7 @@ import LightBox from "@/components/common/LightBox.vue"
 import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
 
 const travelStore = useTravelStore()
-const { nowMainScheduleId, mainScheduleInfo, addScheDuleParams, locationSearchList, dailyPlanSelectList, nowDailyPlan, placeDetail } = storeToRefs(travelStore)
+const { nowMainScheduleId, mainScheduleInfo, addScheDuleParams, locationSearchList, singleScheduleSelectList, nowSelectSchedule, nowSelectDate, placeDetail } = storeToRefs(travelStore)
 
 const route = useRoute()
 const openBox = ref(false)
@@ -33,11 +33,17 @@ function addLocateToSchedule() {
   travelStore.addScheDuleParams.place_id = travelStore.placeDetail.place_id
   travelStore.addScheDuleParams.place_name = travelStore.placeDetail.name
   travelStore.addScheDuleParams.title = travelStore.placeDetail.name
+  travelStore.addScheDuleParams.location = travelStore.placeDetail.location
   openBox.value = true
 }
 
-function addSingleSchedule() {
-  travelStore.addSingleSchedule()
+async function addSingleSchedule() {
+  const result = await travelStore.addSingleSchedule()
+  if (result) {
+    // get all single schedules under now main schedule
+    await travelStore.getSingleSchedule()
+    hideBox()
+  }
 }
 
 onMounted(() => {
@@ -57,20 +63,21 @@ onMounted(() => {
           <SearchPlace class="mt-8" @searchTextHandler="searchTextHandler"></SearchPlace>
           <h1 class="font-bold mb-[20px] mt-[40px] text-white">{{ mainScheduleInfo.title }}</h1>
           <!-- 天數列表 -->
-          <!-- <select v-model="nowDailyPlanId" class="w-full py-1 px-2 outline-none">
+          <select v-model="nowSelectDate" class="w-full py-1 px-2 outline-none">
             <option :value="null">總旅程</option>
-            <option v-for="plan in dailyPlanSelectList" :key="plan.dailyPlanId" :value="plan.dailyPlanId">{{ plan.date }} {{ plan.day }}</option>
-          </select> -->
+            <!-- {{ schedule.day }} -->
+            <option v-for="(schedule, idx) in singleScheduleSelectList" :key="idx" :value="schedule.date">{{ schedule.date }} </option>
+          </select>
 
-          <!-- <pre>{{ nowDailyPlan.planList }}</pre> -->
-          <DailyPlanInfo :nowDailyPlanList="nowDailyPlan.planList"></DailyPlanInfo>
+          <pre>{{ nowSelectSchedule.scheduleList }}</pre>
+          <DailyPlanInfo :nowDailyPlanList="nowSelectSchedule.scheduleList"></DailyPlanInfo>
         </div>
       </div>
       <!-- 詳細資訊面板 -->
       <PlaceDetailPanel :placeDetail="placeDetail" @addLocateToSchedule="addLocateToSchedule"></PlaceDetailPanel>
       <!-- 地圖 -->
       <div class="w-[70%] h-screen">
-        <Map :planList="nowDailyPlan.planList" :locationSearchList="locationSearchList"></Map>
+        <Map :scheduleList="nowSelectSchedule.scheduleList" :locationSearchList="locationSearchList"></Map>
       </div>
     </div>
 

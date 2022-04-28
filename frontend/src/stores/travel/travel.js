@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import { useMemberStore } from "../member"
-import { apiGetPlaceId, apiGetPlaceDetail, apiPlaceSearch, apiCreateMainSchedule, apiGetMainSchedule, apiGetAllMainSchedules, apiCreateSingleSchedule } from "@/utils/api/api"
+import { apiGetPlaceId, apiGetPlaceDetail, apiPlaceSearch, apiCreateMainSchedule, apiGetMainSchedule, apiGetAllMainSchedules, apiCreateSingleSchedule, apiGetSingleSchedule } from "@/utils/api/api"
 import { dateHandler } from "@/utils/dateTransform"
 import { errorHandler } from "../../utils/api/errorHandler"
 
@@ -20,6 +20,10 @@ export const useTravelStore = defineStore('travel', {
         place_id: "",
         place_name: "",
         main_schedule_id: "",
+        location: {
+          lat: null,
+          lng: null
+        }
       },
       nowMainScheduleId: null,
       // 既有總旅程計畫列表
@@ -61,8 +65,8 @@ export const useTravelStore = defineStore('travel', {
       // 地點搜尋結果列表
       locationSearchList: [],
       // 總旅程計畫底下的每日行程
-      nowDailyPlanList: [],
-      // nowDailyPlanList: [
+      singleScheduleList: [],
+      // singleScheduleList: [
       //   {
       //     id: 1,
       //     date: "2022-01-01",
@@ -152,8 +156,8 @@ export const useTravelStore = defineStore('travel', {
       //     ]
       //   }
       // ],
-      // 單日計畫 ID
-      nowDailyPlanId: null,
+      // 單日計畫日期
+      nowSelectDate: "",
       // 單日計畫底下的單一計畫 ID
       nowPlanId: null,
       // 目前選取到地點的相關資訊
@@ -166,17 +170,15 @@ export const useTravelStore = defineStore('travel', {
       return dateHandler.calcDurationDays(state.addMainScheduleParams.startDate, state.addMainScheduleParams.endDate)
     },
     // 該計畫底下的日期選擇列表
-    dailyPlanSelectList(state) {
+    singleScheduleSelectList(state) {
       const list = []
-      if (state.nowDailyPlanList) {
-        state.nowDailyPlanList.forEach(plan => {
-          const dailyPlanId = plan.id
-          const date = plan.date
-          const day = dateHandler.getDayOfWeek(date)
+      if (state.singleScheduleList) {
+        state.singleScheduleList.forEach(schedule => {
+          const date = schedule.date
+          // const day = dateHandler.getDayOfWeek(date)
           const obj = {
-            dailyPlanId,
             date,
-            day
+            // day
           }
 
           list.push(obj)
@@ -186,13 +188,13 @@ export const useTravelStore = defineStore('travel', {
       return list
     },
     // 總旅程裡的當日計畫
-    nowDailyPlan(state) {
-      let dailyPlan = { planList: [] }
-      // if (Number.isInteger(state.nowDailyPlanId)) {
-      //   dailyPlan.planList = state.nowDailyPlanList.filter(plan => plan.id === state.nowDailyPlanId)
-      // } else {
-      //   dailyPlan.planList = state.nowDailyPlanList
-      // }
+    nowSelectSchedule(state) {
+      let dailyPlan = { scheduleList: [] }
+      if (state.nowSelectDate) {
+        dailyPlan.scheduleList = state.singleScheduleList.filter(plan => plan.date === state.nowSelectDate)
+      } else {
+        dailyPlan.scheduleList = state.singleScheduleList
+      }
       return dailyPlan
     },
     memberId() {
@@ -201,9 +203,9 @@ export const useTravelStore = defineStore('travel', {
     }
   },
   actions: {
-    getDailyPlan(dailyPlanId) {
-      this.nowDailyPlanId = dailyPlanId
-    },
+    // getDailyPlan(dailyPlanId) {
+    //   this.nowSelectDate = dailyPlanId
+    // },
     async getLocationInfo(placeId) {
       const params = {
         place_id: placeId
@@ -263,9 +265,9 @@ export const useTravelStore = defineStore('travel', {
         const result = await apiGetAllMainSchedules()
         if (result && result.data.success) {
           const { mainScheduleList } = result.data.results
-        
+
           mainScheduleList.forEach(schedule => {
-             // 處理 UTC 日期
+            // 處理 UTC 日期
             schedule.start_date = dateHandler.localFormat(schedule.start_date)
             schedule.end_date = dateHandler.localFormat(schedule.end_date)
           })
@@ -287,7 +289,11 @@ export const useTravelStore = defineStore('travel', {
           // 計算總天數
           mainscheduleInfo.daysList = dateHandler.toDaysList(mainscheduleInfo.start_date, mainscheduleInfo.end_date)
 
-          return this.mainScheduleInfo = mainscheduleInfo
+          this.mainScheduleInfo = mainscheduleInfo
+
+          const singeScheduleResult = await this.getSingleSchedule()
+
+          return
         }
 
         this.mainScheduleInfo = {}
@@ -298,8 +304,52 @@ export const useTravelStore = defineStore('travel', {
     },
     async addSingleSchedule() {
       this.addScheDuleParams.member_id = this.memberId
-      const result = await apiCreateSingleSchedule(this.addScheDuleParams)
-      console.log("addSingleSchedule params", this.addScheDuleParams);
+      try {
+        const result = await apiCreateSingleSchedule(this.addScheDuleParams)
+        this.locationSearchList = []
+
+        return result.data.success
+      } catch (error) {
+        errorHandler.catchError(error)
+        return false
+      }
+    },
+    async getSingleSchedule() {
+      try {
+        const result = await apiGetSingleSchedule(this.nowMainScheduleId)
+
+        if (!result || !result.data.success) return
+
+        const sheduleList = result.data.results.mainScheduleList
+        if (!Array.isArray(sheduleList) || sheduleList.length === 0) return
+
+        const mainList = []
+        const obj = {}
+        sheduleList.forEach(shedule => {
+
+          if (!obj[shedule.date]) {
+            obj[shedule.date] = {}
+
+            let obj2 = {}
+            obj2.date = shedule.date
+            obj2.scheduleList = []
+            mainList.push(obj2)
+          }
+
+          mainList.forEach(item => {
+            if (item.date === shedule.date) {
+              item.scheduleList.push(shedule)
+            }
+          })
+        })
+
+        this.singleScheduleList = mainList
+
+      } catch (error) {
+        errorHandler.catchError(error)
+        return
+      }
+
     }
   }
 

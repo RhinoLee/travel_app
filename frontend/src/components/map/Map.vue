@@ -5,7 +5,7 @@ import { useTravelStore } from "@/stores/travel/travel"
 const travelStore = useTravelStore()
 
 const props = defineProps({
-  planList: {
+  scheduleList: {
     type: Object,
     default: () => ({})
   },
@@ -20,10 +20,10 @@ let markers = []
 
 // 偵測目前選擇的計畫，計畫變更地圖需重新插點
 watch(
-  () => props.planList,
+  () => props.scheduleList,
   (newVal) => {
     removeAllMarkers()
-    renderPlanLocation()
+    renderScheduleLocation()
   }
 )
 
@@ -31,7 +31,7 @@ watch(
 watch(
   () => props.locationSearchList,
   (newVal) => {
-    // removeAllMarkers()
+    removeAllMarkers()
     renderSearchLocation()
   }
 )
@@ -72,12 +72,12 @@ function removeAllMarkers() {
 }
 
 // 把目前計畫中的點設定到地圖上
-function renderPlanLocation() {
-  props.planList.forEach(item => {
-    item.plans.forEach(plan => {
+function renderScheduleLocation() {
+  props.scheduleList.forEach(item => {
+    item.scheduleList.forEach(schedule => {
       setMarker({
-        location: plan.location,
-        placeId: plan.placeId
+        location: { lat: schedule.lat, lng: schedule.lng },
+        placeId: schedule.place_id
       })
     })
   })
@@ -99,7 +99,7 @@ function renderSearchLocation() {
 
 onMounted(() => {
   initMap()
-  renderPlanLocation()
+  renderScheduleLocation()
 })
 
 </script>
