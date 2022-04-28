@@ -9,7 +9,7 @@ const { loginParams } = storeToRefs(memberStore)
 
 async function loginHandler() {
   const result = await memberStore.loginHandler()
-  if (result) return router.push({ name: "TravelPlans" })
+  if (result) return router.push({ name: "MainSchedules" })
 }
 
 </script>

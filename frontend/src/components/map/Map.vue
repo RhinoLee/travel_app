@@ -1,17 +1,22 @@
 <script setup>
 import { onMounted, reactive, watch } from "vue";
 import { useTravelStore } from "@/stores/travel/travel"
+
 const travelStore = useTravelStore()
 
 const props = defineProps({
   planList: {
-    type: Object
-  }
+    type: Object,
+    default: () => ({})
+  },
+  locationSearchList: {
+    type: Array,
+    default: () => ([])
+  },
 })
 
 const map = reactive({ data: null })
 let markers = []
-
 
 // 偵測目前選擇的計畫，計畫變更地圖需重新插點
 watch(
@@ -19,6 +24,15 @@ watch(
   (newVal) => {
     removeAllMarkers()
     renderPlanLocation()
+  }
+)
+
+// 偵測目前搜尋的地點
+watch(
+  () => props.locationSearchList,
+  (newVal) => {
+    // removeAllMarkers()
+    renderSearchLocation()
   }
 )
 
@@ -44,9 +58,9 @@ function setMarker({ location, placeId }) {
 
   markers.push(marker)
 }
+
 // 點位設定到地圖上
 function setMarkerToMap(map) {
-  console.log("setMarker", markers, map);
   for (let i = 0; i < markers.length; i++) {
     markers[i].setMap(map);
   }
@@ -56,6 +70,7 @@ function removeAllMarkers() {
   setMarkerToMap(null)
   markers = []
 }
+
 // 把目前計畫中的點設定到地圖上
 function renderPlanLocation() {
   props.planList.forEach(item => {
@@ -64,6 +79,18 @@ function renderPlanLocation() {
         location: plan.location,
         placeId: plan.placeId
       })
+    })
+  })
+
+  setMarkerToMap(map.data)
+}
+
+// 把搜尋結果設定到地圖上
+function renderSearchLocation() {
+  props.locationSearchList.forEach(item => {
+    setMarker({
+      location: item.geometry.location,
+      placeId: item.place_id
     })
   })
 

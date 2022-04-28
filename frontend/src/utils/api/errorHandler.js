@@ -3,8 +3,8 @@ import { useMemberStore } from "@/stores/member"
 
 const errorHandler = {
   catchError: async (error) => {
+    console.log("catchError", error);
     if (error.response.status === 401) {
-      console.log("catchError");
       return errorHandler.handle401(error)
     }
   },

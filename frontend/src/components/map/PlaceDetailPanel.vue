@@ -4,6 +4,13 @@ const props = defineProps({
     type: Object
   }
 })
+
+const emit = defineEmits(["addLocateToSchedule"])
+
+async function addLocateToSchedule() {
+  emit("addLocateToSchedule")
+}
+
 </script>
 
 <template>
@@ -16,10 +23,15 @@ const props = defineProps({
       <div class="py-2"><p>聯絡電話：{{ placeDetail.phone_number }}</p></div>
       <div class="py-2">
         <p class="pb-1">營業時間：</p>
-        <div>
+        <div v-if="placeDetail.opening_hours">
           <p v-for="(text, idx) in placeDetail.opening_hours.weekday_text" :key="idx">{{ text }}</p>
         </div>
       </div>
+
+      <div>
+        <button @click="addLocateToSchedule" class="border px-4 py-2">加入行程</button>
+      </div>
     </div>
+
   </div>  
 </template>

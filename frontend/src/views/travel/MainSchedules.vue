@@ -1,29 +1,35 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useTravelStore } from "@/stores/travel/travel"
+import { onMounted } from '@vue/runtime-core'
 const travelStore = useTravelStore()
-const { plansList } = storeToRefs(travelStore)
+const { mainScheduleList } = storeToRefs(travelStore)
+
+onMounted(() => {
+  travelStore.getMainScheduleList()
+})
+
 </script>
 
 <template>
   <div class="pt-[70px]">
     <div class="container">
       <div class="grid grid-cols-3 gap-4">
-        <div v-for="plan in plansList" :key="plan.id">
+        <div v-for="mainSchedule in mainScheduleList" :key="mainSchedule.id">
           <router-link 
-          :to="{ name: 'TravelPlan', params: { planId: plan.id }}"
+          :to="{ name: 'MainSchedule', params: { mainScheduleId: mainSchedule.id }}"
           class="block"
           >
-            <div><img :src="plan.pic" alt=""></div>
+            <!-- <div><img :src="schedule.pic" alt=""></div> -->
             <div>
               <div>
-                <p>{{ plan.title }}</p>
+                <p>{{ mainSchedule.title }}</p>
               </div>
               <div>
-                <p>{{ plan.startDate }} ~ {{ plan.endDate }}</p>
+                <p>{{ mainSchedule.start_date }} ~ {{ mainSchedule.end_date }}</p>
               </div>
               <div>
-                <p>{{ plan.intro }}</p>
+                <p>{{ mainSchedule.intro }}</p>
               </div>
             </div>
           </router-link>
