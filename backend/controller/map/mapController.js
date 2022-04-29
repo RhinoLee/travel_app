@@ -53,6 +53,7 @@ const mapController = {
           phone_number: placeDetailRes.data.result.formatted_phone_number,
           rating: placeDetailRes.data.result.rating,
           user_ratings_total: placeDetailRes.data.result.user_ratings_total,
+          location: placeDetailRes.data.result.geometry.location,
           // photos: images,
           opening_hours: placeDetailRes.data.result.opening_hours,
         }

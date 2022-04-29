@@ -53,11 +53,13 @@ app.post("/api/singleScheduleCreate",
   validateRequest.checkJWT,
   singleScheduleRules,
   validateRequest.validates,
+  validateRequest.geographyFormat,
   singleScheduleController.create
 )
 
 app.get("/api/mainSchedules", validateRequest.checkJWT, mainScheduleController.getAllSchedules)
 app.get("/api/mainSchedule/:id", validateRequest.checkJWT, mainScheduleController.getSchedule)
+app.get("/api/mainSchedule/:id/singleSchedules", validateRequest.checkJWT, singleScheduleController.getAllSchedules)
 
 
 app.listen(port, () => {

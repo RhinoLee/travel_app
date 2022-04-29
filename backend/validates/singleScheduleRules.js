@@ -37,6 +37,20 @@ const singleScheduleRules = [
     .withMessage("end_time 欄位必填")
     .matches(/([0-9]|1\d|2[0-3]):([1-5]{2}|6[0]|[0-9])/)
     .withMessage("end_time 格式不符"),
+  
+  body("location")
+    .notEmpty()
+    .withMessage("location 欄位必填")
+    .isObject()
+    .withMessage("location 格式不符")
+    .custom((value, { req }) => {
+      // 判斷數字或浮點數
+      const testNum = /^[+-]?\d+(\.\d+)?$/
+      if (testNum.test(value.lat) && testNum.test(value.lng)) return true
+
+      throw new Error("location 格式不符")
+    })
+    .withMessage("location 格式不符"),
 ]
 
 module.exports = singleScheduleRules
