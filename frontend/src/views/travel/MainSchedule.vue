@@ -64,13 +64,13 @@ onMounted(() => {
           <h1 class="font-bold mb-[20px] mt-[40px] text-white">{{ mainScheduleInfo.title }}</h1>
           <!-- 天數列表 -->
           <select v-model="nowSelectDate" class="w-full py-1 px-2 outline-none">
-            <option :value="null">總旅程</option>
+            <option value="">總旅程</option>
             <!-- {{ schedule.day }} -->
             <option v-for="(schedule, idx) in singleScheduleSelectList" :key="idx" :value="schedule.date">{{ schedule.date }} </option>
           </select>
 
-          <pre>{{ nowSelectSchedule.scheduleList }}</pre>
-          <DailyPlanInfo :nowDailyPlanList="nowSelectSchedule.scheduleList"></DailyPlanInfo>
+          <!-- <pre>{{ nowSelectSchedule.scheduleList }}</pre> -->
+          <DailyPlanInfo :singleScheduleList="nowSelectSchedule.scheduleList"></DailyPlanInfo>
         </div>
       </div>
       <!-- 詳細資訊面板 -->
