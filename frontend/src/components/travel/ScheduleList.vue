@@ -1,21 +1,23 @@
 <script setup>
 import { ref } from "vue"
 import { useTravelStore } from "@/stores/travel/travel"
-const travelStore = useTravelStore()
+import { storeToRefs } from "pinia";
+
 const props = defineProps({
   singleScheduleList: {
     type: Array
   }
 })
 
-const nowScheduleDate = ref("")
+const travelStore = useTravelStore()
+const { nowSingleScheduleId } = storeToRefs(travelStore)
 
-function selectSchedule(scheduleDate) {
-  nowScheduleDate.value = scheduleDate
+function selectSchedule(scheduleId) {
+  travelStore.nowSingleScheduleId = scheduleId
 }
 
-async function getLocationInfo(placeId, scheduleDate) {
-  selectSchedule(scheduleDate)
+async function getLocationInfo(placeId, scheduleId) {
+  selectSchedule(scheduleId)
   const res = await travelStore.getLocationInfo(placeId)
 }
 
@@ -32,8 +34,8 @@ async function getLocationInfo(placeId, scheduleDate) {
       <div 
         v-for="(schedule, idx) in singleSchedule.scheduleList" :key="idx" 
         class="px-[10px] py-[10px] mt-[10px] cursor-pointer hover:bg-sky-900"
-        :class="{ 'bg-sky-900': nowScheduleDate === schedule.id }"
-        @click="getLocationInfo(schedule.place_id, schedule.date)"
+        :class="{ 'bg-sky-900': nowSingleScheduleId === schedule.id }"
+        @click="getLocationInfo(schedule.place_id, schedule.id)"
       >
         <div>
           <span>時間區間：</span>

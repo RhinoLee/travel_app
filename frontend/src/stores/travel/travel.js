@@ -66,12 +66,11 @@ export const useTravelStore = defineStore('travel', {
       locationSearchList: [],
       // 總旅程計畫底下的每日行程
       singleScheduleList: [],
+      nowSingleScheduleId: null,
       // 單日計畫日期
       nowSelectDate: "",
-      // 單日計畫底下的單一計畫 ID
-      nowPlanId: null,
       // 目前選取到地點的相關資訊
-      placeDetail: null
+      placeDetail: null,
     }
   },
   getters: {

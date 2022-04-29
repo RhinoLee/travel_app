@@ -1,20 +1,36 @@
 <script setup>
+import { ref, watch } from "vue"
 const props = defineProps({
   placeDetail: {
     type: Object
   }
 })
 
-const emit = defineEmits(["addLocateToSchedule"])
+watch(
+  () => props.placeDetail,
+  newVal => {
+    triggerPanel(true)
+  }
+)
+const isPanelOpen = ref(false)
+const emit = defineEmits(["addLocateToSchedule, closePanel"])
 
 async function addLocateToSchedule() {
   emit("addLocateToSchedule")
 }
 
+function triggerPanel(isOpen) {
+  isPanelOpen.value = isOpen
+  if (!isOpen) emit("closePanel")
+}
+
 </script>
 
 <template>
-  <div v-if="placeDetail" class="absolute w-[30%] h-[90vh] left-[31%] top-[50%] -translate-y-[50%] bg-white z-10 shadow-lg p-[30px]">
+  <div v-if="placeDetail" :class="{ hidden: !isPanelOpen }" class="absolute w-[30%] h-[90vh] left-[31%] top-[50%] -translate-y-[50%] bg-white z-10 shadow-lg p-[30px]">
+    <div class="flex justify-end">
+      <button @click="triggerPanel(false)" class="border px-2 py-1 text-sm">X</button>
+    </div>
     <div>
       <div class="py-2">評價：{{ placeDetail.rating }} / 5</div>
       <div class="py-2">評價數：{{ placeDetail.user_ratings_total }}</div>

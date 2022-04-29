@@ -6,7 +6,7 @@ import { storeToRefs } from 'pinia'
 import Map from "@/components/map/Map.vue"
 import SearchPlace from "@/components/map/SearchPlace.vue"
 import PlaceDetailPanel from "@/components/map/PlaceDetailPanel.vue"
-import DailyPlanInfo from "@/components/travel/DailyPlanInfo.vue"
+import ScheduleList from "@/components/travel/ScheduleList.vue"
 import LightBox from "@/components/common/LightBox.vue"
 import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
 
@@ -18,6 +18,11 @@ const openBox = ref(false)
 
 function hideBox() {
   openBox.value = false
+}
+
+function closePanel() {
+  travelStore.placeDetail = null
+  travelStore.nowSingleScheduleId = null
 }
 
 async function searchTextHandler(searchText) {
@@ -70,14 +75,14 @@ onMounted(() => {
           </select>
 
           <!-- <pre>{{ nowSelectSchedule.scheduleList }}</pre> -->
-          <DailyPlanInfo :singleScheduleList="nowSelectSchedule.scheduleList"></DailyPlanInfo>
+          <ScheduleList :singleScheduleList="nowSelectSchedule.scheduleList"></ScheduleList>
         </div>
       </div>
       <!-- 詳細資訊面板 -->
-      <PlaceDetailPanel :placeDetail="placeDetail" @addLocateToSchedule="addLocateToSchedule"></PlaceDetailPanel>
+      <PlaceDetailPanel :placeDetail="placeDetail" @addLocateToSchedule="addLocateToSchedule" @closePanel="closePanel"></PlaceDetailPanel>
       <!-- 地圖 -->
       <div class="w-[70%] h-screen">
-        <Map :scheduleList="nowSelectSchedule.scheduleList" :locationSearchList="locationSearchList"></Map>
+        <Map :scheduleList="nowSelectSchedule.scheduleList" :locationSearchList="locationSearchList" :placeDetail="placeDetail"></Map>
       </div>
     </div>
 
