@@ -34,7 +34,7 @@ const singleScheduleController = {
       return responseHandler.catchErr(res, error)
     }
   },
-  updateSchedule: async (req, res) => {
+  update: async (req, res) => {
     try {
       const member_id = req.jwtData.id
       const result = await singleScheduleModel.update(req.body, member_id)
@@ -44,6 +44,20 @@ const singleScheduleController = {
       }
     } catch(error) {
       console.log("singleScheduleController.update error", error);
+      return responseHandler.catchErr(res, error)
+    }
+  },
+  delete: async (req, res) => {
+    try {
+      const member_id = req.jwtData.id
+      const id = req.params.id
+      const result = await singleScheduleModel.delete({ member_id, id })
+      console.log("singleScheduleController.delete result", result);
+      if (result && result.rows.length === 1) {
+        return responseHandler.success(res, result.rows[0])
+      }
+    } catch(error) {
+      console.log("singleScheduleController.delete error", error);
       return responseHandler.catchErr(res, error)
     }
   }

@@ -62,7 +62,12 @@ app.patch("/api/singleSchedule/:id",
   validateRequest.checkJWT, 
   singleScheduleUpdateRules, 
   validateRequest.validates,
-  singleScheduleController.updateSchedule
+  singleScheduleController.update
+)
+
+app.delete("/api/singleSchedule/:id", 
+  validateRequest.checkJWT, 
+  singleScheduleController.delete
 )
 
 app.get("/api/mainSchedules", validateRequest.checkJWT, mainScheduleController.getAllSchedules)

@@ -48,7 +48,23 @@ const singleScheduleModel = {
     } catch (err) {
       return err
     }
-  }
+  },
+  delete: async ({ member_id, id }) => {
+    const query = {
+      text: `DELETE FROM single_schedule 
+              WHERE member_id = $1 AND id = $2
+              RETURNING id
+            `,
+      values: [member_id, id]
+    }
+
+    try {
+      const result = await db.query(query)
+      return result
+    } catch (err) {
+      return err
+    }
+  },
   // getSchedule: async (schedule_id) => {
   //   const query = {
   //     text: "SELECT * from single_schedule WHERE id = $1",
