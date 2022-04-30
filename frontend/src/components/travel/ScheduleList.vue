@@ -30,6 +30,11 @@ function editLocateToSchedule(scheduleId, date) {
   emit("editLocateToSchedule")
 }
 
+function deleteSingleSchedule(scheduleId, date) {
+  selectSchedule(scheduleId, date)
+  emit("deleteSingleSchedule")
+}
+
 </script>
 
 <template>
@@ -42,13 +47,16 @@ function editLocateToSchedule(scheduleId, date) {
       </div>
       <div 
         v-for="(schedule, idx) in singleSchedule.scheduleList" :key="idx" 
-        class="px-[10px] py-[10px] mt-[10px] cursor-pointer hover:bg-sky-900"
+        class="px-[14px] py-[10px] mt-[10px] cursor-pointer hover:bg-sky-900"
         :class="{ 'bg-sky-900': nowSingleScheduleId === schedule.id }"
         @click="getLocationInfo(schedule.place_id, schedule.id, singleSchedule.date)"
       >
-        <div>
-          <span>時間區間：</span>
-          <span>{{ schedule.start_time }} - {{ schedule.end_time }}</span>
+        <div class="flex justify-between items-center">
+          <div>
+            <span>時間區間：</span>
+            <span>{{ schedule.start_time }} - {{ schedule.end_time }}</span>
+          </div>
+          <div @click.stop="deleteSingleSchedule(schedule.id, singleSchedule.date)" class="border px-1 text-sm">X</div>
         </div>
         <div  class="mt-2">
           <span>行程：</span>

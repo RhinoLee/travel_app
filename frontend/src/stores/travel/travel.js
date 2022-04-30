@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import { useMemberStore } from "../member"
-import { apiGetPlaceId, apiGetPlaceDetail, apiPlaceSearch, apiCreateMainSchedule, apiGetMainSchedule, apiGetAllMainSchedules, apiCreateSingleSchedule, apiGetSingleSchedule, apiUpdateSingleSchedule } from "@/utils/api/api"
+import { apiGetPlaceId, apiGetPlaceDetail, apiPlaceSearch, apiCreateMainSchedule, apiGetMainSchedule, apiGetAllMainSchedules, apiCreateSingleSchedule, apiGetSingleSchedule, apiUpdateSingleSchedule, apiDeleteSingleSchedule } from "@/utils/api/api"
 import { dateHandler } from "@/utils/dateTransform"
 import { errorHandler } from "../../utils/api/errorHandler"
 
@@ -286,7 +286,19 @@ export const useTravelStore = defineStore('travel', {
           const getResult = await this.getSingleSchedule()
           return true
         }
-      } catch(error) {
+      } catch (error) {
+        errorHandler.catchError(error)
+        return false
+      }
+    },
+    async deleteSingleSchedule() {
+      try {
+        const result = await apiDeleteSingleSchedule(this.nowSingleScheduleId)
+        if (result && result.data.success) {
+          const getResult = await this.getSingleSchedule()
+          return true
+        }
+      } catch (error) {
         errorHandler.catchError(error)
         return false
       }

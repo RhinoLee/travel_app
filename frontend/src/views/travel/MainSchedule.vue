@@ -14,7 +14,7 @@ const travelStore = useTravelStore()
 const { nowMainScheduleId, mainScheduleInfo, addScheDuleParams, editScheDuleParams, locationSearchList, singleScheduleSelectList, nowSelectSchedule, nowSelectDate, placeDetail, nowSelectSingleSchedule } = storeToRefs(travelStore)
 
 const route = useRoute()
-const lightbox = reactive({ createBox: false, editBox: false })
+const lightbox = reactive({ createBox: false, editBox: false, deleteBox: false })
 
 function hideBox(boxname) {
   lightbox[boxname] = false
@@ -72,6 +72,15 @@ async function updateSingleSchedule() {
   }
 }
 
+async function deleteSingleSchedule() {
+  openBox("deleteBox")
+}
+
+async function confirmdelete() {
+  const result = await travelStore.deleteSingleSchedule()
+  hideBox("deleteBox")
+}
+
 onMounted(() => {
   travelStore.nowMainScheduleId = route.params.mainScheduleId
   travelStore.addScheDuleParams.main_schedule_id = route.params.mainScheduleId
@@ -98,11 +107,13 @@ onMounted(() => {
           </select>
 
           <!-- <pre>{{ nowSelectSchedule.scheduleList }}</pre> -->
-          <ScheduleList :singleScheduleList="nowSelectSchedule.scheduleList" @editLocateToSchedule="editLocateToSchedule"></ScheduleList>
+          <ScheduleList :singleScheduleList="nowSelectSchedule.scheduleList"
+            @editLocateToSchedule="editLocateToSchedule" @deleteSingleSchedule="deleteSingleSchedule"></ScheduleList>
         </div>
       </div>
       <!-- 詳細資訊面板 -->
-      <PlaceDetailPanel :placeDetail="placeDetail" @addLocateToSchedule="addLocateToSchedule" @closePanel="closePanel"></PlaceDetailPanel>
+      <PlaceDetailPanel :placeDetail="placeDetail" @addLocateToSchedule="addLocateToSchedule" @closePanel="closePanel">
+      </PlaceDetailPanel>
       <!-- 地圖 -->
       <div class="w-[70%] h-screen">
         <Map :scheduleList="nowSelectSchedule.scheduleList" :locationSearchList="locationSearchList"
@@ -128,7 +139,8 @@ onMounted(() => {
         </div>
         <div class="mb-3">
           <label class="block mb-1">選擇時間區間</label>
-          <DatePickerWrap @updateTime="(...args) => updateTime(['addScheDuleParams', ...args])" :timePicker="true"></DatePickerWrap>
+          <DatePickerWrap @updateTime="(...args) => updateTime(['addScheDuleParams', ...args])" :timePicker="true">
+          </DatePickerWrap>
         </div>
         <div class="mb-3">
           <div>地點</div>
@@ -160,8 +172,9 @@ onMounted(() => {
         </div>
         <div class="mb-3">
           <label class="block mb-1">選擇時間區間</label>
-          <DatePickerWrap v-if="nowSelectSingleSchedule" @updateTime="(...args) => updateTime(['editScheDuleParams', ...args])" :timePicker="true"
-            :startTime="[{ hours: nowSelectSingleSchedule.start_time.split(':')[0], minutes: nowSelectSingleSchedule.start_time.split(':')[1] }, 
+          <DatePickerWrap v-if="nowSelectSingleSchedule"
+            @updateTime="(...args) => updateTime(['editScheDuleParams', ...args])" :timePicker="true"
+            :startTime="[{ hours: nowSelectSingleSchedule.start_time.split(':')[0], minutes: nowSelectSingleSchedule.start_time.split(':')[1] },
             { hours: nowSelectSingleSchedule.end_time.split(':')[0], minutes: nowSelectSingleSchedule.end_time.split(':')[1] }]">
           </DatePickerWrap>
           <!-- <DatePickerWrap @updateTime="(...args) => updateTime(['editScheDuleParams', ...args])" :timePicker="true"></DatePickerWrap> -->
@@ -174,6 +187,19 @@ onMounted(() => {
       <template v-slot:footer>
         <div>
           <button @click="updateSingleSchedule" class="border px-4 py-2">儲存行程</button>
+        </div>
+      </template>
+    </LightBox>
+
+    <!-- 確認刪除 -->
+    <LightBox :openBox="lightbox.deleteBox" @hideBox="hideBox('deleteBox')">
+      <template v-slot:header>刪除行程</template>
+      <template v-slot:main>
+        <div>確定要刪除行程？</div>
+      </template>
+      <template v-slot:footer>
+        <div>
+          <button @click="confirmdelete" class="border px-4 py-2">刪除行程</button>
         </div>
       </template>
     </LightBox>

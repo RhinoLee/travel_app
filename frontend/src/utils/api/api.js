@@ -80,4 +80,10 @@ export const apiUpdateSingleSchedule = (params) => scheduleRequest.patch(`/singl
   headers: {
     "Authorization": `Bearer ${localStorage.getItem("token")}`
   }
+
+})
+export const apiDeleteSingleSchedule = (id) => scheduleRequest.delete(`/singleSchedule/${id}`, {
+  headers: {
+    "Authorization": `Bearer ${localStorage.getItem("token")}`
+  }
 })
