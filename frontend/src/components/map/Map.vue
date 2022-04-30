@@ -178,10 +178,10 @@ function renderSearchLocation() {
       animation: google.maps.Animation.DROP,
     })
 
-    // setZoom(15, item.geometry.location)
   })
 
   setMarkerToMap(map.data, "search")
+  setZoom(mapDefaultZoom, mapDefaultCenter)
 }
 
 onMounted(() => {

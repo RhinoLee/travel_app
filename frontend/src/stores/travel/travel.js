@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import { useMemberStore } from "../member"
-import { apiGetPlaceId, apiGetPlaceDetail, apiPlaceSearch, apiCreateMainSchedule, apiGetMainSchedule, apiGetAllMainSchedules, apiCreateSingleSchedule, apiGetSingleSchedule } from "@/utils/api/api"
+import { apiGetPlaceId, apiGetPlaceDetail, apiPlaceSearch, apiCreateMainSchedule, apiGetMainSchedule, apiGetAllMainSchedules, apiCreateSingleSchedule, apiGetSingleSchedule, apiUpdateSingleSchedule } from "@/utils/api/api"
 import { dateHandler } from "@/utils/dateTransform"
 import { errorHandler } from "../../utils/api/errorHandler"
 
@@ -24,6 +24,13 @@ export const useTravelStore = defineStore('travel', {
           lat: null,
           lng: null
         }
+      },
+      editScheDuleParams: {
+        id: "",
+        title: "",
+        date: "",
+        start_time: "",
+        end_time: "",
       },
       nowMainScheduleId: null,
       // 既有總旅程計畫列表
@@ -69,6 +76,8 @@ export const useTravelStore = defineStore('travel', {
       nowSingleScheduleId: null,
       // 單日計畫日期
       nowSelectDate: "",
+      // 目前點擊 schedule 的日期
+      nowSingleScheduleDate: "",
       // 目前選取到地點的相關資訊
       placeDetail: null,
     }
@@ -96,7 +105,7 @@ export const useTravelStore = defineStore('travel', {
 
       return list
     },
-    // 總旅程裡的當日計畫
+    // 總旅程裡的當日計畫列表
     nowSelectSchedule(state) {
       let dailyPlan = { scheduleList: [] }
       if (state.nowSelectDate) {
@@ -106,15 +115,26 @@ export const useTravelStore = defineStore('travel', {
       }
       return dailyPlan
     },
+    // 總旅程裡的當日計畫列表裡的特定計畫
+    nowSelectSingleSchedule(state) {
+      let scheduleInfo = null
+      if (Number.isInteger(state.nowSingleScheduleId) && state.nowSingleScheduleDate) {
+        const scheduleList = state.singleScheduleList.filter(plan => plan.date === state.nowSingleScheduleDate)[0].scheduleList
+        scheduleInfo = scheduleList.filter(schedule => schedule.id === state.nowSingleScheduleId)[0]
+      }
+      return scheduleInfo
+    },
     memberId() {
       const memberStore = useMemberStore()
       return memberStore.memberInfo.id
-    }
+    },
   },
   actions: {
-    // getDailyPlan(dailyPlanId) {
-    //   this.nowSelectDate = dailyPlanId
-    // },
+    setEditScheduleParams() {
+      if (!this.nowSelectSingleSchedule) return
+      const editScheDuleParams = JSON.parse(JSON.stringify(this.nowSelectSingleSchedule))
+      this.editScheDuleParams = editScheDuleParams
+    },
     async getLocationInfo(placeId) {
       const params = {
         place_id: placeId
@@ -212,7 +232,6 @@ export const useTravelStore = defineStore('travel', {
       }
     },
     async addSingleSchedule() {
-      this.addScheDuleParams.member_id = this.memberId
       try {
         const result = await apiCreateSingleSchedule(this.addScheDuleParams)
         this.locationSearchList = []
@@ -253,12 +272,24 @@ export const useTravelStore = defineStore('travel', {
         })
 
         this.singleScheduleList = mainList
-
+        console.log("this.singleScheduleList", this.singleScheduleList);
       } catch (error) {
         errorHandler.catchError(error)
         return
       }
 
+    },
+    async updateSingleSchedule() {
+      try {
+        const result = await apiUpdateSingleSchedule(this.editScheDuleParams)
+        if (result && result.data.success) {
+          const getResult = await this.getSingleSchedule()
+          return true
+        }
+      } catch(error) {
+        errorHandler.catchError(error)
+        return false
+      }
     }
   }
 

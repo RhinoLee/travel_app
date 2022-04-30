@@ -3,7 +3,7 @@ import { ref } from "vue"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from 'pinia'
 
-const emit = defineEmits(['searchTextHandler'])
+const emit = defineEmits(["searchTextHandler"])
 
 const serchText = ref("")
 const travelStore = useTravelStore()

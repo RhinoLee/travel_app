@@ -1,4 +1,5 @@
 <script setup>
+import { dateHandler } from "@/utils/dateTransform"
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { ref, onMounted, watch, defineProps } from "vue"
@@ -21,30 +22,31 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  // pickerParams: {
-  //   type: Object,
-  //   default: () => ({
-  //     utc: true,
-  //     enableTimePicker: false,
-  //     timePicker: false
-  //   })
-  // }
+  readonly: {
+    type: Boolean,
+    default: false
+  },
+  startTime: {
+    type: Array,
+    default: () => ([
+      {
+        hours: new Date().getHours(),
+        minutes: new Date().getMinutes()
+      },
+      {
+        hours: new Date().getHours(),
+        minutes: new Date().getMinutes()
+      }
+    ])
+  },
 })
 
 const emit = defineEmits(["updateDate", "updateTime"])
 
 const date = ref(new Date())
 const startTime = ref([{ hours: 0, minutes: 0 }, { hours: 0, minutes: 0 }]);
-const time = ref([
-  {
-    hours: new Date().getHours(),
-    minutes: new Date().getMinutes()
-  },
-  {
-    hours: new Date().getHours(),
-    minutes: new Date().getMinutes()
-  }
-]);
+const time = ref(props.startTime);
+
 
 const defaultRange = 7
 
@@ -61,20 +63,22 @@ watch(date, val => {
 watch(time, val => {
   if (!val) return
   const timeRange = {
-    startTime: val[0].hours.toString() + ":" + val[0].minutes.toString(),
-    endTime: val[1].hours.toString() + ":" + val[1].minutes.toString(),
+    startTime: dateHandler.timeFormat(val[0].hours, val[0].minutes),
+    endTime: dateHandler.timeFormat(val[1].hours, val[1].minutes),
   }
   emit("updateTime", timeRange)
 },
   { immediate: true }
 )
 
-// onMounted(async () => {
-//   const startDate = new Date();
-//   const endDate = new Date(new Date().setDate(startDate.getDate() + defaultRange));
-//   date.value = [startDate, endDate];
-// })
-
+watch(
+  () => props.startTime,
+  newVal => {
+    if (!newVal) return
+    time.value = props.startTime
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -82,6 +86,6 @@ watch(time, val => {
     :startTime="startTime">
   </Datepicker>
 
-  <Datepicker v-if="timePicker" v-model="time" :range="range" :utc="utc" :timePicker="timePicker">
+  <Datepicker v-if="timePicker" v-model="time" :range="range" :utc="utc" :timePicker="timePicker" :readonly="readonly" format="HH:mm">
   </Datepicker>
 </template>

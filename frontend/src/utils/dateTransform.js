@@ -36,7 +36,7 @@ export const dateHandler = {
     for (let i = 0; i <= dutationDays; i++) {
       const localDateValue = new Date(startDate)
       localDateValue.setDate(localDateValue.getDate() + i)
-      
+
       let obj = {}
       obj.date = dateHandler.localFormat(localDateValue)
       obj.day = dateHandler.getDayOfWeek(localDateValue)
@@ -45,5 +45,13 @@ export const dateHandler = {
     }
 
     return daysList
+  },
+  timeFormat: (hours, minute) => {
+    const hoursStr = hours.toString().trim()
+    const minuteStr = minute.toString().trim()
+
+    const hoursFormate = hoursStr.length === 1 ? "0" + hoursStr : hoursStr
+    const minuteFormate = minuteStr.length === 1 ? "0" + minuteStr : minuteStr
+    return hoursFormate + ":" + minuteFormate
   }
 }

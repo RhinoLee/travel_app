@@ -75,3 +75,9 @@ export const apiCreateSingleSchedule = (params) => scheduleRequest.post("/single
     "Authorization": `Bearer ${localStorage.getItem("token")}`
   }
 })
+
+export const apiUpdateSingleSchedule = (params) => scheduleRequest.patch(`/singleSchedule/${params.id}`, params, {
+  headers: {
+    "Authorization": `Bearer ${localStorage.getItem("token")}`
+  }
+})

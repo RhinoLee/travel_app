@@ -13,9 +13,9 @@ watch(
   }
 )
 const isPanelOpen = ref(false)
-const emit = defineEmits(["addLocateToSchedule, closePanel"])
+const emit = defineEmits(["addLocateToSchedule", "closePanel"])
 
-async function addLocateToSchedule() {
+function addLocateToSchedule() {
   emit("addLocateToSchedule")
 }
 
@@ -45,7 +45,7 @@ function triggerPanel(isOpen) {
       </div>
 
       <div>
-        <button @click="addLocateToSchedule" class="border px-4 py-2">加入行程</button>
+        <button @click="addLocateToSchedule" class="border px-4 py-2 ml-2">加入行程</button>
       </div>
     </div>
 
