@@ -1,6 +1,6 @@
 const { body } = require("express-validator");
 
-const singleScheduleRules = [
+const singleScheduleCreateRules = [
   body("member_id")
     .notEmpty()
     .withMessage("member_id 欄位必填"),
@@ -53,4 +53,4 @@ const singleScheduleRules = [
     .withMessage("location 格式不符"),
 ]
 
-module.exports = singleScheduleRules
+module.exports = singleScheduleCreateRules

@@ -13,7 +13,10 @@ const mapController = {
       if (placeSearchRes.data.error_message) {
         return responseHandler.responseErr(res, placeSearchRes.data.error_message)
       }
-      return responseHandler.success(res, placeSearchRes.data.candidates)
+      // 單筆 return
+      // return responseHandler.success(res, placeSearchRes.data.candidates)
+      // 多筆 return
+      return responseHandler.success(res, placeSearchRes.data.results)
     } catch (error) {
       return responseHandler.catchErr(res, error)
     }

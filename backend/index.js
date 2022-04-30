@@ -12,7 +12,8 @@ const validateRequest = require("./middleware/validateRequest")
 // Rules of Validate
 const registerRules = require("./validates/registerRules")
 const mainScheduleRules = require("./validates/mainScheduleRules")
-const singleScheduleRules = require("./validates/singleScheduleRules")
+const singleScheduleCreateRules = require("./validates/singleScheduleCreateRules")
+const singleScheduleUpdateRules = require("./validates/singleScheduleUpdateRules")
 
 // controller
 const mapController = require("./controller/map/mapController")
@@ -51,10 +52,17 @@ app.post("/api/mainScheduleCreate",
 
 app.post("/api/singleScheduleCreate", 
   validateRequest.checkJWT,
-  singleScheduleRules,
+  singleScheduleCreateRules,
   validateRequest.validates,
   validateRequest.geographyFormat,
   singleScheduleController.create
+)
+
+app.patch("/api/singleSchedule/:id", 
+  validateRequest.checkJWT, 
+  singleScheduleUpdateRules, 
+  validateRequest.validates,
+  singleScheduleController.updateSchedule
 )
 
 app.get("/api/mainSchedules", validateRequest.checkJWT, mainScheduleController.getAllSchedules)

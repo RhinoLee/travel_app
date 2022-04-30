@@ -14,7 +14,8 @@ const placeImageRequest = axios.create({
 
 // google map 
 const apiHandler = {
-  apiPlaceSearch: (params) => mapRequest.get("/place/findplacefromtext/json", { params }),
+  apiPlaceSearch: (params) => mapRequest.get("/place/textsearch/json", { params }),
+  // apiPlaceSearch: (params) => mapRequest.get("/place/findplacefromtext/json", { params }),
   apiGetPlaceDetail: (params) => mapRequest.get("/place/details/json", { params }),
   // apiGetPlacePhotos: (params) => placeImageRequest.get("/place/photo", { params }),
 }

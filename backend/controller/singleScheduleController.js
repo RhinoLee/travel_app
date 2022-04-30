@@ -5,7 +5,8 @@ const singleScheduleController = {
   create: async (req, res) => {
     try {
       const location = req.location
-      const { title, place_name, place_id, date, start_time, end_time, member_id, main_schedule_id } = req.body
+      const member_id = req.jwtData.id
+      const { title, place_name, place_id, date, start_time, end_time, main_schedule_id } = req.body
       const result = await singleScheduleModel.create({ title, place_name, place_id, date, start_time, end_time, location, member_id, main_schedule_id })
       console.log("singleScheduleController.create result", result);
       if (result && result.rows.length === 1) {
@@ -33,22 +34,35 @@ const singleScheduleController = {
       return responseHandler.catchErr(res, error)
     }
   },
-  getSchedule: async (req, res) => {
-    console.log("getSchedule");
-    console.log("getSchedule id", req.params.id);
+  updateSchedule: async (req, res) => {
     try {
-      const schedule_id = req.params.id
-      const result = await singleScheduleModel.getSchedule(schedule_id)
+      const member_id = req.jwtData.id
+      const result = await singleScheduleModel.update(req.body, member_id)
+      console.log("singleScheduleController.update result", result);
       if (result && result.rows.length === 1) {
-        return responseHandler.success(res, { mainscheduleInfo: result.rows[0] })
+        return responseHandler.success(res, { id: result.rows[0] })
       }
-
-      responseHandler.responseErr(res, "取得資料失敗")
-
-    } catch (error) {
+    } catch(error) {
+      console.log("singleScheduleController.update error", error);
       return responseHandler.catchErr(res, error)
     }
-  },
+  }
+  // getSchedule: async (req, res) => {
+  //   console.log("getSchedule");
+  //   console.log("getSchedule id", req.params.id);
+  //   try {
+  //     const schedule_id = req.params.id
+  //     const result = await singleScheduleModel.getSchedule(schedule_id)
+  //     if (result && result.rows.length === 1) {
+  //       return responseHandler.success(res, { mainscheduleInfo: result.rows[0] })
+  //     }
+
+  //     responseHandler.responseErr(res, "取得資料失敗")
+
+  //   } catch (error) {
+  //     return responseHandler.catchErr(res, error)
+  //   }
+  // },
 }
 
 module.exports = singleScheduleController
