@@ -53,5 +53,47 @@ export const dateHandler = {
     const hoursFormate = hoursStr.length === 1 ? "0" + hoursStr : hoursStr
     const minuteFormate = minuteStr.length === 1 ? "0" + minuteStr : minuteStr
     return hoursFormate + ":" + minuteFormate
-  }
+  },
+  calcPlusTime: (time, num = 5) => {
+    let endHour = Number(time.split(":")[0])
+    let endMin = Number(time.split(":")[1])
+
+    if (endMin + num > 59 && endHour <= 22) {
+      endHour += 1
+      endMin = (endMin + num) - 60
+
+      return dateHandler.timeFormat(endHour, endMin)
+    }
+
+    if (endMin + num > 59 && endHour >= 23) {
+      endHour = 23
+      endMin = 59
+
+      return dateHandler.timeFormat(endHour, endMin)
+    }
+
+    endMin = endMin + num
+    return dateHandler.timeFormat(endHour, endMin)
+  },
+  calcMinusTime: (time, num = 5) => {
+    let endHour = Number(time.split(":")[0])
+    let endMin = Number(time.split(":")[1])
+
+    if (endMin - num < 0 && endHour !== 0) {
+      endHour -= 1
+      endMin = (endMin - num) + 60
+
+      return dateHandler.timeFormat(endHour, endMin)
+    }
+
+    if (endMin - num < 0 && endHour === 0) {
+      endHour = 0
+      endMin = 0
+
+      return dateHandler.timeFormat(endHour, endMin)
+    }
+
+    endMin = endMin - num
+    return dateHandler.timeFormat(endHour, endMin)
+  },
 }

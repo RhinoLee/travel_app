@@ -3,17 +3,24 @@ import { ref } from "vue"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from "pinia";
 import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
+import draggable from 'vuedraggable'
 
-const props = defineProps({
-  singleScheduleList: {
-    type: Array
-  }
-})
+// const props = defineProps({
+//   singleScheduleList: {
+//     type: Array
+//   }
+// })
 
 const emit = defineEmits(["editLocateToSchedule"])
 
 const travelStore = useTravelStore()
-const { nowSingleScheduleId, nowSelectSingleSchedule } = storeToRefs(travelStore)
+const { nowSingleScheduleId, nowSelectSingleSchedule, singleScheduleList } = storeToRefs(travelStore)
+const dragOptions = {
+  animation: 200,
+  disabled: false,
+  ghostClass: "ghost"
+}
+const drag = ref(false)
 
 function selectSchedule(scheduleId, date) {
   travelStore.nowSingleScheduleId = scheduleId
@@ -35,45 +42,68 @@ function deleteSingleSchedule(scheduleId, date) {
   emit("deleteSingleSchedule")
 }
 
+// drag & drop
+function dragStartHandler(e) {
+  drag.value = true
+}
+
+function dropHandler(e) {
+  drag.value = false
+}
+
+function change({ moved }) {
+  const moveResult = travelStore.exchangeSchedule(moved)
+  if (moveResult) {
+    travelStore.updateSingleScheduleGroup(moved.element.date)
+  }
+}
+
 </script>
 
 <template>
   <div>
-    <!-- <pre>{{ nowSelectSingleSchedule }}</pre> -->
-    <div v-for="singleSchedule in props.singleScheduleList" :key="singleSchedule.date" class="py-[20px] text-white border-t">
+    <div v-for="singleSchedule in singleScheduleList" :key="singleSchedule.date" class="py-[20px] text-white border-t">
       <div class="font-bold text-lg">
         <span>日期：</span>
         <span>{{ singleSchedule.date }}</span>
       </div>
-      <div 
-        v-for="(schedule, idx) in singleSchedule.scheduleList" :key="idx" 
-        class="px-[14px] py-[10px] mt-[10px] cursor-pointer hover:bg-sky-900"
-        :class="{ 'bg-sky-900': nowSingleScheduleId === schedule.id }"
-        @click="getLocationInfo(schedule.place_id, schedule.id, singleSchedule.date)"
+
+      <draggable v-model="singleSchedule.scheduleList" 
+        @start="dragStartHandler" 
+        @end="dropHandler"
+        @change="change"
+        item-key="id"
+        v-bind="dragOptions"
+        :group="`schedule${singleSchedule.date}`"
+        handle=".handle"
       >
-        <div class="flex justify-between items-center">
-          <div>
-            <span>時間區間：</span>
-            <span>{{ schedule.start_time }} - {{ schedule.end_time }}</span>
+        <template #item="{ element }">
+          <div class="px-[14px] py-[10px] mt-[10px] cursor-pointer hover:bg-sky-900 relative schedule"
+            :class="{ 'bg-sky-900': nowSingleScheduleId === element.id }"
+            @click="getLocationInfo(element.place_id, element.id, singleSchedule.date)">
+            <div><i class="handle">hand</i></div>
+            <div>
+              <div class="flex justify-between items-center">
+                <div>
+                  <span>時間區間：</span>
+                  <span>{{ element.start_time }} - {{ element.end_time }}</span>
+                </div>
+                <div @click.stop="deleteSingleSchedule(element.id, singleSchedule.date)" class="border px-1 text-sm">X
+                </div>
+              </div>
+              <div class="mt-2">
+                <span>行程：</span>
+                <span>{{ element.title }}</span>
+              </div>
+
+              <button @click.stop="editLocateToSchedule(element.id, singleSchedule.date)"
+                class="border px-3 py-1 mt-2">編輯行程</button>
+            </div>
           </div>
-          <div @click.stop="deleteSingleSchedule(schedule.id, singleSchedule.date)" class="border px-1 text-sm">X</div>
-        </div>
-        <div  class="mt-2">
-          <span>行程：</span>
-          <span>{{ schedule.title }}</span>
-        </div>
-        <div class="mt-2">
-          <span>地點：</span>
-          <span>{{ schedule.place_name }}</span>
-        </div>
+        </template>
+      </draggable>
 
-        <button @click.stop="editLocateToSchedule(schedule.id, singleSchedule.date)" class="border px-3 py-1 mt-2">編輯行程</button>
-        <!-- <div>
-          <span>筆記：</span>
-          <span>{{ schedule.note }}</span>
-        </div> -->
-      </div>
+      
     </div>
-
   </div>
 </template>

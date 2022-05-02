@@ -135,6 +135,45 @@ export const useTravelStore = defineStore('travel', {
       const editScheDuleParams = JSON.parse(JSON.stringify(this.nowSelectSingleSchedule))
       this.editScheDuleParams = editScheDuleParams
     },
+    exchangeSchedule({ element, oldIndex, newIndex }) {
+      const list = this.singleScheduleList.filter(schedule => schedule.date === element.date)[0].scheduleList
+
+      if (newIndex === list.length - 1) {
+        element.start_time = list[newIndex - 1].end_time
+        element.end_time = dateHandler.calcPlusTime(element.start_time, 60)
+
+        return true
+      }
+
+      if (newIndex === 0) {
+        list.forEach((schedule, idx) => {
+          if (idx === 0) {
+            element.start_time = list[1].start_time
+            element.end_time = list[1].end_time
+          }
+          if (idx > 0) {
+            schedule.start_time = list[idx - 1].end_time
+            schedule.end_time = dateHandler.calcPlusTime(schedule.start_time, 60)
+          }
+        })
+
+        return true
+      }
+
+      list.forEach((schedule, idx) => {
+        if (idx === newIndex) {
+          element.start_time = list[idx - 1].end_time
+          element.end_time = dateHandler.calcPlusTime(element.start_time, 60)
+        }
+        if (idx > newIndex) {
+          schedule.start_time = list[newIndex].end_time
+          schedule.end_time = dateHandler.calcPlusTime(element.end_time, 60)
+        }
+      })
+
+      return true
+
+    },
     async getLocationInfo(placeId) {
       const params = {
         place_id: placeId
@@ -283,6 +322,28 @@ export const useTravelStore = defineStore('travel', {
       try {
         const result = await apiUpdateSingleSchedule(this.editScheDuleParams)
         if (result && result.data.success) {
+          const getResult = await this.getSingleSchedule()
+          return true
+        }
+      } catch (error) {
+        errorHandler.catchError(error)
+        return false
+      }
+    },
+    async updateSingleScheduleGroup(date) {
+      const list = this.singleScheduleList.filter(schedule => schedule.date === date)[0].scheduleList
+      const promiseArr = []
+
+      list.forEach(schedule => {
+        const { id, title, date, start_time, end_time } = schedule
+        const params = { id, title, date, start_time, end_time }
+        promiseArr.push(apiUpdateSingleSchedule(params))
+      })
+
+      try {
+        const result = await Promise.all(promiseArr)
+        console.log("promise all result", result);
+        if (result) {
           const getResult = await this.getSingleSchedule()
           return true
         }

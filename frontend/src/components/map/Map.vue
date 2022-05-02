@@ -92,7 +92,7 @@ function markerTirigger(place_id) {
     if (marker.placeId === place_id) {
       clearMarkersAnitmation()
       marker.setAnimation(google.maps.Animation.BOUNCE);
-      setZoom(12, marker.position)
+      setZoom(13, marker.position)
     }
   })
 }
@@ -112,7 +112,7 @@ function setMarker({ location, placeId, icon, title, group, animation }) {
   marker.addListener("click", async (e) => {
     clearMarkersAnitmation()
     toggleBounce(marker)
-    setZoom(12, marker.position)
+    setZoom(13, marker.position)
     const res = await travelStore.getLocationInfo(marker.placeId)
   })
 
