@@ -2,18 +2,8 @@
 import { onMounted } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 import Header from "@/components/common/Header.vue"
-import { useMemberStore } from "@/stores/member"
+import Loading from "@/components/common/Loading.vue"
 
-// const router = useRouter()
-// const memberStore = useMemberStore()
-
-// onMounted(() => {
-//   const token = localStorage.getItem("token")
-//   if (token) return memberStore.getMemberInfo()
-
-//   router.push({ name: "Login" })
-  
-// })
 </script>
 
 <template>
@@ -21,4 +11,5 @@ import { useMemberStore } from "@/stores/member"
     <Header></Header>
     <RouterView />
   </div>
+  <Loading></Loading>
 </template>

@@ -1,25 +1,56 @@
 import axios from "axios"
-import { errorHandler } from "./errorHandler"
+// import { useCommonStore } from "@/stores/common"
+
+// function addInterceptors(axiosInstance) {
+//   // const commonStore = useCommonStore()
+//   axiosInstance.interceptors.request.use(function (config) {
+//     config.metadata = { startTime: new Date() }
+//     // commonStore.isLoading = true
+//     return config;
+//   }, function (error) {
+//     return Promise.reject(error);
+//   });
+
+//   axiosInstance.interceptors.response.use(function (response) {
+//     response.config.metadata.endTime = new Date()
+//     response.responseTime = response.config.metadata.endTime - response.config.metadata.startTime
+//     // commonStore.isLoading = false
+
+//     return response;
+//   }, function (error) {
+//     error.config.metadata.endTime = new Date();
+//     error.responseTime = error.config.metadata.endTime - error.config.metadata.startTime;
+//     // commonStore.isLoading = false
+
+//     return Promise.reject(error);
+//   })
+
+//   return axiosInstance
+// }
 
 // google map
 const mapRequest = axios.create({
   baseURL: "https://maps.googleapis.com/maps/api/"
 })
+// addInterceptors(mapRequest)
 
 // backend google map
 const mapRequest2 = axios.create({
   baseURL: "http://localhost:5003/api/"
 })
+// addInterceptors(mapRequest2)
 
 // member 
 const memberRequest = axios.create({
   baseURL: "http://localhost:5003/api/"
 })
+// addInterceptors(memberRequest)
 
 // Travel Schedule
 const scheduleRequest = axios.create({
   baseURL: "http://localhost:5003/api/"
 })
+// addInterceptors(scheduleRequest)
 
 // google map 
 export const apiGetPlaceId = ({ lat, lng }) => mapRequest.get(`/geocode/json?latlng=${lat},${lng}&key=${import.meta.env.VITE_GOOGLEMAP_APIKEY}`)

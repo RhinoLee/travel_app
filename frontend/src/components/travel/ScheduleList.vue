@@ -1,16 +1,11 @@
 <script setup>
-import { ref } from "vue"
+import { ref, inject } from "vue"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from "pinia";
 import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
 import draggable from 'vuedraggable'
 
-// const props = defineProps({
-//   singleScheduleList: {
-//     type: Array
-//   }
-// })
-
+// const { loadingTrigger } = inject("loading")
 const emit = defineEmits(["editLocateToSchedule"])
 
 const travelStore = useTravelStore()
@@ -29,7 +24,9 @@ function selectSchedule(scheduleId, date) {
 
 async function getLocationInfo(placeId, scheduleId, date) {
   selectSchedule(scheduleId, date)
+  // loadingTrigger(true)
   const res = await travelStore.getLocationInfo(placeId)
+  // loadingTrigger(false)
 }
 
 function editLocateToSchedule(scheduleId, date) {
@@ -51,10 +48,12 @@ function dropHandler(e) {
   drag.value = false
 }
 
-function change({ moved }) {
+async function change({ moved }) {
   const moveResult = travelStore.exchangeSchedule(moved)
   if (moveResult) {
-    travelStore.updateSingleScheduleGroup(moved.element.date)
+    // loadingTrigger(true)
+    await travelStore.updateSingleScheduleGroup(moved.element.date)
+    // loadingTrigger(false)
   }
 }
 

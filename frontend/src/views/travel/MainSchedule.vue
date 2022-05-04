@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, inject } from "vue";
 import { useRoute } from "vue-router"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from 'pinia'
@@ -67,7 +67,7 @@ async function updateSingleSchedule() {
   const result = await travelStore.updateSingleSchedule()
   if (result) {
     // get all single schedules under now main schedule
-    await travelStore.updateSingleSchedule()
+    // await travelStore.updateSingleSchedule()
     hideBox("editBox")
   }
 }

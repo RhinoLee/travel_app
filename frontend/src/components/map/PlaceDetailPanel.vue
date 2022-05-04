@@ -28,8 +28,11 @@ function triggerPanel(isOpen) {
 
 <template>
   <div v-if="placeDetail" :class="{ hidden: !isPanelOpen }" class="absolute w-[30%] h-[90vh] left-[31%] top-[50%] -translate-y-[50%] bg-white z-10 shadow-lg p-[30px]">
-    <div class="flex justify-end">
+    <div class="flex justify-end mb-4">
       <button @click="triggerPanel(false)" class="border px-2 py-1 text-sm">X</button>
+    </div>
+    <div>
+      <img :src="placeDetail.photos[0]" alt="">
     </div>
     <div>
       <div class="py-2">評價：{{ placeDetail.rating }} / 5</div>

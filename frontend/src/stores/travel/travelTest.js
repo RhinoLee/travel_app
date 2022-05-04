@@ -1,7 +1,7 @@
 import { defineStore } from "pinia"
-// import { $axios } from '@/main'
+import { $axios } from '@/main'
 import { useMemberStore } from "../member"
-import { apiGetPlaceId, apiGetPlaceDetail, apiPlaceSearch, apiCreateMainSchedule, apiGetMainSchedule, apiGetAllMainSchedules, apiCreateSingleSchedule, apiGetSingleSchedule, apiUpdateSingleSchedule, apiDeleteSingleSchedule } from "@/utils/api/api"
+// import { apiGetPlaceId, apiGetPlaceDetail, apiPlaceSearch, apiCreateMainSchedule, apiGetMainSchedule, apiGetAllMainSchedules, apiCreateSingleSchedule, apiGetSingleSchedule, apiUpdateSingleSchedule, apiDeleteSingleSchedule } from "@/utils/api/api"
 import { dateHandler } from "@/utils/dateTransform"
 import { errorHandler } from "../../utils/api/errorHandler"
 
@@ -282,7 +282,6 @@ export const useTravelStore = defineStore('travel', {
       }
     },
     async getSingleSchedule() {
-      console.log("this", this);
       try {
         const result = await this.$axios.api.apiGetSingleSchedule(this.nowMainScheduleId)
         if (!result || !result.data.success) return
@@ -336,7 +335,7 @@ export const useTravelStore = defineStore('travel', {
       list.forEach(schedule => {
         const { id, title, date, start_time, end_time } = schedule
         const params = { id, title, date, start_time, end_time }
-        promiseArr.push(apiUpdateSingleSchedule(params))
+        promiseArr.push(this.$axios.api.apiUpdateSingleSchedule(params))
       })
 
       try {
