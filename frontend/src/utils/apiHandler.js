@@ -82,6 +82,14 @@ export default {
             }
           })
         },
+        apiGetDirections: (params) => {
+          const instance = $axios.instances.mapRequest2()
+          return instance.post(`/getDirections`, params, {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+          })
+        },
         apiRegister: (params) => {
           const instance = $axios.instances.memberRequest()
           return instance.post("/memberRegister", params)

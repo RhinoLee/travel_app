@@ -15,7 +15,7 @@ export default defineConfig({
         data: {
           // <script async defer src="https://maps.googleapis.com/maps/api/js?key=${env.VITE_GOOGLEMAP_APIKEY}"></script>
           injectScript: `
-            <script async src="https://maps.googleapis.com/maps/api/js?key=${env.VITE_GOOGLEMAP_APIKEY}&libraries=places"></script>
+            <script async src="https://maps.googleapis.com/maps/api/js?key=${env.VITE_GOOGLEMAP_APIKEY}&libraries=geometry,places"></script>
           `,
         }
       }

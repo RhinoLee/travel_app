@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref, inject } from "vue";
+import { onMounted, reactive } from "vue";
 import { useRoute } from "vue-router"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from 'pinia'
@@ -7,11 +7,12 @@ import Map from "@/components/map/Map.vue"
 import SearchPlace from "@/components/map/SearchPlace.vue"
 import PlaceDetailPanel from "@/components/map/PlaceDetailPanel.vue"
 import ScheduleList from "@/components/travel/ScheduleList.vue"
+import ScheduleDates from "@/components/travel/ScheduleDates.vue"
 import LightBox from "@/components/common/LightBox.vue"
 import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
 
 const travelStore = useTravelStore()
-const { nowMainScheduleId, mainScheduleInfo, addScheDuleParams, editScheDuleParams, locationSearchList, singleScheduleSelectList, nowSelectSchedule, nowSelectDate, placeDetail, nowSelectSingleSchedule } = storeToRefs(travelStore)
+const { nowMainScheduleId, mainScheduleInfo, addScheDuleParams, editScheDuleParams, locationSearchList, nowSelectSchedule, placeDetail, nowSelectSingleSchedule, directions } = storeToRefs(travelStore)
 
 const route = useRoute()
 const lightbox = reactive({ createBox: false, editBox: false, deleteBox: false })
@@ -98,15 +99,8 @@ onMounted(() => {
           <SearchPlace class="mt-8" @searchTextHandler="searchTextHandler"></SearchPlace>
           <h1 class="font-bold mb-[20px] mt-[40px] text-white">{{ mainScheduleInfo.title }}</h1>
           <!-- 天數列表 -->
-          <select v-model="nowSelectDate" class="w-full py-1 px-2 outline-none">
-            <option value="">總旅程</option>
-            <!-- {{ schedule.day }} -->
-            <option v-for="(schedule, idx) in singleScheduleSelectList" :key="idx" :value="schedule.date">{{
-                schedule.date
-            }} </option>
-          </select>
-
-          <!-- <pre>{{ nowSelectSchedule.scheduleList }}</pre> -->
+          <ScheduleDates></ScheduleDates>
+          <!-- 行程列表 -->
           <ScheduleList :singleScheduleList="nowSelectSchedule.scheduleList"
             @editLocateToSchedule="editLocateToSchedule" @deleteSingleSchedule="deleteSingleSchedule"></ScheduleList>
         </div>
@@ -117,7 +111,7 @@ onMounted(() => {
       <!-- 地圖 -->
       <div class="w-[70%] h-screen">
         <Map :scheduleList="nowSelectSchedule.scheduleList" :locationSearchList="locationSearchList"
-          :placeDetail="placeDetail"></Map>
+          :placeDetail="placeDetail" :directions="directions"></Map>
       </div>
     </div>
 

@@ -81,6 +81,12 @@ export const useTravelStore = defineStore('travel', {
       nowSingleScheduleDate: "",
       // 目前選取到地點的相關資訊
       placeDetail: null,
+      // 導航路線
+      directions: {
+        routesPolyline: "",
+        routesBounds: "",
+      },
+      routesPolyline: ""
     }
   },
   getters: {
@@ -282,7 +288,6 @@ export const useTravelStore = defineStore('travel', {
       }
     },
     async getSingleSchedule() {
-      console.log("this", this);
       try {
         const result = await this.$axios.api.apiGetSingleSchedule(this.nowMainScheduleId)
         if (!result || !result.data.success) return
@@ -311,6 +316,7 @@ export const useTravelStore = defineStore('travel', {
         })
 
         this.singleScheduleList = mainList
+        this.nowSelectDate = mainList[0].date // 預設選擇第一天日期
       } catch (error) {
         errorHandler.catchError(error)
         return
@@ -359,6 +365,37 @@ export const useTravelStore = defineStore('travel', {
           return true
         }
       } catch (error) {
+        errorHandler.catchError(error)
+        return false
+      }
+    },
+    async getDirections() {
+      const { scheduleList } = this.nowSelectSchedule.scheduleList[0]
+      const origin = scheduleList[0].place_id
+      const destination = scheduleList[scheduleList.length - 1].place_id
+      const waypoints = []
+      if (scheduleList.length > 2) {
+        scheduleList.forEach((schedule, idx) => {
+          if (idx > 0 && idx < scheduleList.length - 1) {
+            waypoints.push(schedule.place_id)
+          }
+        })
+      }
+
+      try {
+        const result = await this.$axios.api.apiGetDirections({ origin, destination, waypoints })
+
+        console.log("result", result);
+        if (result.data.success) {
+          this.directions.routesPolyline = result.data.results.routes[0].overview_polyline.points
+          this.directions.routesBounds = result.data.results.routes[0].bounds
+        } else {
+          this.directions.routesPolyline = ""
+        }
+        
+        return result && result.data.success
+      } catch (error) {
+        this.directions.routesPolyline = ""
         errorHandler.catchError(error)
         return false
       }

@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, reactive, watch } from "vue";
 import { useTravelStore } from "@/stores/travel/travel"
+import robotImage from "@/assets/images/png/robot.png"
 
 const travelStore = useTravelStore()
 
@@ -17,6 +18,9 @@ const props = defineProps({
     type: Object,
     default: () => ({})
   },
+  directions: {
+    type: Object,
+  }
 })
 
 const map = reactive({ data: null })
@@ -26,6 +30,7 @@ const markerGroup = {
   schedule: [],
   search: []
 }
+const pathList = []
 
 // 偵測目前選擇的計畫，計畫變更地圖需重新插點
 watch(
@@ -33,6 +38,7 @@ watch(
   (newVal) => {
     removeAllMarkers()
     renderScheduleLocation()
+    travelStore.getDirections()
   }
 )
 
@@ -58,6 +64,18 @@ watch(
   }
 )
 
+// 偵測路線變化
+watch(
+  () => props.directions,
+  (newObj) => {
+    console.log("newObj", newObj);
+    removeRoutesPolyLine()
+    if (!newObj) return
+    addRoutesPolyLine(newObj.routesPolyline, newObj.routesBounds)
+  },
+  { deep: true }
+)
+
 function initMap() {
   map.data = new google.maps.Map(document.getElementById("map"), {
     center: mapDefaultCenter,
@@ -65,9 +83,10 @@ function initMap() {
   });
 }
 
-function setZoom(zoom, postion) {
+function setZoom(zoom, postion=null, bounds=null) {
+  if (bounds) return map.data.fitBounds(bounds);
   map.data.setZoom(zoom);
-  map.data.panTo(postion);
+  if (postion) return map.data.panTo(postion);
 }
 
 // Marker Animation
@@ -98,12 +117,13 @@ function markerTirigger(place_id) {
 }
 
 // 設定點位
-function setMarker({ location, placeId, icon, title, group, animation }) {
+function setMarker({ location, placeId, icon, title, label, group, animation }) {
   // create marker
   const marker = new google.maps.Marker({
     position: location,
     placeId,
     icon,
+    label,
     title,
     animation
   });
@@ -151,12 +171,14 @@ function removeAllMarkers(group) {
 // 把目前計畫中的點設定到地圖上
 function renderScheduleLocation() {
   props.scheduleList.forEach(item => {
-    item.scheduleList.forEach(schedule => {
+    console.log("item", item);
+    item.scheduleList.forEach((schedule, idx) => {
       setMarker({
         location: { lat: schedule.lat, lng: schedule.lng },
         placeId: schedule.place_id,
-        icon: ``,
-        title: "1",
+        // icon: "",
+        // title: `${idx}`,
+        label: `${idx + 1}`,
         group: "schedule",
         animation: google.maps.Animation.DROP,
       })
@@ -182,6 +204,36 @@ function renderSearchLocation() {
 
   setMarkerToMap(map.data, "search")
   setZoom(mapDefaultZoom, mapDefaultCenter)
+}
+
+// 設定導航路線
+function addRoutesPolyLine(routesPolyline, routesBounds) {
+  const encodeCoordinates = google.maps.geometry.encoding.decodePath(routesPolyline);
+  const path = new google.maps.Polyline({
+    path: encodeCoordinates,
+    geodesic: true,
+    strokeColor: "#FF0000",
+    strokeOpacity: 1.0,
+    strokeWeight: 2,
+  });
+
+  pathList.push(path)
+  const swLatLng = new google.maps.LatLng(routesBounds.southwest.lat, routesBounds.southwest.lng)
+  const neLatLng = new google.maps.LatLng(routesBounds.northeast.lat, routesBounds.northeast.lng)
+  const LatLngBoundsCenter = new google.maps.LatLngBounds()
+  LatLngBoundsCenter.extend(swLatLng)
+  LatLngBoundsCenter.extend(neLatLng)
+  setZoom(14, null, LatLngBoundsCenter)
+  path.setMap(map.data);
+}
+
+// 移除所有路線
+function removeRoutesPolyLine() {
+  if (pathList.length <= 0) return
+
+  pathList.forEach(path => {
+    path.setMap(null)
+  })
 }
 
 onMounted(() => {

@@ -1,15 +1,14 @@
 <script setup>
-import { ref, inject } from "vue"
+import { ref } from "vue"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from "pinia";
 import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
 import draggable from 'vuedraggable'
 
-// const { loadingTrigger } = inject("loading")
 const emit = defineEmits(["editLocateToSchedule"])
 
 const travelStore = useTravelStore()
-const { nowSingleScheduleId, nowSelectSingleSchedule, singleScheduleList } = storeToRefs(travelStore)
+const { nowSingleScheduleId, nowSelectSingleSchedule, singleScheduleList, nowSelectSchedule } = storeToRefs(travelStore)
 const dragOptions = {
   animation: 200,
   disabled: false,
@@ -24,9 +23,7 @@ function selectSchedule(scheduleId, date) {
 
 async function getLocationInfo(placeId, scheduleId, date) {
   selectSchedule(scheduleId, date)
-  // loadingTrigger(true)
   const res = await travelStore.getLocationInfo(placeId)
-  // loadingTrigger(false)
 }
 
 function editLocateToSchedule(scheduleId, date) {
@@ -51,9 +48,7 @@ function dropHandler(e) {
 async function change({ moved }) {
   const moveResult = travelStore.exchangeSchedule(moved)
   if (moveResult) {
-    // loadingTrigger(true)
     await travelStore.updateSingleScheduleGroup(moved.element.date)
-    // loadingTrigger(false)
   }
 }
 
@@ -61,7 +56,8 @@ async function change({ moved }) {
 
 <template>
   <div>
-    <div v-for="singleSchedule in singleScheduleList" :key="singleSchedule.date" class="py-[20px] text-white border-t">
+    <!-- singleScheduleList -->
+    <div v-for="singleSchedule in nowSelectSchedule.scheduleList" :key="singleSchedule.date" class="py-[20px] text-white border-t">
       <div class="font-bold text-lg">
         <span>日期：</span>
         <span>{{ singleSchedule.date }}</span>
