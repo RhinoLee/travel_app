@@ -31,6 +31,7 @@ app.use(urlencodedParser);
 // Map
 app.post("/api/placeSearch", validateRequest.checkJWT, mapController.searhPlace)
 app.post("/api/placeDetail", validateRequest.checkJWT, mapController.getPlaceDetail)
+app.post("/api/getDirections", validateRequest.checkJWT, mapController.getDirections)
 
 // Member
 app.post("/api/memberRegister",

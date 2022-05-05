@@ -1,9 +1,6 @@
 const { body } = require("express-validator");
 
 const singleScheduleCreateRules = [
-  body("member_id")
-    .notEmpty()
-    .withMessage("member_id 欄位必填"),
   body("main_schedule_id")
     .notEmpty()
     .withMessage("main_schedule_id 欄位必填"),
