@@ -14,6 +14,9 @@ const registerRules = require("./validates/registerRules")
 const mainScheduleRules = require("./validates/mainScheduleRules")
 const singleScheduleCreateRules = require("./validates/singleScheduleCreateRules")
 const singleScheduleUpdateRules = require("./validates/singleScheduleUpdateRules")
+const mapDerectionsRules = require("./validates/mapDirectionsRules")
+const mapSearchRules = require("./validates/mapSearchRules")
+const mapDetailsRules = require("./validates/mapDetailsRules")
 
 // controller
 const mapController = require("./controller/map/mapController")
@@ -29,9 +32,9 @@ app.use(jsonParser);
 app.use(urlencodedParser);
 
 // Map
-app.post("/api/placeSearch", validateRequest.checkJWT, mapController.searhPlace)
-app.post("/api/placeDetail", validateRequest.checkJWT, mapController.getPlaceDetail)
-app.post("/api/getDirections", validateRequest.checkJWT, mapController.getDirections)
+app.post("/api/placeSearch", validateRequest.checkJWT, mapSearchRules, validateRequest.validates, mapController.searhPlace)
+app.post("/api/placeDetail", validateRequest.checkJWT, mapDetailsRules, validateRequest.validates, mapController.getPlaceDetail)
+app.post("/api/getDirections", validateRequest.checkJWT, mapDerectionsRules, validateRequest.validates, mapController.getDirections)
 
 // Member
 app.post("/api/memberRegister",

@@ -36,13 +36,10 @@ const mapController = {
             photo_reference: photo.photo_reference,
             key: process.env.GOOGLEMAP_APIKEY
           }))
-          // images.push(getPhotoRes.data)
-          // console.log("getPhotoRes", images);
         })
 
         const results = await Promise.all(getImagePromises)
         results.forEach((result, idx) => {
-          // console.log("getImagePromises", result.request.res.responseUrl);
           images.push(result.request.res.responseUrl)
         })
 
