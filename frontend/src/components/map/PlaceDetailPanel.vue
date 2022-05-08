@@ -32,7 +32,7 @@ function triggerPanel(isOpen) {
       <button @click="triggerPanel(false)" class="border px-2 py-1 text-sm">X</button>
     </div>
     <div>
-      <img :src="placeDetail.photos[0]" alt="">
+      <img v-if="placeDetail.photos && placeDetail.photos.length > 0" :src="placeDetail.photos[0]" alt="">
     </div>
     <div>
       <div class="py-2">評價：{{ placeDetail.rating }} / 5</div>

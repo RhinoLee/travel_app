@@ -1,11 +1,14 @@
 import { defineStore } from "pinia"
-import { apiRegister, apiLogin, apiMemberInfo } from "@/utils/api/api"
+// import { apiRegister, apiLogin, apiMemberInfo, apiRefreshToken } from "@/utils/api/api"
 import { errorHandler } from "../utils/api/errorHandler"
 
 export const useMemberStore = defineStore("member", {
   state: () => {
     return {
       isLogin: false,
+      isRefreshing: false,
+      refreshedCall: [],
+      token: "",
       registerParams: {
         email: "",
         password: "",
@@ -26,16 +29,22 @@ export const useMemberStore = defineStore("member", {
   },
   actions: {
     async registerHandler() {
-      const result = await apiRegister(this.registerParams)
+      const result = await this.$axios.api.apiRegister(this.registerParams)
       if (result) return result.data.success
       return false
     },
     async loginHandler() {
-      const result = await apiLogin(this.loginParams)
+      const result = await this.$axios.api.apiLogin(this.loginParams)
+      this.loginParams.email = ""
+      this.loginParams.password = ""
+
       if (result && result.data.success) {
 
         const token = result.headers.authorization.split(" ")[1]
+        const refreshToken = result.data.refreshToken
         localStorage.setItem("token", token)
+        localStorage.setItem("refreshToken", refreshToken)
+        this.token = token
         this.isLogin = true
 
         return result.data.success
@@ -47,7 +56,7 @@ export const useMemberStore = defineStore("member", {
       if (!token) return false
 
       try {
-        const getMemberResult = await apiMemberInfo()
+        const getMemberResult = await this.$axios.api.apiMemberInfo()
         if (getMemberResult.data.success) {
           this.isLogin = true
           this.memberInfo = getMemberResult.data.memberInfo
@@ -55,12 +64,30 @@ export const useMemberStore = defineStore("member", {
 
         return getMemberResult.data.success
       } catch (err) {
-        errorHandler.catchError(err)
-        return false
+        Promise.reject(err)
       }
     },
+    async refreshTokenHandler() {
+      const refreshToken = localStorage.getItem("refreshToken")
+      if (!refreshToken) return Promise.reject(false)
+      // apiRefreshToken
+      const result = await this.$axios.api.apiRefreshToken(refreshToken)
+      if (result && result.data.success) {
+
+        const token = result.data.accessToken
+        const refreshToken = result.data.refreshToken
+        localStorage.setItem("token", token)
+        localStorage.setItem("refreshToken", refreshToken)
+        this.token = token
+        
+        return result
+      }
+      return Promise.reject(false)
+    },
     logoutHandler() {
+      console.log("logoutHandler");
       localStorage.removeItem("token")
+      localStorage.removeItem("refreshToken")
       this.isLogin = false
       this.memberInfo = {
         id: null,

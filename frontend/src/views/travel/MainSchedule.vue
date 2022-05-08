@@ -82,10 +82,11 @@ async function confirmdelete() {
   hideBox("deleteBox")
 }
 
-onMounted(() => {
+onMounted(async () => {
   travelStore.nowMainScheduleId = route.params.mainScheduleId
   travelStore.addScheDuleParams.main_schedule_id = route.params.mainScheduleId
-  travelStore.getMainSchedule()
+  const getMainResult = await travelStore.getMainSchedule()
+  // if (getMainResult) await travelStore.getSingleSchedule()
 })
 </script>
 
@@ -101,7 +102,7 @@ onMounted(() => {
           <!-- 天數列表 -->
           <ScheduleDates></ScheduleDates>
           <!-- 行程列表 -->
-          <ScheduleList :singleScheduleList="nowSelectSchedule.scheduleList"
+          <ScheduleList :singleScheduleList="nowSelectSchedule"
             @editLocateToSchedule="editLocateToSchedule" @deleteSingleSchedule="deleteSingleSchedule"></ScheduleList>
         </div>
       </div>
@@ -110,7 +111,7 @@ onMounted(() => {
       </PlaceDetailPanel>
       <!-- 地圖 -->
       <div class="w-[70%] h-screen">
-        <Map :scheduleList="nowSelectSchedule.scheduleList" :locationSearchList="locationSearchList"
+        <Map :scheduleList="nowSelectSchedule" :locationSearchList="locationSearchList"
           :placeDetail="placeDetail" :directions="directions"></Map>
       </div>
     </div>

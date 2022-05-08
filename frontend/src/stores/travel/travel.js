@@ -114,13 +114,13 @@ export const useTravelStore = defineStore('travel', {
     },
     // 總旅程裡的當日計畫列表
     nowSelectSchedule(state) {
-      let dailyPlan = { scheduleList: [] }
+      let list;
       if (state.nowSelectDate) {
-        dailyPlan.scheduleList = state.singleScheduleList.filter(plan => plan.date === state.nowSelectDate)
+        list = state.singleScheduleList.filter(plan => plan.date === state.nowSelectDate)
       } else {
-        dailyPlan.scheduleList = state.singleScheduleList
+        list = state.singleScheduleList
       }
-      return dailyPlan
+      return list
     },
     // 總旅程裡的當日計畫列表裡的特定計畫
     nowSelectSingleSchedule(state) {
@@ -189,8 +189,6 @@ export const useTravelStore = defineStore('travel', {
       try {
         const placeDetailRes = await this.$axios.api.apiGetPlaceDetail(params)
 
-        console.log("placeDetailRes result", placeDetailRes);
-
         if (placeDetailRes && placeDetailRes.data.success) {
           this.placeDetail = placeDetailRes.data.results
         } else {
@@ -198,7 +196,7 @@ export const useTravelStore = defineStore('travel', {
         }
       } catch (err) {
         this.placeDetail = {}
-        errorHandler.catchError(err)
+        Promise.reject(err)
       }
 
     },
@@ -216,7 +214,7 @@ export const useTravelStore = defineStore('travel', {
         this.locationSearchList = []
       } catch (error) {
         this.locationSearchList = []
-        errorHandler.catchError(error)
+        Promise.reject(err)
       }
     },
     async addMainSchedule() {
@@ -231,7 +229,7 @@ export const useTravelStore = defineStore('travel', {
         const result = await this.$axios.api.apiCreateMainSchedule(params)
 
       } catch (error) {
-        errorHandler.catchError(error)
+        Promise.reject(err)
       }
     },
     async getMainScheduleList() {
@@ -251,7 +249,7 @@ export const useTravelStore = defineStore('travel', {
 
         this.mainScheduleList = []
       } catch (error) {
-        errorHandler.catchError(error)
+        Promise.reject(err)
       }
     },
     async getMainSchedule() {
@@ -259,7 +257,6 @@ export const useTravelStore = defineStore('travel', {
         const result = await this.$axios.api.apiGetMainSchedule(this.nowMainScheduleId)
         if (result && result.data.success) {
           const { mainscheduleInfo } = result.data.results
-
           // 計算總天數
           mainscheduleInfo.daysList = dateHandler.toDaysList(mainscheduleInfo.start_date, mainscheduleInfo.end_date)
 
@@ -267,13 +264,14 @@ export const useTravelStore = defineStore('travel', {
 
           const singeScheduleResult = await this.getSingleSchedule()
 
-          return
+          return true
         }
 
         this.mainScheduleInfo = {}
-
+        return false
       } catch (error) {
-        errorHandler.catchError(error)
+        Promise.reject(err)
+        return true
       }
     },
     async addSingleSchedule() {
@@ -283,7 +281,7 @@ export const useTravelStore = defineStore('travel', {
 
         return result.data.success
       } catch (error) {
-        errorHandler.catchError(error)
+        Promise.reject(err)
         return false
       }
     },
@@ -318,7 +316,7 @@ export const useTravelStore = defineStore('travel', {
         this.singleScheduleList = mainList
         this.nowSelectDate = mainList[0].date // 預設選擇第一天日期
       } catch (error) {
-        errorHandler.catchError(error)
+        Promise.reject(err)
         return
       }
 
@@ -331,7 +329,7 @@ export const useTravelStore = defineStore('travel', {
           return true
         }
       } catch (error) {
-        errorHandler.catchError(error)
+        Promise.reject(err)
         return false
       }
     },
@@ -342,19 +340,18 @@ export const useTravelStore = defineStore('travel', {
       list.forEach(schedule => {
         const { id, title, date, start_time, end_time } = schedule
         const params = { id, title, date, start_time, end_time }
-        promiseArr.push(apiUpdateSingleSchedule(params))
+        promiseArr.push(this.$axios.api.apiUpdateSingleSchedule(params))
       })
 
       try {
         const result = await Promise.all(promiseArr)
-        console.log("promise all result", result);
         if (result) {
           const getResult = await this.getSingleSchedule()
           return true
         }
       } catch (error) {
-        errorHandler.catchError(error)
-        return false
+        Promise.reject(err)
+        // return false
       }
     },
     async deleteSingleSchedule() {
@@ -365,12 +362,12 @@ export const useTravelStore = defineStore('travel', {
           return true
         }
       } catch (error) {
-        errorHandler.catchError(error)
+        Promise.reject(err)
         return false
       }
     },
     async getDirections() {
-      const { scheduleList } = this.nowSelectSchedule.scheduleList[0]
+      const { scheduleList } = this.nowSelectSchedule[0]
       const origin = scheduleList[0].place_id
       const destination = scheduleList[scheduleList.length - 1].place_id
       const waypoints = []
@@ -384,8 +381,6 @@ export const useTravelStore = defineStore('travel', {
 
       try {
         const result = await this.$axios.api.apiGetDirections({ origin, destination, waypoints })
-
-        console.log("result", result);
         if (result.data.success) {
           this.directions.routesPolyline = result.data.results.routes[0].overview_polyline.points
           this.directions.routesBounds = result.data.results.routes[0].bounds
@@ -396,7 +391,7 @@ export const useTravelStore = defineStore('travel', {
         return result && result.data.success
       } catch (error) {
         this.directions.routesPolyline = ""
-        errorHandler.catchError(error)
+        Promise.reject(err)
         return false
       }
     }

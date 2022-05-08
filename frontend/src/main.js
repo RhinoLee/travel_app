@@ -13,8 +13,8 @@ const app = createApp(App)
 
 
 app.use(pinia)
-app.use(apiHandler, pinia)
 app.use(router)
+app.use(apiHandler, { pinia, router })
 
 app.mount('#app')
 

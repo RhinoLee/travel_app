@@ -1,31 +1,47 @@
 import { useCommonStore } from "@/stores/common"
+import { useMemberStore } from "@/stores/member"
+import { errorHandler } from "@/utils/api/errorHandler"
 import axios from "axios"
 export default {
-  install(app, pinia) {
+  install(app, { pinia, router }) {
+    console.log("install router", router);
     const commonStore = useCommonStore()
 
     const $axios = {
       addInterceptors: (axiosInstance) => {
-        axiosInstance.interceptors.request.use(function (config) {
+        axiosInstance.interceptors.request.use(config => {
           config.metadata = { startTime: new Date() }
           commonStore.isLoading = true
           return config;
-        }, function (error) {
+        }, error => {
           return Promise.reject(error);
         });
 
-        axiosInstance.interceptors.response.use(function (response) {
+        axiosInstance.interceptors.response.use(response => {
           response.config.metadata.endTime = new Date()
           response.responseTime = response.config.metadata.endTime - response.config.metadata.startTime
           commonStore.isLoading = false
 
           return response;
-        }, function (error) {
+        }, error => {
           error.config.metadata.endTime = new Date();
           error.responseTime = error.config.metadata.endTime - error.config.metadata.startTime;
           commonStore.isLoading = false
 
           return Promise.reject(error);
+        })
+
+        return axiosInstance
+      },
+      addErrorInterceptors: (axiosInstance) => {
+        axiosInstance.interceptors.response.use(response => response, async (error) => {
+          return errorHandler.catchError(error, axiosInstance, router)
+          .then((res) => {
+            return Promise.resolve(res)
+          })
+          .catch(err => {
+            return Promise.reject(err)
+          })
         })
 
         return axiosInstance
@@ -36,28 +52,32 @@ export default {
             baseURL: "https://maps.googleapis.com/maps/api/"
           })
 
-          addInterceptors(axiosInstance)
+          $axios.addInterceptors(axiosInstance)
+          $axios.addErrorInterceptors(axiosInstance)
           return axiosInstance
         },
         mapRequest2: () => {
           const axiosInstance = axios.create({
-            baseURL: "http://localhost:5003/api/"
+            baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/`
           })
 
           $axios.addInterceptors(axiosInstance)
+          $axios.addErrorInterceptors(axiosInstance)
           return axiosInstance
         },
         memberRequest: () => {
           const axiosInstance = axios.create({
-            baseURL: "http://localhost:5003/api/"
+            baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/`
           })
 
           $axios.addInterceptors(axiosInstance)
+          $axios.addErrorInterceptors(axiosInstance)
           return axiosInstance
         },
         scheduleRequest: () => {
-          const axiosInstance = axios.create({ baseURL: "http://localhost:5003/api/" })
+          const axiosInstance = axios.create({ baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/` })
           $axios.addInterceptors(axiosInstance)
+          $axios.addErrorInterceptors(axiosInstance)
           return axiosInstance
         }
       },
@@ -99,12 +119,16 @@ export default {
           return instance.post("/memberLogin", params)
         },
         apiMemberInfo: () => {
-          const instance = $axios.instances.memberRequest
+          const instance = $axios.instances.memberRequest()
           return instance.post("/memberInfo", null, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`
             }
           })
+        },
+        apiRefreshToken: (refreshToken) => {
+          const instance = $axios.instances.memberRequest()
+          return instance.post("/refreshToken", { refreshToken })
         },
         apiCreateMainSchedule: (params) => {
           const instance = $axios.instances.scheduleRequest()
@@ -147,6 +171,7 @@ export default {
           })
         },
         apiUpdateSingleSchedule: (params) => {
+          console.log("apiUpdateSingleSchedule");
           const instance = $axios.instances.scheduleRequest()
           return instance.patch(`/singleSchedule/${params.id}`, params, {
             headers: {

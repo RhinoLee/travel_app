@@ -41,9 +41,11 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
-  const memberStore = useMemberStore()
-  const result = await memberStore.getMemberInfo()
-  if (to.name !== "Login" && !result) return { name: "Login" }
+  if (to.name !== "Register") {
+    const memberStore = useMemberStore()
+    const result = await memberStore.getMemberInfo()
+    if (to.name !== "Login" && !result) return { name: "Login" }
+  }
 })
 
 export default router

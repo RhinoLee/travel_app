@@ -57,7 +57,7 @@ async function change({ moved }) {
 <template>
   <div>
     <!-- singleScheduleList -->
-    <div v-for="singleSchedule in nowSelectSchedule.scheduleList" :key="singleSchedule.date" class="py-[20px] text-white border-t">
+    <div v-for="singleSchedule in nowSelectSchedule" :key="singleSchedule.date" class="py-[20px] text-white border-t">
       <div class="font-bold text-lg">
         <span>日期：</span>
         <span>{{ singleSchedule.date }}</span>
