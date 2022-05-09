@@ -9,9 +9,8 @@ const { nowSelectDate, singleScheduleSelectList } = storeToRefs(travelStore)
   <!-- 天數列表 -->
   <select v-model="nowSelectDate" class="w-full py-1 px-2 outline-none">
     <option value="" disabled>旅程列表</option>
-    <!-- {{ schedule.day }} -->
-    <option v-for="(schedule, idx) in singleScheduleSelectList" :key="idx" :value="schedule.date">{{
-        schedule.date
-    }} </option>
+    <option v-for="(schedule, idx) in singleScheduleSelectList" :key="idx" :value="schedule.date">
+      {{ schedule.date }} ({{ schedule.day }})
+    </option>
   </select>
 </template>

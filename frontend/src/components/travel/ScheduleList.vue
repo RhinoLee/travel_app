@@ -59,8 +59,8 @@ async function change({ moved }) {
     <!-- singleScheduleList -->
     <div v-for="singleSchedule in nowSelectSchedule" :key="singleSchedule.date" class="py-[20px] text-white border-t">
       <div class="font-bold text-lg">
-        <span>日期：</span>
-        <span>{{ singleSchedule.date }}</span>
+        <!-- <span>日期：</span> -->
+        <span>{{ singleSchedule.date }} ({{ singleSchedule.day }})</span>
       </div>
 
       <draggable v-model="singleSchedule.scheduleList" 

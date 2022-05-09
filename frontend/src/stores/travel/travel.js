@@ -100,10 +100,10 @@ export const useTravelStore = defineStore('travel', {
       if (state.singleScheduleList) {
         state.singleScheduleList.forEach(schedule => {
           const date = schedule.date
-          // const day = dateHandler.getDayOfWeek(date)
+          const day = dateHandler.getDayOfWeek(date)
           const obj = {
             date,
-            // day
+            day
           }
 
           list.push(obj)
@@ -302,6 +302,7 @@ export const useTravelStore = defineStore('travel', {
 
             let obj2 = {}
             obj2.date = shedule.date
+            obj2.day = dateHandler.getDayOfWeek(shedule.date)
             obj2.scheduleList = []
             mainList.push(obj2)
           }
@@ -391,7 +392,6 @@ export const useTravelStore = defineStore('travel', {
         return result && result.data.success
       } catch (error) {
         this.directions.routesPolyline = ""
-        Promise.reject(err)
         return false
       }
     }
