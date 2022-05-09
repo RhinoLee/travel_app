@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
-
+const jwtHandler = require("../../utils/jwtHandler.js")
 const memberModel = require("../../model/member/memberModel")
 
 const memberController = {
@@ -51,7 +51,7 @@ const memberController = {
       return res.status(401).json(json)
     }
 
-    bcrypt.compare(req.body.password, findMemberResult.rows[0].password, (bcryptErr, bcryptRes) => {
+    bcrypt.compare(req.body.password, findMemberResult.rows[0].password, async (bcryptErr, bcryptRes) => {
       if (!bcryptRes) {
         json = {
           success: false,
@@ -66,25 +66,48 @@ const memberController = {
         email: findMemberResult.rows[0].email,
       }
 
-      jwt.sign(jwtData, process.env.JWT_KEY, { expiresIn: 60 * 60 * 24 }, function (jwtErr, jwtToken) {
-        if (!jwtToken) {
-          json = {
-            success: false,
-            error: jwtErr
-          }
-
-          return res.status(500).json(json)
-        }
-
+      try {
+        const accessToken = await jwtHandler.signAccessToken(jwtData)
+        const refreshToken = await jwtHandler.signRefreshToken(jwtData)
         json = {
           success: true,
+          refreshToken
         }
 
         res.setHeader("Access-Control-Expose-Headers", "Authorization")
-        res.setHeader('Authorization', 'Bearer ' + jwtToken);
+        res.setHeader('Authorization', 'Bearer ' + accessToken);
 
         return res.status(200).json(json)
-      });
+      } catch (error) {
+        json = {
+          success: false,
+          error: error
+        }
+
+        return res.status(500).json(json)
+      }
+
+      // jwt.sign(jwtData, process.env.JWT_KEY, { expiresIn: 60 * 60 * 24 }, function (jwtErr, jwtToken) {
+      //   if (!jwtToken) {
+      //     json = {
+      //       success: false,
+      //       error: jwtErr
+      //     }
+
+      //     return res.status(500).json(json)
+      //   }
+
+      //   json = {
+      //     success: true,
+      //   }
+
+      //   res.setHeader("Access-Control-Expose-Headers", "Authorization")
+      //   res.setHeader('Authorization', 'Bearer ' + jwtToken);
+
+      //   return res.status(200).json(json)
+      // });
+
+
     })
   },
   getMemberInfo: async (req, res) => {
@@ -118,6 +141,28 @@ const memberController = {
       return res.status(500).json(json)
     }
 
+  },
+  refreshToken: async (req, res) => {
+    let json;
+    try {
+      const refreshToken = req.body.refreshToken
+      const { id, email } = await jwtHandler.verifyRefreshToken(refreshToken)
+      const accessToken = await jwtHandler.signAccessToken({ id, email })
+      const refToken = await jwtHandler.signRefreshToken({ id, email })
+
+      json = {
+        success: true,
+        accessToken,
+        refreshToken: refToken
+      }
+      return res.status(200).json(json)
+    } catch (error) {
+      json = {
+        success: false,
+        error
+      }
+      return res.status(401).json(json)
+    }
   }
 }
 

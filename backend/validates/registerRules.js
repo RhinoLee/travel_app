@@ -29,13 +29,3 @@ const registerRules = [
 ]
 
 module.exports = registerRules
-
-// const result = await memberModel.findMemberByEmail(req.body.email) 
-//     if (result && result.rows.length >= 1) {
-//       json = {
-//         success: false,
-//         errMsg: "email 已存在"
-//       }
-
-//       return res.status(409).json(json)
-//     }

@@ -9,19 +9,19 @@ const validateRequest = {
     }
     next()
   },
-  checkJWT: (req, res, next) => {
-    try {
-      const token = req.headers.authorization.split(" ")[1];
-      const jwtData = jwt.verify(token, process.env.JWT_KEY)
-      req.jwtData = jwtData
-      next()
-    } catch (error) {
-      return res.status(401).json({
-        success: false,
-        message: "token 認證失敗",
-      })
-    }
-  },
+  // checkJWT: (req, res, next) => {
+  //   try {
+  //     const token = req.headers.authorization.split(" ")[1];
+  //     const jwtData = jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY)
+  //     req.jwtData = jwtData
+  //     next()
+  //   } catch (error) {
+  //     return res.status(401).json({
+  //       success: false,
+  //       message: error,
+  //     })
+  //   }
+  // },
   geographyFormat: (req, res, next) => {
     // req.location: {lat: 22.7652114, lng: 121.1647656}
     // 'POINT(-118.4079 33.9434)'
