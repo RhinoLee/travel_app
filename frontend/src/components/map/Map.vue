@@ -23,13 +23,19 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits([
+  "closePanel"
+])
+
 const map = reactive({ data: null })
-const mapDefaultCenter = { lat: 23.97565, lng: 120.9738819 }
+const taiwanCenter = { lat: 23.97565, lng: 120.9738819 }
 const mapDefaultZoom = 8
-const markerGroup = {
+
+const markerGroup = { // 分類 marker 圖層
   schedule: [],
   search: []
 }
+// 導航路線
 const pathList = []
 
 // 偵測目前選擇的計畫，計畫變更地圖需重新插點
@@ -47,6 +53,7 @@ watch(
   () => props.locationSearchList,
   (newVal) => {
     removeAllMarkers("search")
+    emit("closePanel")
     renderSearchLocation()
   }
 )
@@ -57,10 +64,9 @@ watch(
   (newVal) => {
     if (!newVal) {
       clearMarkersAnitmation()
-      setZoom(mapDefaultZoom, mapDefaultCenter)
       return
     }
-    markerTirigger(newVal.place_id)
+    scheduleMarkerTirigger(newVal.place_id)
   }
 )
 
@@ -68,7 +74,6 @@ watch(
 watch(
   () => props.directions,
   (newObj) => {
-    console.log("newObj", newObj);
     removeRoutesPolyLine()
     if (!newObj) return
     addRoutesPolyLine(newObj.routesPolyline, newObj.routesBounds)
@@ -78,42 +83,43 @@ watch(
 
 function initMap() {
   map.data = new google.maps.Map(document.getElementById("map"), {
-    center: mapDefaultCenter,
+    center: taiwanCenter,
     zoom: mapDefaultZoom,
   });
 }
 
-function setZoom(zoom, postion=null, bounds=null) {
+function setZoom(zoom, postion = null, bounds = null) {
   if (bounds) return map.data.fitBounds(bounds);
   map.data.setZoom(zoom);
   if (postion) return map.data.panTo(postion);
 }
 
 // Marker Animation
-function toggleBounce(marker) {
-  if (marker.getAnimation() !== null) {
-    marker.setAnimation(null);
-  } else {
-    marker.setAnimation(google.maps.Animation.BOUNCE);
+function clearMarkersAnitmation(group = null) {
+  if (group) {
+    Object.keys(markerGroup).forEach(key => {
+      markerGroup[group].forEach(marker => {
+        marker.setAnimation(null);
+      })
+    })
+    return
+  }
+
+  if (!group) {
+    Object.keys(markerGroup).forEach(key => {
+      markerGroup[key].forEach(marker => {
+        marker.setAnimation(null);
+      })
+    })
   }
 }
 
-function clearMarkersAnitmation() {
-  Object.keys(markerGroup).forEach(key => {
-    markerGroup[key].forEach(marker => {
-      marker.setAnimation(null);
-    })
-  })
-}
-
-function markerTirigger(place_id) {
-  markerGroup.schedule.forEach(marker => {
-    if (marker.placeId === place_id) {
-      clearMarkersAnitmation()
-      marker.setAnimation(google.maps.Animation.BOUNCE);
-      setZoom(13, marker.position)
-    }
-  })
+function scheduleMarkerTirigger(place_id) {
+  const marker = markerGroup.schedule.filter(marker => marker.placeId === place_id)[0]
+  clearMarkersAnitmation("schedule")
+  if (!marker) return
+  marker.setAnimation(google.maps.Animation.BOUNCE);
+  setZoom(13, marker.position)
 }
 
 // 設定點位
@@ -131,7 +137,8 @@ function setMarker({ location, placeId, icon, title, label, group, animation }) 
   // add click event for get location detail
   marker.addListener("click", async (e) => {
     clearMarkersAnitmation()
-    toggleBounce(marker)
+    // toggleBounce(marker)
+    marker.setAnimation(google.maps.Animation.BOUNCE);
     setZoom(13, marker.position)
     const res = await travelStore.getLocationInfo(marker.placeId)
   })
@@ -157,7 +164,7 @@ function setMarkerToMap(map, group) {
     })
   })
 }
-// 移除所有點位
+// 移除點位
 function removeAllMarkers(group) {
   setMarkerToMap(null, group)
   if (group) return markerGroup[group] = []
@@ -195,7 +202,7 @@ function renderSearchLocation() {
       location: item.geometry.location,
       placeId: item.place_id,
       icon: `http://www.google.com/mapfiles/marker.png`,
-      title: "2",
+      // title: "2",
       group: "search",
       animation: google.maps.Animation.DROP,
     })
@@ -203,7 +210,7 @@ function renderSearchLocation() {
   })
 
   setMarkerToMap(map.data, "search")
-  setZoom(mapDefaultZoom, mapDefaultCenter)
+  setZoom(mapDefaultZoom, taiwanCenter)
 }
 
 // 設定導航路線

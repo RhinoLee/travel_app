@@ -27,7 +27,7 @@ function openBox(boxname) {
 
 function closePanel() {
   travelStore.placeDetail = null
-  travelStore.nowSingleScheduleId = null
+  // travelStore.nowSingleScheduleId = null
 }
 
 async function searchTextHandler(searchText) {
@@ -112,7 +112,7 @@ onMounted(async () => {
       <!-- 地圖 -->
       <div class="w-[70%] h-screen">
         <Map :scheduleList="nowSelectSchedule" :locationSearchList="locationSearchList"
-          :placeDetail="placeDetail" :directions="directions"></Map>
+          :placeDetail="placeDetail" :directions="directions" @closePanel="closePanel"></Map>
       </div>
     </div>
 

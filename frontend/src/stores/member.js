@@ -8,7 +8,6 @@ export const useMemberStore = defineStore("member", {
       isLogin: false,
       isRefreshing: false,
       refreshedCall: [],
-      token: "",
       registerParams: {
         email: "",
         password: "",
@@ -64,7 +63,7 @@ export const useMemberStore = defineStore("member", {
 
         return getMemberResult.data.success
       } catch (err) {
-        Promise.reject(err)
+        return false
       }
     },
     async refreshTokenHandler() {
@@ -78,9 +77,8 @@ export const useMemberStore = defineStore("member", {
         const refreshToken = result.data.refreshToken
         localStorage.setItem("token", token)
         localStorage.setItem("refreshToken", refreshToken)
-        this.token = token
         
-        return result
+        return Promise.resolve(result)
       }
       return Promise.reject(false)
     },

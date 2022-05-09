@@ -11,6 +11,7 @@ const errorHandler = {
           {
             try {
               const result = await errorHandler.handle401(error, axiosInstance, router)
+              console.log("handle 401 result", result);
               return resolve(result)
             } catch (error) {
               return reject(error)
@@ -38,7 +39,7 @@ const errorHandler = {
     const { config, response: { status } } = error;
     const originalRequest = config;
 
-    if(config.url === "/refreshToken") {
+    if (config.url === "/refreshToken") {
       memberStore.logoutHandler()
       router.push({ name: "Login" })
       return Promise.reject(error)
@@ -46,6 +47,7 @@ const errorHandler = {
 
     if (!memberStore.isRefreshing) {
       memberStore.isRefreshing = true
+
       memberStore.refreshTokenHandler()
         .then(res => {
           const newToken = res.data.accessToken
