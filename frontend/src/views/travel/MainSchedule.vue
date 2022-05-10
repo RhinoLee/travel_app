@@ -50,6 +50,10 @@ function addLocateToSchedule() {
   openBox("createBox")
 }
 
+async function addPlaceCollection() {
+  const result = await travelStore.addPlaceCollection()
+}
+
 function editLocateToSchedule() {
   travelStore.setEditScheduleParams()
   openBox("editBox")
@@ -107,7 +111,7 @@ onMounted(async () => {
         </div>
       </div>
       <!-- 詳細資訊面板 -->
-      <PlaceDetailPanel :placeDetail="placeDetail" @addLocateToSchedule="addLocateToSchedule" @closePanel="closePanel">
+      <PlaceDetailPanel :placeDetail="placeDetail" @addLocateToSchedule="addLocateToSchedule" @addPlaceCollection="addPlaceCollection" @closePanel="closePanel">
       </PlaceDetailPanel>
       <!-- 地圖 -->
       <div class="w-[70%] h-screen">

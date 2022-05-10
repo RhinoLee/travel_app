@@ -79,7 +79,13 @@ export default {
           $axios.addInterceptors(axiosInstance)
           $axios.addErrorInterceptors(axiosInstance)
           return axiosInstance
-        }
+        },
+        placeCollectionRequest: () => {
+          const axiosInstance = axios.create({ baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/placeCollection` })
+          $axios.addInterceptors(axiosInstance)
+          $axios.addErrorInterceptors(axiosInstance)
+          return axiosInstance
+        },
       },
       api: {
         apiGetPlaceId: ({ lat, lng }) => {
@@ -183,6 +189,14 @@ export default {
         apiDeleteSingleSchedule: (id) => {
           const instance = $axios.instances.scheduleRequest()
           return instance.delete(`/singleSchedule/${id}`, {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+          })
+        },
+        apiAddPlaceCollection: (params) => {
+          const instance = $axios.instances.placeCollectionRequest()
+          return instance.post("", params, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`
             }

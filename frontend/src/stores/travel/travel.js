@@ -135,6 +135,14 @@ export const useTravelStore = defineStore('travel', {
       const memberStore = useMemberStore()
       return memberStore.memberInfo.id
     },
+    addPlaceCollectionParams(state) {
+      if (!state.placeDetail) return null
+      return {
+        place_id: state.placeDetail.place_id,
+        place_name: state.placeDetail.name,
+        location: state.placeDetail.location,
+      }
+    }
   },
   actions: {
     setEditScheduleParams() {
@@ -388,10 +396,18 @@ export const useTravelStore = defineStore('travel', {
         } else {
           this.directions.routesPolyline = ""
         }
-        
+
         return result && result.data.success
       } catch (error) {
         this.directions.routesPolyline = ""
+        return false
+      }
+    },
+    async addPlaceCollection() {
+      try {
+        const result = await this.$axios.api.apiAddPlaceCollection(this.addPlaceCollectionParams)
+        return result.data.success
+      } catch (error) {
         return false
       }
     }
