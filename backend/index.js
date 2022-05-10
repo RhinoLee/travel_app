@@ -19,6 +19,7 @@ const singleScheduleUpdateRules = require("./validates/singleScheduleUpdateRules
 const mapDerectionsRules = require("./validates/mapDirectionsRules")
 const mapSearchRules = require("./validates/mapSearchRules")
 const mapDetailsRules = require("./validates/mapDetailsRules")
+const placeCollectionCreateRules = require("./validates/placeCollectionCreateRules")
 
 
 // controller
@@ -26,6 +27,7 @@ const mapController = require("./controller/map/mapController")
 const memberController = require("./controller/member/memberController")
 const mainScheduleController = require("./controller/mainScheduleController")
 const singleScheduleController = require("./controller/singleScheduleController")
+const placeCollectionController = require("./controller/placeCollectionController")
 
 const corsOptions = {
   origin: process.env.CLIENT_ORIGIN,
@@ -82,6 +84,14 @@ app.get("/api/mainSchedules", jwtHandler.verifyAccessToken, mainScheduleControll
 app.get("/api/mainSchedule/:id", jwtHandler.verifyAccessToken, mainScheduleController.getSchedule)
 app.get("/api/mainSchedule/:id/singleSchedules", jwtHandler.verifyAccessToken, singleScheduleController.getAllSchedules)
 
+// place_collection
+app.post("/api/placeCollection", 
+  jwtHandler.verifyAccessToken,
+  placeCollectionCreateRules,
+  validateRequest.validates,
+  validateRequest.geographyFormat,
+  placeCollectionController.create
+)
 
 app.listen(port, () => {
   db.connect();
