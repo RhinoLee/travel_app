@@ -1,9 +1,6 @@
 import { defineStore } from "pinia"
-// import { $axios } from '@/main'
 import { useMemberStore } from "../member"
-import { apiGetPlaceId, apiGetPlaceDetail, apiPlaceSearch, apiCreateMainSchedule, apiGetMainSchedule, apiGetAllMainSchedules, apiCreateSingleSchedule, apiGetSingleSchedule, apiUpdateSingleSchedule, apiDeleteSingleSchedule } from "@/utils/api/api"
 import { dateHandler } from "@/utils/dateTransform"
-import { errorHandler } from "../../utils/api/errorHandler"
 
 export const useTravelStore = defineStore('travel', {
   state: () => {
@@ -81,12 +78,14 @@ export const useTravelStore = defineStore('travel', {
       nowSingleScheduleDate: "",
       // 目前選取到地點的相關資訊
       placeDetail: null,
+      // 目前收藏的地點
+      placeCollections: [],
       // 導航路線
       directions: {
         routesPolyline: "",
         routesBounds: "",
       },
-      routesPolyline: ""
+      // routesPolyline: ""
     }
   },
   getters: {
@@ -112,7 +111,7 @@ export const useTravelStore = defineStore('travel', {
 
       return list
     },
-    // 總旅程裡的當日計畫列表
+    // 被選到的的當日計畫列表（依日期）
     nowSelectSchedule(state) {
       let list;
       if (state.nowSelectDate) {
@@ -122,7 +121,21 @@ export const useTravelStore = defineStore('travel', {
       }
       return list
     },
-    // 總旅程裡的當日計畫列表裡的特定計畫
+    // 收藏地點列表（去除跟計劃點位重複的地點）
+    placeCollectionsList(state) {
+      if (!state.nowSelectSchedule[0]) return []
+      const nowSelectScheduleList = state.nowSelectSchedule[0].scheduleList
+      if (nowSelectScheduleList.length === 0) return state.placeCollections
+
+      let placeCollections = JSON.parse(JSON.stringify(state.placeCollections))
+      nowSelectScheduleList.forEach(item => {
+        const removeIdx = placeCollections.findIndex(place => place.place_id === item.place_id)
+        if (removeIdx >= 0) placeCollections.splice(removeIdx, 1)
+      })
+
+      return placeCollections
+    },
+    // 被選到的單一計畫資訊
     nowSelectSingleSchedule(state) {
       let scheduleInfo = null
       if (Number.isInteger(state.nowSingleScheduleId) && state.nowSingleScheduleDate) {
@@ -142,6 +155,16 @@ export const useTravelStore = defineStore('travel', {
         place_name: state.placeDetail.name,
         location: state.placeDetail.location,
       }
+    },
+    placeInfoComputed(state) {
+      if (!state.placeDetail || !state.placeDetail.place_id) return state.placeDetail
+      // 比對收藏列表，新增 isCollect, collectId 欄位
+      const placeDetail = JSON.parse(JSON.stringify(state.placeDetail))
+      const index = state.placeCollections.findIndex(place => place.place_id === placeDetail.place_id)
+      placeDetail.isCollect = index >= 0
+      placeDetail.collectId = index >= 0 ? state.placeCollections[index].id : null
+
+      return placeDetail
     }
   },
   actions: {
@@ -204,7 +227,7 @@ export const useTravelStore = defineStore('travel', {
         }
       } catch (err) {
         this.placeDetail = {}
-        Promise.reject(err)
+        return false
       }
 
     },
@@ -222,9 +245,10 @@ export const useTravelStore = defineStore('travel', {
         this.locationSearchList = []
       } catch (error) {
         this.locationSearchList = []
-        Promise.reject(err)
+        return false
       }
     },
+    // Schedule API
     async addMainSchedule() {
       try {
         const params = {
@@ -237,7 +261,7 @@ export const useTravelStore = defineStore('travel', {
         const result = await this.$axios.api.apiCreateMainSchedule(params)
 
       } catch (error) {
-        Promise.reject(err)
+        return false
       }
     },
     async getMainScheduleList() {
@@ -257,7 +281,7 @@ export const useTravelStore = defineStore('travel', {
 
         this.mainScheduleList = []
       } catch (error) {
-        Promise.reject(err)
+        return false
       }
     },
     async getMainSchedule() {
@@ -278,8 +302,7 @@ export const useTravelStore = defineStore('travel', {
         this.mainScheduleInfo = {}
         return false
       } catch (error) {
-        Promise.reject(err)
-        return true
+        return false
       }
     },
     async addSingleSchedule() {
@@ -289,7 +312,6 @@ export const useTravelStore = defineStore('travel', {
 
         return result.data.success
       } catch (error) {
-        Promise.reject(err)
         return false
       }
     },
@@ -304,7 +326,11 @@ export const useTravelStore = defineStore('travel', {
         const mainList = []
         const obj = {}
         sheduleList.forEach(shedule => {
+          // 跟收藏列表比對，新增 isCollect 欄位
+          const index = this.placeCollections.findIndex(place => place.place_id === shedule.place_id)
+          shedule.isCollect = index >= 0
 
+          // 做成列表所需格式
           if (!obj[shedule.date]) {
             obj[shedule.date] = {}
 
@@ -325,8 +351,7 @@ export const useTravelStore = defineStore('travel', {
         this.singleScheduleList = mainList
         this.nowSelectDate = mainList[0].date // 預設選擇第一天日期
       } catch (error) {
-        Promise.reject(err)
-        return
+        return false
       }
 
     },
@@ -338,7 +363,6 @@ export const useTravelStore = defineStore('travel', {
           return true
         }
       } catch (error) {
-        Promise.reject(err)
         return false
       }
     },
@@ -359,8 +383,7 @@ export const useTravelStore = defineStore('travel', {
           return true
         }
       } catch (error) {
-        Promise.reject(err)
-        // return false
+        return false
       }
     },
     async deleteSingleSchedule() {
@@ -371,10 +394,10 @@ export const useTravelStore = defineStore('travel', {
           return true
         }
       } catch (error) {
-        Promise.reject(err)
         return false
       }
     },
+    // 路徑 API
     async getDirections() {
       const { scheduleList } = this.nowSelectSchedule[0]
       const origin = scheduleList[0].place_id
@@ -403,9 +426,33 @@ export const useTravelStore = defineStore('travel', {
         return false
       }
     },
+    // 收藏地點 API
     async addPlaceCollection() {
       try {
         const result = await this.$axios.api.apiAddPlaceCollection(this.addPlaceCollectionParams)
+        this.getPlaceCollections()
+        return result.data.success
+      } catch (error) {
+        return false
+      }
+    },
+    async getPlaceCollections() {
+      try {
+        const result = await this.$axios.api.apiGetPlaceCollections()
+        if (result.data.success) {
+          this.placeCollections = result.data.results.placeCollections
+        }
+        return result.data.success
+      } catch (error) {
+        return false
+      }
+    },
+    async removePlaceCollection(collectId) {
+      try {
+        const result = await this.$axios.api.apiDeleteCollections(collectId)
+        if (result.data.success) {
+          this.getPlaceCollections()
+        }
         return result.data.success
       } catch (error) {
         return false

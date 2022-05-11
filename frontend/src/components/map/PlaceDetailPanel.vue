@@ -13,7 +13,7 @@ watch(
   }
 )
 const isPanelOpen = ref(false)
-const emit = defineEmits(["addLocateToSchedule", "closePanel", "addPlaceCollection"])
+const emit = defineEmits(["addLocateToSchedule", "closePanel", "addPlaceCollection", "removePlaceCollection"])
 
 function addLocateToSchedule() {
   emit("addLocateToSchedule")
@@ -21,6 +21,11 @@ function addLocateToSchedule() {
 
 function addPlaceCollection() {
   emit("addPlaceCollection")
+}
+
+function removePlaceCollection(collectId) {
+  emit("removePlaceCollection", collectId)
+  triggerPanel(false)
 }
 
 function triggerPanel(isOpen) {
@@ -53,7 +58,8 @@ function triggerPanel(isOpen) {
 
       <div>
         <button @click="addLocateToSchedule" class="border px-4 py-2 ml-2">加入行程</button>
-        <button @click="addPlaceCollection" class="border px-4 py-2 ml-2">加入收藏</button>
+        <button v-if="!placeDetail.isCollect" @click="addPlaceCollection" class="border px-4 py-2 ml-2">加入收藏</button>
+        <button v-if="placeDetail.isCollect" @click="removePlaceCollection(placeDetail.collectId)" class="border px-4 py-2 ml-2">移除收藏</button>
       </div>
     </div>
 

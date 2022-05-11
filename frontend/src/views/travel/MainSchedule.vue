@@ -12,7 +12,7 @@ import LightBox from "@/components/common/LightBox.vue"
 import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
 
 const travelStore = useTravelStore()
-const { nowMainScheduleId, mainScheduleInfo, addScheDuleParams, editScheDuleParams, locationSearchList, nowSelectSchedule, placeDetail, nowSelectSingleSchedule, directions } = storeToRefs(travelStore)
+const { nowMainScheduleId, mainScheduleInfo, addScheDuleParams, editScheDuleParams, locationSearchList, nowSelectSchedule, nowSelectSingleSchedule, directions, placeCollectionsList, placeInfoComputed } = storeToRefs(travelStore)
 
 const route = useRoute()
 const lightbox = reactive({ createBox: false, editBox: false, deleteBox: false })
@@ -27,7 +27,7 @@ function openBox(boxname) {
 
 function closePanel() {
   travelStore.placeDetail = null
-  // travelStore.nowSingleScheduleId = null
+  travelStore.nowSingleScheduleId = null
 }
 
 async function searchTextHandler(searchText) {
@@ -54,6 +54,10 @@ async function addPlaceCollection() {
   const result = await travelStore.addPlaceCollection()
 }
 
+async function removePlaceCollection(collectId) {
+  const result = await travelStore.removePlaceCollection(collectId)
+}
+
 function editLocateToSchedule() {
   travelStore.setEditScheduleParams()
   openBox("editBox")
@@ -72,7 +76,6 @@ async function updateSingleSchedule() {
   const result = await travelStore.updateSingleSchedule()
   if (result) {
     // get all single schedules under now main schedule
-    // await travelStore.updateSingleSchedule()
     hideBox("editBox")
   }
 }
@@ -89,8 +92,8 @@ async function confirmdelete() {
 onMounted(async () => {
   travelStore.nowMainScheduleId = route.params.mainScheduleId
   travelStore.addScheDuleParams.main_schedule_id = route.params.mainScheduleId
+  const getPlaceCollectionsResult =  await travelStore.getPlaceCollections()
   const getMainResult = await travelStore.getMainSchedule()
-  // if (getMainResult) await travelStore.getSingleSchedule()
 })
 </script>
 
@@ -106,17 +109,27 @@ onMounted(async () => {
           <!-- 天數列表 -->
           <ScheduleDates></ScheduleDates>
           <!-- 行程列表 -->
-          <ScheduleList :singleScheduleList="nowSelectSchedule"
-            @editLocateToSchedule="editLocateToSchedule" @deleteSingleSchedule="deleteSingleSchedule"></ScheduleList>
+          <!-- :singleScheduleList="nowSelectSchedule" -->
+          <ScheduleList 
+            @editLocateToSchedule="editLocateToSchedule" 
+            @deleteSingleSchedule="deleteSingleSchedule"
+          >
+          </ScheduleList>
         </div>
       </div>
       <!-- 詳細資訊面板 -->
-      <PlaceDetailPanel :placeDetail="placeDetail" @addLocateToSchedule="addLocateToSchedule" @addPlaceCollection="addPlaceCollection" @closePanel="closePanel">
+      <PlaceDetailPanel 
+        :placeDetail="placeInfoComputed"
+        @addLocateToSchedule="addLocateToSchedule" 
+        @addPlaceCollection="addPlaceCollection" 
+        @removePlaceCollection="removePlaceCollection" 
+        @closePanel="closePanel"
+      >
       </PlaceDetailPanel>
       <!-- 地圖 -->
       <div class="w-[70%] h-screen">
         <Map :scheduleList="nowSelectSchedule" :locationSearchList="locationSearchList"
-          :placeDetail="placeDetail" :directions="directions" @closePanel="closePanel"></Map>
+          :placeDetail="placeInfoComputed" :directions="directions" @closePanel="closePanel" :placeCollectionsList="placeCollectionsList"></Map>
       </div>
     </div>
 
@@ -176,7 +189,6 @@ onMounted(async () => {
             :startTime="[{ hours: nowSelectSingleSchedule.start_time.split(':')[0], minutes: nowSelectSingleSchedule.start_time.split(':')[1] },
             { hours: nowSelectSingleSchedule.end_time.split(':')[0], minutes: nowSelectSingleSchedule.end_time.split(':')[1] }]">
           </DatePickerWrap>
-          <!-- <DatePickerWrap @updateTime="(...args) => updateTime(['editScheDuleParams', ...args])" :timePicker="true"></DatePickerWrap> -->
         </div>
         <div class="mb-3">
           <div>地點</div>

@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, reactive, watch } from "vue";
 import { useTravelStore } from "@/stores/travel/travel"
-import robotImage from "@/assets/images/png/robot.png"
+// import robotImage from "@/assets/images/png/robot.png"
 
 const travelStore = useTravelStore()
 
@@ -20,7 +20,11 @@ const props = defineProps({
   },
   directions: {
     type: Object,
-  }
+  },
+  placeCollectionsList: {
+    type: Array,
+    default: () => ([])
+  },
 })
 
 const emit = defineEmits([
@@ -33,7 +37,8 @@ const mapDefaultZoom = 8
 
 const markerGroup = { // 分類 marker 圖層
   schedule: [],
-  search: []
+  search: [],
+  collect: [],
 }
 // 導航路線
 const pathList = []
@@ -58,16 +63,23 @@ watch(
   }
 )
 
+// 偵測收藏地點
+watch(
+  () => props.placeCollectionsList,
+  (newObj) => {
+    if (!newObj) return
+    renderPlaceCollections()
+  }
+)
+
 // 偵測 user 點擊左側行程 -> 找出對應點位
 watch(
   () => props.placeDetail,
   (newVal) => {
-    if (!newVal) {
-      clearMarkersAnitmation()
-      return
-    }
+    clearMarkersAnitmation()
+    if (!newVal) return
     scheduleMarkerTirigger(newVal.place_id)
-  }
+  },
 )
 
 // 偵測路線變化
@@ -116,30 +128,30 @@ function clearMarkersAnitmation(group = null) {
 
 function scheduleMarkerTirigger(place_id) {
   const marker = markerGroup.schedule.filter(marker => marker.placeId === place_id)[0]
-  clearMarkersAnitmation("schedule")
+  // clearMarkersAnitmation("schedule")
   if (!marker) return
   marker.setAnimation(google.maps.Animation.BOUNCE);
   setZoom(13, marker.position)
 }
 
 // 設定點位
-function setMarker({ location, placeId, icon, title, label, group, animation }) {
+function setMarker({ location, placeId, icon, title, label, group, animation, scheduleId=null }) {
   // create marker
   const marker = new google.maps.Marker({
     position: location,
-    placeId,
     icon,
     label,
     title,
-    animation
+    animation,
   });
   marker.placeId = placeId
+  marker.scheduleId = scheduleId
   // add click event for get location detail
   marker.addListener("click", async (e) => {
     clearMarkersAnitmation()
-    // toggleBounce(marker)
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setZoom(13, marker.position)
+    if (marker.scheduleId !== null) travelStore.nowSingleScheduleId = marker.scheduleId
     const res = await travelStore.getLocationInfo(marker.placeId)
   })
 
@@ -177,8 +189,8 @@ function removeAllMarkers(group) {
 
 // 把目前計畫中的點設定到地圖上
 function renderScheduleLocation() {
+  const group = "schedule"
   props.scheduleList.forEach(item => {
-    console.log("item", item);
     item.scheduleList.forEach((schedule, idx) => {
       setMarker({
         location: { lat: schedule.lat, lng: schedule.lng },
@@ -186,30 +198,49 @@ function renderScheduleLocation() {
         // icon: "",
         // title: `${idx}`,
         label: `${idx + 1}`,
-        group: "schedule",
+        group,
         animation: google.maps.Animation.DROP,
+        scheduleId: schedule.id
       })
     })
   })
 
-  setMarkerToMap(map.data, "schedule")
+  setMarkerToMap(map.data, group)
 }
 
 // 把搜尋結果設定到地圖上
 function renderSearchLocation() {
+  const group = "search"
   props.locationSearchList.forEach(item => {
     setMarker({
       location: item.geometry.location,
       placeId: item.place_id,
       icon: `http://www.google.com/mapfiles/marker.png`,
-      // title: "2",
-      group: "search",
+      group,
       animation: google.maps.Animation.DROP,
     })
 
   })
 
-  setMarkerToMap(map.data, "search")
+  setMarkerToMap(map.data, group)
+  setZoom(mapDefaultZoom, taiwanCenter)
+}
+
+// 把收藏地點設定到地圖上
+function renderPlaceCollections() {
+  const group = "collect"
+  props.placeCollectionsList.forEach(place => {
+    setMarker({
+      location: { lat: place.lat, lng: place.lng },
+      placeId: place.place_id,
+      icon: `http://www.google.com/mapfiles/marker.png`,
+      group,
+      animation: google.maps.Animation.DROP,
+    })
+
+  })
+
+  setMarkerToMap(map.data, group)
   setZoom(mapDefaultZoom, taiwanCenter)
 }
 

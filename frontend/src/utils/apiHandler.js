@@ -202,6 +202,22 @@ export default {
             }
           })
         },
+        apiGetPlaceCollections: () => {
+          const instance = $axios.instances.placeCollectionRequest()
+          return instance.get("", {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+          })
+        },
+        apiDeleteCollections: (collectId) => {
+          const instance = $axios.instances.placeCollectionRequest()
+          return instance.delete(`/${collectId}`, {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+          })
+        },
       }
     }
 
@@ -209,7 +225,6 @@ export default {
       return { $axios }
     }
 
-    // app.config.globalProperties.$axios = $axios
     pinia.use(axiosHandler)
   },
 }

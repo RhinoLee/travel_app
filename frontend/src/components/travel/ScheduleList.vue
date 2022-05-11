@@ -8,7 +8,7 @@ import draggable from 'vuedraggable'
 const emit = defineEmits(["editLocateToSchedule"])
 
 const travelStore = useTravelStore()
-const { nowSingleScheduleId, nowSelectSingleSchedule, singleScheduleList, nowSelectSchedule } = storeToRefs(travelStore)
+const { nowSingleScheduleId, singleScheduleList, nowSelectSchedule } = storeToRefs(travelStore)
 const dragOptions = {
   animation: 200,
   disabled: false,
