@@ -93,6 +93,9 @@ app.post("/api/placeCollection",
   placeCollectionController.create
 )
 
+app.get("/api/placeCollection", jwtHandler.verifyAccessToken, placeCollectionController.getAll)
+app.delete("/api/placeCollection/:id", jwtHandler.verifyAccessToken, placeCollectionController.delete)
+
 app.listen(port, () => {
   db.connect();
   console.log(`Example app listening on port ${port}`);

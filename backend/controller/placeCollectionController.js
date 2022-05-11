@@ -19,6 +19,36 @@ const placeCollectionController = {
       return responseHandler.catchErr(res, error)
     }
   },
+  getAll: async (req, res) => {
+    try {
+      const member_id = req.jwtData.id
+      const result = await placeCollectionModel.getAll(member_id)
+      if (result && result.rows.length >= 0) {
+        return responseHandler.success(res, { placeCollections: result.rows })
+      }
+
+      responseHandler.responseErr(res, "取得資料失敗")
+
+    } catch (error) {
+      return responseHandler.catchErr(res, error)
+    }
+  },
+  delete: async (req, res) => {
+    try {
+      const member_id = req.jwtData.id
+      const id = req.params.id 
+      const result = await placeCollectionModel.delete({ member_id, id })
+      console.log("placeCollectionController.delete result", result);
+      if (result && result.rows.length === 1) {
+        return responseHandler.success(res, result.rows[0])
+      }
+
+      responseHandler.responseErr(res, "取得資料失敗")
+
+    } catch (error) {
+      return responseHandler.catchErr(res, error)
+    }
+  }
 }
 
 module.exports = placeCollectionController
