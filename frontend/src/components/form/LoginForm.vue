@@ -5,7 +5,7 @@ import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
 import InputAccount from "@/components/form/InputAccount.vue";
 import InputPassword from "@/components/form/InputPassword.vue";
 
-const loginParams = reactive({
+const formParams = reactive({
   email: "",
   password: "",
 })
@@ -13,17 +13,17 @@ const loginParams = reactive({
 const emit = defineEmits(["submitHandler"])
 
 const { errors } = useInputValidator()
-const { isSignInBtnDisabled } = useSubmitBtnState(loginParams, errors)
+const { isSignInBtnDisabled } = useSubmitBtnState(formParams, errors)
 
 function submitHandler() {
-  emit("submitHandler", loginParams)
+  emit("submitHandler", formParams)
 }
 
 </script>
 <template>
   <form @submit.prevent="submitHandler" class="h-full flex flex-col items-start" novalidate>
-    <InputAccount v-model:email="loginParams.email"></InputAccount>
-    <InputPassword v-model:password="loginParams.password"></InputPassword>
+    <InputAccount v-model:email="formParams.email"></InputAccount>
+    <InputPassword v-model:password="formParams.password"></InputPassword>
 
     <button :disabled="isSignInBtnDisabled" type="submit" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
   </form>

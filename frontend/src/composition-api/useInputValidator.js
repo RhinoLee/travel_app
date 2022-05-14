@@ -1,5 +1,5 @@
 import { reactive } from "vue"
-import { isEmpty, isEmail } from "@/utils/inputValidation"
+import { isEmpty, isEmail, isRepeatCorrect } from "@/utils/inputValidation"
 
 const errors = reactive({})
 
@@ -9,8 +9,13 @@ export default function useInputValidator() {
   }
 
   const validatePasswordInput = ({ inputName, inputKey, value }) => {
-    errors[inputKey] = isEmpty(inputName, value) ? isEmpty(inputName, value) : "";
+    errors[inputKey] = isEmpty(inputName, value)
   }
 
-  return { errors, validateAccountInput, validatePasswordInput }
+  const validatePasswordIRepeatnput = ({ inputName, inputKey, value }, password) => {
+    // if (!password) errors[inputKey] = ""
+    errors[inputKey] = isEmpty(inputName, value) ? isEmpty(inputName, value) : isRepeatCorrect(inputName, value, password)
+  }
+
+  return { errors, validateAccountInput, validatePasswordInput, validatePasswordIRepeatnput }
 }

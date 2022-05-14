@@ -7,4 +7,8 @@ const isEmail = (inputName, inputVal) => {
   return !re.test(inputVal) ? `${inputName}格式不正確` : "";
 }
 
-export { isEmpty, isEmail }
+const isRepeatCorrect = (inputName, inputVal, originVal) => {
+  return inputVal !== originVal ? `${inputName}與密碼不符` : "";
+}
+
+export { isEmpty, isEmail, isRepeatCorrect }

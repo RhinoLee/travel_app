@@ -2,15 +2,14 @@
 import { useMemberStore } from "@/stores/member"
 import { storeToRefs } from 'pinia'
 import { useRouter } from "vue-router"
-import Form from "@/components/form/Form.vue";
+import LoginForm from "@/components/form/LoginForm.vue";
 
 
 const router = useRouter()
 const memberStore = useMemberStore()
-const { loginParams } = storeToRefs(memberStore)
 
-async function submitHandler(loginParams) {
-  memberStore.loginParams = loginParams
+async function submitHandler(formParams) {
+  memberStore.loginParams = formParams
   const result = await memberStore.loginHandler()
   if (result) return router.push({ name: "MainSchedules" })
 }
@@ -25,7 +24,7 @@ async function submitHandler(loginParams) {
           <h1 class="font-bold text-lg">登入</h1>
         </header>
         <main class="h-full">
-          <Form @submitHandler="submitHandler"></Form>
+          <LoginForm @submitHandler="submitHandler"></LoginForm>
         </main>
       </div>
     </div>
