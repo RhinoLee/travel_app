@@ -2,12 +2,15 @@
 import { useMemberStore } from "@/stores/member"
 import { storeToRefs } from 'pinia'
 import { useRouter } from "vue-router"
+import Form from "@/components/form/Form.vue";
+
 
 const router = useRouter()
 const memberStore = useMemberStore()
 const { loginParams } = storeToRefs(memberStore)
 
-async function loginHandler() {
+async function submitHandler(loginParams) {
+  memberStore.loginParams = loginParams
   const result = await memberStore.loginHandler()
   if (result) return router.push({ name: "MainSchedules" })
 }
@@ -22,18 +25,7 @@ async function loginHandler() {
           <h1 class="font-bold text-lg">登入</h1>
         </header>
         <main class="h-full">
-          <form class="h-full flex flex-col items-start">
-            <div class="mt-[10px] w-full">
-              <label for="account" class="block py-1">帳號（請填寫信箱）</label>
-              <input v-model.trim="loginParams.email" type="text" id="account" class="w-full px-2 py-2 border outline-none">
-            </div>
-            <div class="mt-[10px] w-full">
-              <label for="password" class="block py-1">密碼</label>
-              <input v-model.trim="loginParams.password" type="pasword" id="password" class="w-full px-2 py-2 border outline-none">
-            </div>
-
-            <button @click.prevent="loginHandler" class="mt-auto block px-4 py-2 shadow-lg">登入</button>
-          </form>
+          <Form @submitHandler="submitHandler"></Form>
         </main>
       </div>
     </div>
