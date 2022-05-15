@@ -74,7 +74,9 @@ const mapController = {
       let params;
 
       if (waypoints.length > 0) {
-        const waypointsStr = "place_id:" + waypoints.join("|")
+        const newWayPoints = waypoints.map(point => "place_id:" + point)
+        const waypointsStr = newWayPoints.join("|")
+        // const waypointsStr = "place_id:" + waypoints.join("|")
         params = { origin, waypoints: waypointsStr, destination, key: apiKey }
       } else {
         params = { origin, destination, key: apiKey }
