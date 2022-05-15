@@ -2,7 +2,7 @@
 import { dateHandler } from "@/utils/dateTransform"
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { ref, onMounted, watch, defineProps } from "vue"
+import { ref, onMounted, watch } from "vue"
 import { storeToRefs } from 'pinia'
 
 const props = defineProps({
