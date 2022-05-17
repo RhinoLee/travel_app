@@ -97,6 +97,7 @@ app.get("/api/placeCollection", jwtHandler.verifyAccessToken, placeCollectionCon
 app.delete("/api/placeCollection/:id", jwtHandler.verifyAccessToken, placeCollectionController.delete)
 
 app.listen(port, () => {
+  console.log("process.env", process.env.DB_USERNAME);
   db.connect();
   console.log(`Example app listening on port ${port}`);
 });
