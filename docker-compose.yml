@@ -24,8 +24,10 @@ services:
     build:
       context: ./frontend
     # image: rhinoman/travel-frontend
-    # ports:
-    #   - "3003:80"
+    ports:
+      - "3003:3003"
+    depends_on:
+      - "nginx"
 
 volumes:
   nginx_secrets:
