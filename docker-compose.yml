@@ -23,7 +23,7 @@ services:
       context: ./backend
     # image: rhinoman/travel-backend
     ports:
-      - 5003:80
+      - 5003:5003
     networks: 
       - "net"
 

@@ -3,9 +3,9 @@
 exports.shorthands = undefined;
 
 exports.up = pgm => {
-  pgm.sql(`ALTER DATABASE traveldb SET timezone TO 'UTC'`);
+  pgm.sql(`ALTER DATABASE fundb SET timezone TO 'UTC'`);
 };
 
 exports.down = pgm => {
-  pgm.sql(`ALTER DATABASE traveldb SET timezone TO 'Asia/Taipei'`);
+  pgm.sql(`ALTER DATABASE fundb SET timezone TO 'Asia/Taipei'`);
 };
