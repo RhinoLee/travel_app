@@ -23,7 +23,7 @@ services:
       context: ./backend
     # image: rhinoman/travel-backend
     ports:
-      - 5003:5003
+      - 5003:80
     networks: 
       - "net"
 
@@ -39,7 +39,7 @@ services:
 
 volumes:
   nginx_secrets:
-  
+
 networks:
   net:
     external: true
