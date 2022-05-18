@@ -14,6 +14,7 @@ services:
       - ./user_conf.d:/etc/nginx/user_conf.d
     depends_on:
       - travel-frontend
+      - travel-backend
     networks: 
       - "net"
 
