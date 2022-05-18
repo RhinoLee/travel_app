@@ -1,7 +1,9 @@
-services: 
+services:
   nginx:
     image: jonasal/nginx-certbot:latest
     restart: unless-stopped
+    environment:
+      - CERTBOT_EMAIL=terry998877terry@gmail.com
     env_file:
       - ./nginx-certbot.env
     ports:
@@ -10,14 +12,20 @@ services:
     volumes:
       - nginx_secrets:/etc/letsencrypt
       - ./user_conf.d:/etc/nginx/user_conf.d
-  
+    depends_on:
+      - travel-frontend
+    networks: 
+      - "net"
+
   travel-backend:
     container_name: travel_backend
     build:
       context: ./backend
     # image: rhinoman/travel-backend
-    # ports:
-    #   - "5003:5003"
+    ports:
+      - 5003:5003
+    networks: 
+      - "net"
 
   travel-frontend:
     container_name: travel_frontend
@@ -25,9 +33,13 @@ services:
       context: ./frontend
     # image: rhinoman/travel-frontend
     ports:
-      - "3003:3003"
-    depends_on:
-      - "nginx"
+      - 3003:80
+    networks: 
+      - "net"
 
 volumes:
   nginx_secrets:
+  
+networks:
+  net:
+    external: true
