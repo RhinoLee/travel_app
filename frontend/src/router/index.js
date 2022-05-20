@@ -23,6 +23,11 @@ const router = createRouter({
       component: Login
     },
     {
+      path: '/memberInfo',
+      name: 'MemberInfo',
+      component: () => import('@/views/member/MemberInfo.vue')
+    },
+    {
       path: '/addMainSchedule',
       name: 'AddMainSchedule',
       component: () => import('@/views/travel/AddMainSchedule.vue')

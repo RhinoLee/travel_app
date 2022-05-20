@@ -1,5 +1,5 @@
 const isEmpty = (inputName, inputVal) => {
-  return inputVal === "" ? `請填寫${inputName}` : "";
+  return !inputVal ? `${inputName}欄位必填` : "";
 }
 
 const isEmail = (inputName, inputVal) => {
@@ -11,4 +11,15 @@ const isRepeatCorrect = (inputName, inputVal, originVal) => {
   return inputVal !== originVal ? `${inputName}與密碼不符` : "";
 }
 
-export { isEmpty, isEmail, isRepeatCorrect }
+const isImageFormat = (inputName, inputVal) => {
+  const format = /\/(jpg|jpeg|png)$/
+  if (!inputVal.type.match(/\/(jpg|jpeg|png)$/)) return `${inputName}格式須為 jpg, jpeg, png`
+  else return ""
+}
+
+const isSizeUnderLimit = (inputName, inputVal, size = 5) => {
+  const limit = size * 1024 * 1024
+  return inputVal.size > limit ? `${inputName}須小於 5 MB` : "";
+}
+
+export { isEmpty, isEmail, isRepeatCorrect, isImageFormat, isSizeUnderLimit }

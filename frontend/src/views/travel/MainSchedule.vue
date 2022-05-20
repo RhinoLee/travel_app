@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, onUnmounted, reactive } from "vue";
 import { useRoute } from "vue-router"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from 'pinia'
@@ -95,6 +95,13 @@ onMounted(async () => {
   const getPlaceCollectionsResult =  await travelStore.getPlaceCollections()
   const getMainResult = await travelStore.getMainSchedule()
 })
+
+onUnmounted(() => {
+  Object.keys(lightbox).forEach(key => {
+    lightbox[key] = false
+  })
+})
+
 </script>
 
 <template>
@@ -134,7 +141,7 @@ onMounted(async () => {
     </div>
 
     <!-- 新增表單 -->
-    <LightBox :openBox="lightbox.createBox" @hideBox="hideBox('createBox')">
+    <LightBox :isBoxOpen="lightbox.createBox" @hideBox="hideBox('createBox')">
       <template v-slot:header>新增行程</template>
       <template v-slot:main>
         <div class="mb-3">
@@ -167,7 +174,7 @@ onMounted(async () => {
     </LightBox>
 
     <!-- 編輯表單 -->
-    <LightBox :openBox="lightbox.editBox" @hideBox="hideBox('editBox')">
+    <LightBox :isBoxOpen="lightbox.editBox" @hideBox="hideBox('editBox')">
       <template v-slot:header>編輯行程</template>
       <template v-slot:main>
         <div class="mb-3">
@@ -203,7 +210,7 @@ onMounted(async () => {
     </LightBox>
 
     <!-- 確認刪除 -->
-    <LightBox :openBox="lightbox.deleteBox" @hideBox="hideBox('deleteBox')">
+    <LightBox :isBoxOpen="lightbox.deleteBox" @hideBox="hideBox('deleteBox')">
       <template v-slot:header>刪除行程</template>
       <template v-slot:main>
         <div>確定要刪除行程？</div>

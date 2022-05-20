@@ -1,5 +1,5 @@
 import { reactive } from "vue"
-import { isEmpty, isEmail, isRepeatCorrect } from "@/utils/inputValidation"
+import { isEmpty, isEmail, isRepeatCorrect, isImageFormat, isSizeUnderLimit } from "@/utils/inputValidation"
 
 const errors = reactive({})
 
@@ -13,9 +13,16 @@ export default function useInputValidator() {
   }
 
   const validatePasswordIRepeatnput = ({ inputName, inputKey, value }, password) => {
-    // if (!password) errors[inputKey] = ""
     errors[inputKey] = isEmpty(inputName, value) ? isEmpty(inputName, value) : isRepeatCorrect(inputName, value, password)
   }
 
-  return { errors, validateAccountInput, validatePasswordInput, validatePasswordIRepeatnput }
+  const validateSingeImageInput = ({ inputName, inputKey, value }) => {
+    if (isEmpty(inputName, value)) return errors[inputKey] = isEmpty(inputName, value)
+    if (isImageFormat(inputName, value)) return errors[inputKey] = isImageFormat(inputName, value)
+    if (isSizeUnderLimit(inputName, value)) return errors[inputKey] = isSizeUnderLimit(inputName, value)
+    
+    errors[inputKey] = ""
+  }
+
+  return { errors, validateAccountInput, validatePasswordInput, validatePasswordIRepeatnput, validateSingeImageInput }
 }

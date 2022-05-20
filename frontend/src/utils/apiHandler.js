@@ -126,9 +126,18 @@ export default {
         },
         apiMemberInfo: () => {
           const instance = $axios.instances.memberRequest()
-          return instance.post("/memberInfo", null, {
+          return instance.get("/memberInfo", {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+          })
+        },
+        apiUpdateAvatar: (params) => {
+          const instance = $axios.instances.memberRequest()
+          return instance.patch("/avatar", params, {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "multipart/form-data"
             }
           })
         },

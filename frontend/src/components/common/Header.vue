@@ -1,15 +1,22 @@
 <script setup>
-import { storeToRefs } from 'pinia'
+import { ref } from "vue"
 import { useMemberStore } from "@/stores/member"
 import LightBox from "@/components/common/LightBox.vue"
 import { useRouter } from "vue-router"
+
+const isMemberBoxOpen = ref(false)
 
 const router = useRouter()
 const memberStore = useMemberStore()
 
 function logoutHandler() {
+  closeMemberBox()
   memberStore.logoutHandler()
   router.push({ name: "Login" })
+}
+
+function closeMemberBox() {
+  isMemberBoxOpen.value = false
 }
 
 </script>
@@ -20,8 +27,17 @@ function logoutHandler() {
       <div>Logo</div>
       <nav v-if="memberStore.isLogin">
         <ul class="flex">
-          <li class="px-2"><button>{{ memberStore.memberInfo.email }}</button></li>
-          <li class="px-2"><button @click="logoutHandler">登出</button></li>
+          <li class="relative"><button @click="isMemberBoxOpen = !isMemberBoxOpen">{{ memberStore.memberInfo.email }}</button>
+            <ul 
+              :class="{ 'block': isMemberBoxOpen, 'hidden': !isMemberBoxOpen }" 
+              class="absolute top-full w-full bg-white border
+              child:py-1 px-1 child:w-full child:text-center child:cursor-pointer
+              "
+            >
+              <li @click="closeMemberBox"><router-link :to="{ name: 'MemberInfo' }">個人資訊</router-link></li>
+              <li @click="logoutHandler">登出</li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <nav v-else>

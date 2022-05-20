@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 // import { apiRegister, apiLogin, apiMemberInfo, apiRefreshToken } from "@/utils/api/api"
 import { errorHandler } from "../utils/api/errorHandler"
+import robot from "@/assets/images/png/robot.png"
 
 export const useMemberStore = defineStore("member", {
   state: () => {
@@ -20,11 +21,15 @@ export const useMemberStore = defineStore("member", {
       memberInfo: {
         id: null,
         email: "",
-      }
+        avatar: "",
+      },
+      avatarFile: null,
     }
   },
   getters: {
-
+    avatarSrc() {
+      return this.memberInfo.avatar ? this.memberInfo.avatar : robot
+    }
   },
   actions: {
     async registerHandler() {
@@ -66,6 +71,17 @@ export const useMemberStore = defineStore("member", {
         return false
       }
     },
+    async updateAvatar() {
+      const formData = new FormData()
+      formData.append("avatar", this.avatarFile)
+      const result = await this.$axios.api.apiUpdateAvatar(formData)
+      console.log("updateAvatar result", result);
+      if (result.data.success) {
+        this.memberInfo.avatar = result.data.avatar
+      }
+
+      this.avatarFile = null
+    },
     async refreshTokenHandler() {
       const refreshToken = localStorage.getItem("refreshToken")
       if (!refreshToken) return Promise.reject(false)
@@ -91,6 +107,6 @@ export const useMemberStore = defineStore("member", {
         id: null,
         email: "",
       }
-    }
+    },
   }
 })
