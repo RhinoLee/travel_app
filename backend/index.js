@@ -7,12 +7,13 @@ const bodyParser = require("body-parser");
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const jsonParser = bodyParser.json();
 const validateRequest = require("./middleware/validateRequest")
+const upload = require("./middleware/multer")
 const jwtHandler = require("./utils/jwtHandler.js")
-
 // Rules of Validate
 const registerRules = require("./validates/registerRules")
 const loginRules = require("./validates/loginRules")
 const refreshTokenRules = require("./validates/refreshTokenRules")
+const imageRules = require("./validates/imageRules")
 const mainScheduleRules = require("./validates/mainScheduleRules")
 const singleScheduleCreateRules = require("./validates/singleScheduleCreateRules")
 const singleScheduleUpdateRules = require("./validates/singleScheduleUpdateRules")
@@ -32,6 +33,7 @@ const placeCollectionController = require("./controller/placeCollectionControlle
 const corsOptions = {
   origin: process.env.CLIENT_ORIGIN,
 }
+
 app.use(cors(corsOptions))
 app.use(jsonParser);
 app.use(urlencodedParser);
@@ -49,7 +51,15 @@ app.post("/api/memberRegister",
 )
 
 app.post("/api/memberLogin", loginRules, validateRequest.validates, memberController.login)
-app.post("/api/memberInfo", jwtHandler.verifyAccessToken, memberController.getMemberInfo)
+app.get("/api/memberInfo", jwtHandler.verifyAccessToken, memberController.getMemberInfo)
+// app.patch("/api/memberInfo", jwtHandler.verifyAccessToken, memberController.updateMemberInfo)
+app.patch("/api/avatar",
+  jwtHandler.verifyAccessToken,
+  upload.single('avatar'), 
+  imageRules,
+  memberController.updateMemberAvatar
+)
+
 app.post("/api/refreshToken", refreshTokenRules, validateRequest.validates, memberController.refreshToken)
 
 // Travel Schedule
@@ -85,7 +95,7 @@ app.get("/api/mainSchedule/:id", jwtHandler.verifyAccessToken, mainScheduleContr
 app.get("/api/mainSchedule/:id/singleSchedules", jwtHandler.verifyAccessToken, singleScheduleController.getAllSchedules)
 
 // place_collection
-app.post("/api/placeCollection", 
+app.post("/api/placeCollection",
   jwtHandler.verifyAccessToken,
   placeCollectionCreateRules,
   validateRequest.validates,

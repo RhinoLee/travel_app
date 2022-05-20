@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
 const jwtHandler = require("../../utils/jwtHandler.js")
 const memberModel = require("../../model/member/memberModel")
+const uploadImage = require('../../utils/uploadImage')
 
 const memberController = {
   register: async (req, res) => {
@@ -113,7 +114,6 @@ const memberController = {
   getMemberInfo: async (req, res) => {
     let json;
     const { id, email } = req.jwtData
-    console.log("getMemberInfo JWT info", id, email);
 
     try {
       const result = await memberModel.findMemberByEmail(email)
@@ -123,6 +123,7 @@ const memberController = {
           memberInfo: {
             id: result.rows[0].id,
             email: result.rows[0].email,
+            avatar: result.rows[0].avatar,
           }
         }
         return res.status(200).json(json)
@@ -141,6 +142,36 @@ const memberController = {
       return res.status(500).json(json)
     }
 
+  },
+  updateMemberAvatar: async (req, res) => {
+    let json;
+    const { id } = req.jwtData
+    try {
+      const file = req.file
+      const imageUrl = await uploadImage(file, id)
+      const result = await memberModel.updateMemberAvatar({ id, avatar: imageUrl })
+      console.log("avatar controller result", result);
+      if (result.success) {
+        json = {
+          success: true,
+          avatar: result.result.rows[0].avatar,
+        }
+        return res.status(200).json(json)
+      }
+
+      json = {
+        success: false,
+        errors: ["資料庫存取失敗"]
+      }
+      return res.status(500).json(json)
+    } catch (error) {
+      console.log("avatar controller error", error);
+      json = {
+        success: false,
+        errors: error
+      }
+      return res.status(500).json(json)
+    }
   },
   refreshToken: async (req, res) => {
     let json;

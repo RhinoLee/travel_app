@@ -28,8 +28,28 @@ const memberModel = {
       const result = await db.query(query)
       console.log("memberModel.createMember result", result);
       return { success: true, result }
-    } catch(error) {
+    } catch (error) {
       console.log("memberModel.createMember error", error);
+      return { success: false, error }
+    }
+  },
+  updateMemberAvatar: async ({ id, avatar }) => {
+    const query = {
+      text: `
+        UPDATE member 
+        SET avatar = $1
+        WHERE id = $2
+        RETURNING avatar
+      `,
+      values: [avatar, id]
+    }
+
+    try {
+      const result = await db.query(query)
+      console.log("memberModel.updateMemberAvatar result", result);
+      return { success: true, result }
+    } catch (error) {
+      console.log("memberModel.updateMemberAvatar error", error);
       return { success: false, error }
     }
   }
