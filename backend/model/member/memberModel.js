@@ -16,6 +16,21 @@ const memberModel = {
       return err
     }
   },
+  findMemberById: async (id) => {
+    const query = {
+      text: "SELECT * FROM member WHERE id = $1",
+      values: [id]
+    }
+
+    try {
+      const result = await db.query(query)
+      console.log("memberModel.findMemberById result", result);
+      return result
+    } catch (err) {
+      console.log("memberModel.findMemberById err", err);
+      return err
+    }
+  },
   createMember: async ({ email, password }) => {
     const query = {
       text: `INSERT INTO 

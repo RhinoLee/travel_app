@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const jwtHandler = require("../../utils/jwtHandler.js")
 const memberModel = require("../../model/member/memberModel")
 const uploadImage = require('../../utils/uploadImage')
+const deleteImage = require('../../utils/deleteImage')
 
 const memberController = {
   register: async (req, res) => {
@@ -148,9 +149,16 @@ const memberController = {
     const { id } = req.jwtData
     try {
       const file = req.file
-      const imageUrl = await uploadImage(file, id)
+      const category = "avatar"
+
+      const memberResult = await memberModel.findMemberById(id)
+      const originAvatar = memberResult.rows[0].avatar
+      if (originAvatar) {
+        const deleteResult = await deleteImage({ userId: id, avatarLink: originAvatar, category })
+      }
+
+      const imageUrl = await uploadImage(file, id, category)
       const result = await memberModel.updateMemberAvatar({ id, avatar: imageUrl })
-      console.log("avatar controller result", result);
       if (result.success) {
         json = {
           success: true,
