@@ -23,8 +23,12 @@ export const useMemberStore = defineStore("member", {
         email: "",
         avatar: "",
       },
+      verifyMemberInfo: null,
       avatarFile: null,
-      isEditBoxOpen: false
+      // light box state
+      isEditBoxOpen: false,
+      isErrorBoxOpen: false,
+      isVerifyResultBoxOpen: false
     }
   },
   getters: {
@@ -33,28 +37,33 @@ export const useMemberStore = defineStore("member", {
     }
   },
   actions: {
+    clearLoginParams() {
+      console.log("clearLoginParams");
+      this.loginParams.email = ""
+      this.loginParams.password = ""
+    },
     async registerHandler() {
       const result = await this.$axios.api.apiRegister(this.registerParams)
       if (result) return result.data.success
       return false
     },
     async loginHandler() {
-      const result = await this.$axios.api.apiLogin(this.loginParams)
-      this.loginParams.email = ""
-      this.loginParams.password = ""
+      try {
+        const result = await this.$axios.api.apiLogin(this.loginParams)
+        this.clearLoginParams()
 
-      if (result && result.data.success) {
-
-        const token = result.headers.authorization.split(" ")[1]
-        const refreshToken = result.data.refreshToken
-        localStorage.setItem("token", token)
-        localStorage.setItem("refreshToken", refreshToken)
-        this.token = token
-        this.isLogin = true
-
-        return result.data.success
+        if (result && result.data.success) {
+          const token = result.headers.authorization.split(" ")[1]
+          const refreshToken = result.data.refreshToken
+          localStorage.setItem("token", token)
+          localStorage.setItem("refreshToken", refreshToken)
+          this.token = token
+          this.isLogin = true
+        }
+        return result.data
+      } catch (error) {
+        return error.response.data
       }
-      return false
     },
     async getMemberInfo() {
       const token = localStorage.getItem("token")
@@ -100,7 +109,22 @@ export const useMemberStore = defineStore("member", {
       return Promise.reject(false)
     },
     async verifyMember(token) {
-      return await this.$axios.api.apiVerifyMember(token)
+      try {
+        const result = await this.$axios.api.apiVerifyMember(token)
+        return result.data
+      } catch (error) {
+        return error.response.data
+      }
+    },
+    async verifyEmail() {
+      if (!this.verifyMemberInfo) return
+      try {
+        const result = await this.$axios.api.apiVerifyEmail(this.verifyMemberInfo)
+        return result.data
+      } catch (error) {
+        console.log("error", error);
+        return error.response.data
+      }
     },
     logoutHandler() {
       console.log("logoutHandler");

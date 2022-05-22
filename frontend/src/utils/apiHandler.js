@@ -4,11 +4,10 @@ import { errorHandler } from "@/utils/api/errorHandler"
 import axios from "axios"
 export default {
   install(app, { pinia, router }) {
-    console.log("install router", router);
     const commonStore = useCommonStore()
 
     const $axios = {
-      addInterceptors: (axiosInstance) => {
+      addLoadingInterceptor: (axiosInstance) => {
         axiosInstance.interceptors.request.use(config => {
           config.metadata = { startTime: new Date() }
           commonStore.isLoading = true
@@ -33,7 +32,7 @@ export default {
 
         return axiosInstance
       },
-      addErrorInterceptors: (axiosInstance) => {
+      addErrorInterceptor: (axiosInstance) => {
         axiosInstance.interceptors.response.use(response => response, async (error) => {
           return errorHandler.catchError(error, axiosInstance, router)
             .then((res) => {
@@ -52,8 +51,8 @@ export default {
             baseURL: "https://maps.googleapis.com/maps/api/"
           })
 
-          $axios.addInterceptors(axiosInstance)
-          $axios.addErrorInterceptors(axiosInstance)
+          $axios.addLoadingInterceptor(axiosInstance)
+          $axios.addErrorInterceptor(axiosInstance)
           return axiosInstance
         },
         mapRequest2: () => {
@@ -61,8 +60,8 @@ export default {
             baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/`
           })
 
-          $axios.addInterceptors(axiosInstance)
-          $axios.addErrorInterceptors(axiosInstance)
+          $axios.addLoadingInterceptor(axiosInstance)
+          $axios.addErrorInterceptor(axiosInstance)
           return axiosInstance
         },
         memberRequest: () => {
@@ -70,20 +69,20 @@ export default {
             baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/`
           })
 
-          $axios.addInterceptors(axiosInstance)
-          $axios.addErrorInterceptors(axiosInstance)
+          $axios.addLoadingInterceptor(axiosInstance)
+          $axios.addErrorInterceptor(axiosInstance)
           return axiosInstance
         },
         scheduleRequest: () => {
           const axiosInstance = axios.create({ baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/` })
-          $axios.addInterceptors(axiosInstance)
-          $axios.addErrorInterceptors(axiosInstance)
+          $axios.addLoadingInterceptor(axiosInstance)
+          $axios.addErrorInterceptor(axiosInstance)
           return axiosInstance
         },
         placeCollectionRequest: () => {
           const axiosInstance = axios.create({ baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/placeCollection` })
-          $axios.addInterceptors(axiosInstance)
-          $axios.addErrorInterceptors(axiosInstance)
+          $axios.addLoadingInterceptor(axiosInstance)
+          $axios.addErrorInterceptor(axiosInstance)
           return axiosInstance
         },
       },
@@ -131,6 +130,10 @@ export default {
               "Authorization": `Bearer ${token}`
             }
           })
+        },
+        apiVerifyEmail: (params) => {
+          const instance = $axios.instances.memberRequest()
+          return instance.post("/verifyEmail", params)
         },
         apiMemberInfo: () => {
           const instance = $axios.instances.memberRequest()

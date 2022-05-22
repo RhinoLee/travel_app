@@ -3,15 +3,12 @@ import { reactive, computed } from "vue"
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member"
 import robot from "@/assets/images/png/robot.png"
-import LightBox from "@/components/common/LightBox.vue"
 import AvatarForm from "@/components/form/AvatarForm.vue"
 
 const memberStore = useMemberStore()
 const { memberInfo, avatarSrc } = storeToRefs(memberStore)
-const lightbox = reactive({ editBox: false })
 
 function openBox(boxname) {
-  // lightbox[boxname] = true
   memberStore.isEditBoxOpen = true
 }
 

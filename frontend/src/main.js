@@ -17,6 +17,3 @@ app.use(router)
 app.use(apiHandler, { pinia, router })
 
 app.mount('#app')
-
-// const $axios = app.config.globalProperties.$axios
-// export { $axios }

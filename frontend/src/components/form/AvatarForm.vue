@@ -10,17 +10,9 @@ import LightBox from "@/components/common/LightBox.vue"
 const memberStore = useMemberStore()
 const { memberInfo, isEditBoxOpen } = storeToRefs(memberStore)
 
-// const lightbox = reactive({ editBox: false })
-
-// function hideBox(boxname) {
-//   memberStore.isEditBoxOpen = false
-// }
-
 const formParams = reactive({
   avatar: "",
 })
-
-const emit = defineEmits(["submitHandler", "closeBox"])
 
 const { errors } = useInputValidator()
 const { isSignInBtnDisabled } = useSubmitBtnState(formParams, errors)
@@ -34,12 +26,11 @@ async function uploadAvatar() {
 </script>
 
 <template>
-<!-- <LightBox :isBoxOpen="isEditBoxOpen" @hideBox="hideBox"></LightBox> -->
-  <LightBox :isBoxOpen="isEditBoxOpen" v-model:isBoxOpen="memberStore.isEditBoxOpen">
+  <LightBox v-model:isBoxOpen="memberStore.isEditBoxOpen">
     <template v-slot:header>編輯頭像</template>
     <template v-slot:main>
       <form @submit.prevent class="w-full h-full flex flex-col items-start" novalidate>
-        <InputSingleImage :avatar="memberInfo.avatar" :isBoxOpen="isEditBoxOpen" v-model:avatar="formParams.avatar">
+        <InputSingleImage :avatar="memberInfo.avatar" :isBoxOpen="memberStore.isEditBoxOpen" v-model:avatar="formParams.avatar">
         </InputSingleImage>
       </form>
     </template>
