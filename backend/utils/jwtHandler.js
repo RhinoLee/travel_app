@@ -49,7 +49,7 @@ const jwtHandler = {
     } catch (error) {
       return res.status(401).json({
         success: false,
-        message: error,
+        errors: ["token 認證失敗"],
       })
     }
   },

@@ -6,20 +6,21 @@ const responseHandler = {
     };
     return res.status(200).json(json);
   },
-  responseErr: (res, error) => {
+  responseErr: (res, errorMsg, status=400) => {
     const json = {
       success: false,
-      error,
+      error: errorMsg,
     };
 
-    return res.status(400).json(json);
+    return res.status(status).json(json);
   },
   catchErr: (res, error) => {
+    console.log("catchErr", error);
     const json = {
       success: false,
-      error,
+      error: "資料庫存取失敗"
     }
-    return res.status(400).json(json);
+    return res.status(500).json(json);
   }
 }
 

@@ -13,7 +13,7 @@ const memberModel = {
       return result
     } catch (err) {
       console.log("memberModel.findMemberByEmail err", err);
-      return err
+      throw err
     }
   },
   findMemberById: async (id) => {
@@ -28,24 +28,26 @@ const memberModel = {
       return result
     } catch (err) {
       console.log("memberModel.findMemberById err", err);
-      return err
+      throw err
     }
   },
-  createMember: async ({ email, password }) => {
+  createMember: async ({ email, password, verified }) => {
     const query = {
       text: `INSERT INTO 
-        member(email, password) 
-        VALUES($1, $2) RETURNING *`,
-      values: [email, password]
+        member(email, password, verified) 
+        VALUES($1, $2, $3) RETURNING *`,
+      values: [email, password, verified]
     }
 
     try {
       const result = await db.query(query)
       console.log("memberModel.createMember result", result);
-      return { success: true, result }
+      return result
+      // return { success: true, result }
     } catch (error) {
       console.log("memberModel.createMember error", error);
-      return { success: false, error }
+      throw error
+      // return { success: false, error }
     }
   },
   updateMemberAvatar: async ({ id, avatar }) => {
@@ -62,12 +64,32 @@ const memberModel = {
     try {
       const result = await db.query(query)
       console.log("memberModel.updateMemberAvatar result", result);
-      return { success: true, result }
+      return result
     } catch (error) {
       console.log("memberModel.updateMemberAvatar error", error);
-      return { success: false, error }
+      throw error
     }
-  }
+  },
+  verifyMember: async ({ verified, email }) => {
+    const query = {
+      text: `
+        UPDATE member 
+        SET verified = $1
+        WHERE email = $2
+        RETURNING email, verified
+      `,
+      values: [verified, email]
+    }
+
+    try {
+      const result = await db.query(query)
+      console.log("memberModel.verifyMember result", result);
+      return result
+    } catch (error) {
+      console.log("memberModel.verifyMember error", error);
+      throw error
+    }
+  },
 }
 
 module.exports = memberModel

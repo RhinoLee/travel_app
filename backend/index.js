@@ -61,7 +61,7 @@ app.patch("/api/avatar",
 )
 
 app.post("/api/refreshToken", refreshTokenRules, validateRequest.validates, memberController.refreshToken)
-
+app.get("/api/verifyMember", jwtHandler.verifyAccessToken, memberController.verifyMember)
 // Travel Schedule
 app.post("/api/mainScheduleCreate",
   jwtHandler.verifyAccessToken,
