@@ -21,6 +21,7 @@ const mapDerectionsRules = require("./validates/mapDirectionsRules")
 const mapSearchRules = require("./validates/mapSearchRules")
 const mapDetailsRules = require("./validates/mapDetailsRules")
 const placeCollectionCreateRules = require("./validates/placeCollectionCreateRules")
+const verifyEmailRules = require("./validates/verifyEmailRules")
 
 
 // controller
@@ -62,6 +63,7 @@ app.patch("/api/avatar",
 
 app.post("/api/refreshToken", refreshTokenRules, validateRequest.validates, memberController.refreshToken)
 app.get("/api/verifyMember", jwtHandler.verifyAccessToken, memberController.verifyMember)
+app.post("/api/verifyEmail", verifyEmailRules, validateRequest.validates, memberController.verifyEmail)
 // Travel Schedule
 app.post("/api/mainScheduleCreate",
   jwtHandler.verifyAccessToken,

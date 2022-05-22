@@ -26,7 +26,6 @@ const memberController = {
         const createResult = await memberModel.createMember(params)
         const id = createResult.rows[0].id
         const verifyEmailToken = await jwtHandler.signAccessToken({ id, email })
-        console.log("verifyEmailToken", verifyEmailToken);
         await sendEmail(email, verifyEmailToken)
 
         json = {
@@ -43,7 +42,10 @@ const memberController = {
     const findMemberResult = await memberModel.findMemberByEmail(req.body.email)
 
     if (findMemberResult.rows.length < 1) return responseHandler.responseErr(res, "member 不存在", 404)
-    if (!findMemberResult.rows[0].verified) return responseHandler.responseErr(res, "信箱尚未驗證", 400)
+    if (!findMemberResult.rows[0].verified) return responseHandler.responseErr(res, "信箱尚未驗證", 400, {
+      id: findMemberResult.rows[0].id,
+      email: findMemberResult.rows[0].email,
+    })
 
     bcrypt.compare(req.body.password, findMemberResult.rows[0].password, async (bcryptErr, bcryptRes) => {
       if (bcryptErr) return responseHandler.catchErr(res, bcryptErr)
@@ -144,6 +146,20 @@ const memberController = {
       return responseHandler.catchErr(res, error)
     }
   },
+  verifyEmail: async (req, res) => {
+    try {
+      const { id, email } = req.body
+      const verifyEmailToken = await jwtHandler.signAccessToken({ id, email })
+      await sendEmail(email, verifyEmailToken)
+
+      json = {
+        success: true,
+      }
+      return res.status(200).json(json)
+    } catch (error) {
+      return responseHandler.catchErr(res, error)
+    }
+  }
 }
 
 module.exports = memberController

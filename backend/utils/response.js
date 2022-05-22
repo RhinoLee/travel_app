@@ -6,10 +6,11 @@ const responseHandler = {
     };
     return res.status(200).json(json);
   },
-  responseErr: (res, errorMsg, status=400) => {
+  responseErr: (res, errorMsg, status=400, data=null) => {
     const json = {
       success: false,
       error: errorMsg,
+      data
     };
 
     return res.status(status).json(json);
