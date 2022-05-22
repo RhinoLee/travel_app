@@ -10,22 +10,9 @@ const memberStore = useMemberStore()
 const { memberInfo, avatarSrc } = storeToRefs(memberStore)
 const lightbox = reactive({ editBox: false })
 
-function hideBox(boxname) {
-  lightbox[boxname] = false
-}
-
 function openBox(boxname) {
-  lightbox[boxname] = true
-}
-
-function cancelHandler() {
-  hideBox("editBox")
-}
-
-async function uploadAvatar(formParams) {
-  memberStore.avatarFile = formParams.avatar
-  await memberStore.updateAvatar()
-  hideBox("editBox")
+  // lightbox[boxname] = true
+  memberStore.isEditBoxOpen = true
 }
 
 </script>
@@ -39,7 +26,6 @@ async function uploadAvatar(formParams) {
         </header>
         <main class="h-full">
           <div class="flex justify-center mb-[40px] mt-[10px]">
-            <!-- <pre>{{ memberInfo }}</pre> -->
             <div class="relative w-[120px] h-[120px] border rounded-full overflow-hidden">
               <img :src="avatarSrc" class=" w-full h-full object-cover object-center">
               <div @click="openBox('editBox')"
@@ -51,23 +37,11 @@ async function uploadAvatar(formParams) {
           <ul>
             <li><span>帳號：</span><span>{{ memberInfo.email }}</span></li>
           </ul>
-
         </main>
       </div>
     </div>
   </div>
 
-  <LightBox :isBoxOpen="lightbox.editBox" @hideBox="hideBox('editBox')">
-    <template v-slot:header>編輯頭像</template>
-    <template v-slot:main>
-      <AvatarForm @submitHandler="uploadAvatar" @cancelHandler="cancelHandler" :isBoxOpen="lightbox.editBox"></AvatarForm>
-      <!-- <InputSingleImage :avatar="memberInfo.avatar" :isBoxOpen="lightbox.editBox"></InputSingleImage> -->
-    </template>
-    <!-- <template v-slot:footer>
-      <div>
-        <button @click="cancelUpload" class="border px-4 py-2 mr-4">取消</button>
-        <button @click="uploadAvatar" class="border px-4 py-2">上傳</button>
-      </div>
-    </template> -->
-  </LightBox>
+  <!-- 開光箱，設定頭像 -->
+  <AvatarForm></AvatarForm>
 </template>

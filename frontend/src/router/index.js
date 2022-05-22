@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from "@/views/Home.vue"
 import Register from "@/views/member/Register.vue"
 import Login from "@/views/member/Login.vue"
+import VerifyEmail from "@/views/member/VerifyEmail.vue"
 import { useMemberStore } from "@/stores/member"
 
 const router = createRouter({
@@ -21,6 +22,11 @@ const router = createRouter({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/verifyEmail',
+      name: 'VerifyEmail',
+      component: VerifyEmail
     },
     {
       path: '/memberInfo',
@@ -46,7 +52,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
-  if (to.name !== "Register") {
+  if (to.name !== "Register" && to.name !== "VerifyEmail") {
     const memberStore = useMemberStore()
     const result = await memberStore.getMemberInfo()
     if (to.name !== "Login" && !result) return { name: "Login" }

@@ -24,6 +24,7 @@ export const useMemberStore = defineStore("member", {
         avatar: "",
       },
       avatarFile: null,
+      isEditBoxOpen: false
     }
   },
   getters: {
@@ -93,10 +94,13 @@ export const useMemberStore = defineStore("member", {
         const refreshToken = result.data.refreshToken
         localStorage.setItem("token", token)
         localStorage.setItem("refreshToken", refreshToken)
-        
+
         return Promise.resolve(result)
       }
       return Promise.reject(false)
+    },
+    async verifyMember(token) {
+      return await this.$axios.api.apiVerifyMember(token)
     },
     logoutHandler() {
       console.log("logoutHandler");

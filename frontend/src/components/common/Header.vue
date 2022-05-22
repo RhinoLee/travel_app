@@ -30,7 +30,7 @@ function closeMemberBox() {
           <li class="relative"><button @click="isMemberBoxOpen = !isMemberBoxOpen">{{ memberStore.memberInfo.email }}</button>
             <ul 
               :class="{ 'block': isMemberBoxOpen, 'hidden': !isMemberBoxOpen }" 
-              class="absolute top-full w-full bg-white border
+              class="absolute top-full w-full bg-white border z-10
               child:py-1 px-1 child:w-full child:text-center child:cursor-pointer
               "
             >

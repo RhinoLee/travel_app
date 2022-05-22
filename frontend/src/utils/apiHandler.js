@@ -36,12 +36,12 @@ export default {
       addErrorInterceptors: (axiosInstance) => {
         axiosInstance.interceptors.response.use(response => response, async (error) => {
           return errorHandler.catchError(error, axiosInstance, router)
-          .then((res) => {
-            return Promise.resolve(res)
-          })
-          .catch(err => {
-            return Promise.reject(err)
-          })
+            .then((res) => {
+              return Promise.resolve(res)
+            })
+            .catch(err => {
+              return Promise.reject(err)
+            })
         })
 
         return axiosInstance
@@ -123,6 +123,14 @@ export default {
         apiLogin: (params) => {
           const instance = $axios.instances.memberRequest()
           return instance.post("/memberLogin", params)
+        },
+        apiVerifyMember: (token) => {
+          const instance = $axios.instances.memberRequest()
+          return instance.get("/verifyMember", {
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          })
         },
         apiMemberInfo: () => {
           const instance = $axios.instances.memberRequest()

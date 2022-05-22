@@ -5,41 +5,49 @@ import { useMemberStore } from "@/stores/member"
 import InputSingleImage from "@/components/form/InputSingleImage.vue"
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
+import LightBox from "@/components/common/LightBox.vue"
 
 const memberStore = useMemberStore()
-const { memberInfo } = storeToRefs(memberStore)
+const { memberInfo, isEditBoxOpen } = storeToRefs(memberStore)
 
-const props = defineProps({
-  isBoxOpen: {
-    type: Boolean
-  },
-})
+// const lightbox = reactive({ editBox: false })
+
+// function hideBox(boxname) {
+//   memberStore.isEditBoxOpen = false
+// }
 
 const formParams = reactive({
   avatar: "",
 })
 
-const emit = defineEmits(["submitHandler", "cancelHandler"])
+const emit = defineEmits(["submitHandler", "closeBox"])
 
 const { errors } = useInputValidator()
 const { isSignInBtnDisabled } = useSubmitBtnState(formParams, errors)
 
-function submitHandler() {
-  emit("submitHandler", formParams)
-}
-
-function cancelHandler() {
-  emit("cancelHandler")
+async function uploadAvatar() {
+  memberStore.avatarFile = formParams.avatar
+  await memberStore.updateAvatar()
+  memberStore.isEditBoxOpen = false
 }
 
 </script>
 
 <template>
-  <form @submit.prevent="submitHandler" class="w-full h-full flex flex-col items-start" novalidate>
-    <InputSingleImage :avatar="memberInfo.avatar" :isBoxOpen="isBoxOpen" v-model:avatar="formParams.avatar"></InputSingleImage>
-    <div class="flex justify-center mt-10 w-full">
-      <button @click="cancelHandler" type="button" class="block mt-auto mr-4 px-4 py-2 shadow-lg">Cancel</button>
-      <button :disabled="isSignInBtnDisabled" type="submit" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
-    </div>
-  </form>
+<!-- <LightBox :isBoxOpen="isEditBoxOpen" @hideBox="hideBox"></LightBox> -->
+  <LightBox :isBoxOpen="isEditBoxOpen" v-model:isBoxOpen="memberStore.isEditBoxOpen">
+    <template v-slot:header>編輯頭像</template>
+    <template v-slot:main>
+      <form @submit.prevent class="w-full h-full flex flex-col items-start" novalidate>
+        <InputSingleImage :avatar="memberInfo.avatar" :isBoxOpen="isEditBoxOpen" v-model:avatar="formParams.avatar">
+        </InputSingleImage>
+      </form>
+    </template>
+    <template v-slot:footer>
+      <div class="flex w-full">
+        <button @click="hideBox" type="button" class="block mt-auto mr-4 px-4 py-2 shadow-lg">Cancel</button>
+        <button :disabled="isSignInBtnDisabled" @click="uploadAvatar" type="button" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
+      </div>
+    </template>
+  </LightBox>
 </template>

@@ -141,7 +141,7 @@ onUnmounted(() => {
     </div>
 
     <!-- 新增表單 -->
-    <LightBox :isBoxOpen="lightbox.createBox" @hideBox="hideBox('createBox')">
+    <LightBox v-model:isBoxOpen="lightbox.createBox">
       <template v-slot:header>新增行程</template>
       <template v-slot:main>
         <div class="mb-3">
@@ -163,7 +163,7 @@ onUnmounted(() => {
         </div>
         <div class="mb-3">
           <div>地點</div>
-          <div v-if="placeDetail">{{ placeDetail.name }}</div>
+          <div v-if="placeInfoComputed">{{ placeInfoComputed.name }}</div>
         </div>
       </template>
       <template v-slot:footer>
@@ -174,7 +174,7 @@ onUnmounted(() => {
     </LightBox>
 
     <!-- 編輯表單 -->
-    <LightBox :isBoxOpen="lightbox.editBox" @hideBox="hideBox('editBox')">
+    <LightBox v-model:isBoxOpen="lightbox.editBox">
       <template v-slot:header>編輯行程</template>
       <template v-slot:main>
         <div class="mb-3">
@@ -210,7 +210,7 @@ onUnmounted(() => {
     </LightBox>
 
     <!-- 確認刪除 -->
-    <LightBox :isBoxOpen="lightbox.deleteBox" @hideBox="hideBox('deleteBox')">
+    <LightBox v-model:isBoxOpen="lightbox.deleteBox">
       <template v-slot:header>刪除行程</template>
       <template v-slot:main>
         <div>確定要刪除行程？</div>
