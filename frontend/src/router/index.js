@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from "@/views/Home.vue"
 import Register from "@/views/member/Register.vue"
 import Login from "@/views/member/Login.vue"
-import VerifyEmail from "@/views/member/VerifyEmail.vue"
 import { useMemberStore } from "@/stores/member"
 
 const router = createRouter({
@@ -26,7 +25,17 @@ const router = createRouter({
     {
       path: '/verifyEmail',
       name: 'VerifyEmail',
-      component: VerifyEmail
+      component: () => import('@/views/member/VerifyEmail.vue')
+    },
+    {
+      path: '/forgotPassword',
+      name: 'ForgotPassword',
+      component: () => import('@/views/member/ForgotPassword.vue')
+    },
+    {
+      path: '/resetPassword',
+      name: 'ResetPassword',
+      component: () => import('@/views/member/ResetPassword.vue')
     },
     {
       path: '/memberInfo',
@@ -52,7 +61,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
-  if (to.name !== "Register" && to.name !== "VerifyEmail") {
+  if (to.name !== "Register" && to.name !== "VerifyEmail" && to.name !== "ForgotPassword" && to.name !== "ResetPassword") {
     const memberStore = useMemberStore()
     const result = await memberStore.getMemberInfo()
     if (to.name !== "Login" && !result) return { name: "Login" }

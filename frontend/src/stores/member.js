@@ -18,17 +18,25 @@ export const useMemberStore = defineStore("member", {
         email: "",
         password: "",
       },
+      forgotPasswordParams: {
+        email: "",
+      },
+      resetPasswordParams: {
+        password: "",
+        repassword: ""
+      },
       memberInfo: {
         id: null,
         email: "",
         avatar: "",
       },
-      verifyMemberInfo: null,
+      verifyMemberEmail: null,
       avatarFile: null,
       // light box state
       isEditBoxOpen: false,
       isErrorBoxOpen: false,
-      isVerifyResultBoxOpen: false
+      isVerifyResultBoxOpen: false,
+      isResetPasswordResultBoxOpen: false,
     }
   },
   getters: {
@@ -116,10 +124,31 @@ export const useMemberStore = defineStore("member", {
         return error.response.data
       }
     },
-    async verifyEmail() {
-      if (!this.verifyMemberInfo) return
+    async verifyEmail(email) {
+      if (!email) return
       try {
-        const result = await this.$axios.api.apiVerifyEmail(this.verifyMemberInfo)
+        const result = await this.$axios.api.apiVerifyEmail({ email })
+        return result.data
+      } catch (error) {
+        console.log("error", error);
+        return error.response.data
+      }
+    },
+    async resetPasswordEmail(email) {
+      if (!email) return
+      try {
+        const result = await this.$axios.api.apiResetPasswordEmail({ email })
+        return result.data
+      } catch (error) {
+        console.log("error", error);
+        return error.response.data
+      }
+    },
+    async resetPasswordandler(token) {
+      if (!token) return
+      try {
+        const params = this.resetPasswordParams
+        const result = await this.$axios.api.apiResetPassword(token, params)
         return result.data
       } catch (error) {
         console.log("error", error);

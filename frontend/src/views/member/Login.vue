@@ -10,7 +10,7 @@ import LightBox from "@/components/common/LightBox.vue"
 const router = useRouter()
 const memberStore = useMemberStore()
 const { isErrorBoxOpen, isVerifyResultBoxOpen } = storeToRefs(memberStore)
-const verifyMsg = ref(false)
+const verifyMsg = ref("")
 
 async function submitHandler(formParams) {
   memberStore.loginParams = formParams
@@ -20,13 +20,13 @@ async function submitHandler(formParams) {
 
   // 登入失敗，信箱未驗證 -> lightbox 請 user 驗證
   if (result.error && result.error === "信箱尚未驗證") {
-    memberStore.verifyMemberInfo = result.data
+    memberStore.verifyMemberEmail = result.data.email
     memberStore.isErrorBoxOpen = true
   }
 }
 
 async function sendVerifyEmail() {
-  const result = await memberStore.verifyEmail()
+  const result = await memberStore.verifyEmail(memberStore.verifyMemberEmail)
   memberStore.isErrorBoxOpen = false
   memberStore.clearLoginParams()
   

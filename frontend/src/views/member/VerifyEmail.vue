@@ -2,7 +2,6 @@
 import { onMounted, onBeforeUnmount, ref } from "vue"
 import { useRoute, useRouter } from 'vue-router';
 import { useMemberStore } from "@/stores/member"
-import { set } from "date-fns";
 
 const router = useRouter()
 const memberStore = useMemberStore()
@@ -10,7 +9,6 @@ const verifyResult = ref("")
 let redirectTimeout = null
 
 onMounted(async () => {
-  console.log("mounted");
   const routes = useRoute()
   if (!routes.query.token) return router.push({ name: "Login" })
   const token = routes.query.token

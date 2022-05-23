@@ -5,29 +5,25 @@ import { storeToRefs } from 'pinia'
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
 import InputAccount from "@/components/form/InputAccount.vue";
-import InputPassword from "@/components/form/InputPassword.vue";
 
 const memberStore = useMemberStore()
-const { loginParams } = storeToRefs(memberStore)
-
+const { forgotPasswordParams } = storeToRefs(memberStore)
 const emit = defineEmits(["submitHandler"])
 
 const { errors } = useInputValidator()
-const { isSignInBtnDisabled } = useSubmitBtnState(unref(loginParams), errors)
+const { isSignInBtnDisabled } = useSubmitBtnState(unref(forgotPasswordParams), errors)
 
 function submitHandler() {
-  emit("submitHandler", loginParams)
+  emit("submitHandler")
 }
 
 </script>
 <template>
   <form @submit.prevent="submitHandler" class="h-full flex flex-col items-start" novalidate>
-    <InputAccount v-model:email="memberStore.loginParams.email"></InputAccount>
-    <InputPassword v-model:password="memberStore.loginParams.password"></InputPassword>
+    <InputAccount v-model:email="memberStore.forgotPasswordParams.email"></InputAccount>
 
     <div class="flex items-center mt-auto">
-      <button :disabled="isSignInBtnDisabled" type="submit" class="block px-4 py-2 shadow-lg">Submit</button>
-      <router-link class="pl-4 py-2" :to="{ name: 'ForgotPassword' }">忘記密碼？</router-link>
+      <button :disabled="isSignInBtnDisabled" type="submit" class="block px-4 py-2 shadow-lg">發送驗證信</button>
     </div>
   </form>
 </template>

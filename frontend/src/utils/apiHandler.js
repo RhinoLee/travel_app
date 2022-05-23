@@ -125,7 +125,7 @@ export default {
         },
         apiVerifyMember: (token) => {
           const instance = $axios.instances.memberRequest()
-          return instance.get("/verifyMember", {
+          return instance.post("/verifyMember", null, {
             headers: {
               "Authorization": `Bearer ${token}`
             }
@@ -134,6 +134,18 @@ export default {
         apiVerifyEmail: (params) => {
           const instance = $axios.instances.memberRequest()
           return instance.post("/verifyEmail", params)
+        },
+        apiResetPasswordEmail: (params) => {
+          const instance = $axios.instances.memberRequest()
+          return instance.post("/resetPasswordEmail", params)
+        },
+        apiResetPassword: (token, params) => {
+          const instance = $axios.instances.memberRequest()
+          return instance.post("/resetPassword", params, {
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          })
         },
         apiMemberInfo: () => {
           const instance = $axios.instances.memberRequest()
