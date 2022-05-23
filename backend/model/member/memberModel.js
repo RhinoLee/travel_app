@@ -90,6 +90,26 @@ const memberModel = {
       throw error
     }
   },
+  resetPassword: async ({ email, password }) => {
+    const query = {
+      text: `
+        UPDATE member 
+        SET password = $1
+        WHERE email = $2
+        RETURNING id
+      `,
+      values: [password, email]
+    }
+
+    try {
+      const result = await db.query(query)
+      console.log("memberModel.resetPassword result", result);
+      return result
+    } catch (error) {
+      console.log("memberModel.resetPassword error", error);
+      throw error
+    }
+  }
 }
 
 module.exports = memberModel

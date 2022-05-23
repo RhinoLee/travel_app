@@ -22,6 +22,7 @@ const mapSearchRules = require("./validates/mapSearchRules")
 const mapDetailsRules = require("./validates/mapDetailsRules")
 const placeCollectionCreateRules = require("./validates/placeCollectionCreateRules")
 const verifyEmailRules = require("./validates/verifyEmailRules")
+const resetPasswordRules = require("./validates/resetPasswordRules")
 
 
 // controller
@@ -62,8 +63,10 @@ app.patch("/api/avatar",
 )
 
 app.post("/api/refreshToken", refreshTokenRules, validateRequest.validates, memberController.refreshToken)
-app.get("/api/verifyMember", jwtHandler.verifyAccessToken, memberController.verifyMember)
+app.post("/api/verifyMember", jwtHandler.verifyAccessToken, memberController.verifyMember)
 app.post("/api/verifyEmail", verifyEmailRules, validateRequest.validates, memberController.verifyEmail)
+app.post("/api/resetPasswordEmail", verifyEmailRules, validateRequest.validates, memberController.resetPasswordEmail)
+app.post("/api/resetPassword", jwtHandler.verifyAccessToken, resetPasswordRules, validateRequest.validates, memberController.resetPassword)
 // Travel Schedule
 app.post("/api/mainScheduleCreate",
   jwtHandler.verifyAccessToken,

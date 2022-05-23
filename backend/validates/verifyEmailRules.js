@@ -5,10 +5,7 @@ const verifyEmailRules = [
     .notEmpty()
     .withMessage("email欄位必填")
     .isEmail()
-    .withMessage("email格式不符"),
-  body("id")
-    .notEmpty()
-    .withMessage("id欄位必填")
+    .withMessage("email格式不符")
 ]
 
 module.exports = verifyEmailRules

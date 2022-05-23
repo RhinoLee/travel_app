@@ -26,7 +26,7 @@ const memberController = {
         const createResult = await memberModel.createMember(params)
         const id = createResult.rows[0].id
         const verifyEmailToken = await jwtHandler.signAccessToken({ id, email })
-        await sendEmail(email, verifyEmailToken)
+        await sendEmail(email, verifyEmailToken, "verifyEmail")
 
         json = {
           success: true,
@@ -43,7 +43,6 @@ const memberController = {
 
     if (findMemberResult.rows.length < 1) return responseHandler.responseErr(res, "member 不存在", 404)
     if (!findMemberResult.rows[0].verified) return responseHandler.responseErr(res, "信箱尚未驗證", 400, {
-      id: findMemberResult.rows[0].id,
       email: findMemberResult.rows[0].email,
     })
 
@@ -148,14 +147,60 @@ const memberController = {
   },
   verifyEmail: async (req, res) => {
     try {
-      const { id, email } = req.body
+      const { email } = req.body
+      const findMemberResult = await memberModel.findMemberByEmail(req.body.email)
+      const id = findMemberResult.rows[0].id
+
       const verifyEmailToken = await jwtHandler.signAccessToken({ id, email })
-      await sendEmail(email, verifyEmailToken)
+      await sendEmail(email, verifyEmailToken, "verifyEmail")
 
       json = {
         success: true,
       }
       return res.status(200).json(json)
+    } catch (error) {
+      return responseHandler.catchErr(res, error)
+    }
+  },
+  resetPasswordEmail: async (req, res) => {
+    try {
+      const { email } = req.body
+      const findMemberResult = await memberModel.findMemberByEmail(req.body.email)
+      const id = findMemberResult.rows[0].id
+
+      const verifyEmailToken = await jwtHandler.signAccessToken({ id, email })
+      await sendEmail(email, verifyEmailToken, "resetPassword")
+
+      json = {
+        success: true,
+      }
+      return res.status(200).json(json)
+    } catch (error) {
+      return responseHandler.catchErr(res, error)
+    }
+  },
+  resetPassword: async (req, res) => {
+    try {
+      const { email } = req.jwtData
+      const { password } = req.body
+      // 密碼加密後存入 DB
+      const saltRounds = 10;
+      bcrypt.hash(password, saltRounds, async (err, hash) => {
+        if (err) return responseHandler.catchErr(res, err)
+        try {
+          const resetPasswordResult = await memberModel.resetPassword({ email, password: hash })
+          const id = resetPasswordResult.rows[0].id
+
+          json = {
+            success: true,
+            userId: id
+          }
+          return res.status(200).json(json)
+        } catch (error) {
+          return responseHandler.catchErr(res, error)
+        }
+      })
+
     } catch (error) {
       return responseHandler.catchErr(res, error)
     }
