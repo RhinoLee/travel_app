@@ -46,14 +46,14 @@ app.post("/api/placeDetail", jwtHandler.verifyAccessToken, mapDetailsRules, vali
 app.post("/api/getDirections", jwtHandler.verifyAccessToken, mapDerectionsRules, validateRequest.validates, mapController.getDirections)
 
 // Member
-app.post("/api/memberRegister",
+app.post("/api/member/register",
   registerRules,
   validateRequest.validates,
   memberController.register
 )
 
-app.post("/api/memberLogin", loginRules, validateRequest.validates, memberController.login)
-app.get("/api/memberInfo", jwtHandler.verifyAccessToken, memberController.getMemberInfo)
+app.post("/api/member/login", loginRules, validateRequest.validates, memberController.login)
+app.get("/api/member/memberInfo", jwtHandler.verifyAccessToken, memberController.getMemberInfo)
 // app.patch("/api/memberInfo", jwtHandler.verifyAccessToken, memberController.updateMemberInfo)
 app.patch("/api/avatar",
   jwtHandler.verifyAccessToken,
@@ -62,11 +62,11 @@ app.patch("/api/avatar",
   memberController.updateMemberAvatar
 )
 
-app.post("/api/refreshToken", refreshTokenRules, validateRequest.validates, memberController.refreshToken)
-app.post("/api/verifyMember", jwtHandler.verifyAccessToken, memberController.verifyMember)
-app.post("/api/verifyEmail", verifyEmailRules, validateRequest.validates, memberController.verifyEmail)
-app.post("/api/resetPasswordEmail", verifyEmailRules, validateRequest.validates, memberController.resetPasswordEmail)
-app.post("/api/resetPassword", jwtHandler.verifyAccessToken, resetPasswordRules, validateRequest.validates, memberController.resetPassword)
+app.post("/api/member/refreshToken", refreshTokenRules, validateRequest.validates, memberController.refreshToken)
+app.post("/api/member/verifyMember", jwtHandler.verifyAccessToken, memberController.verifyMember)
+app.post("/api/member/verifyEmail", verifyEmailRules, validateRequest.validates, memberController.verifyEmail)
+app.post("/api/member/resetPasswordEmail", verifyEmailRules, validateRequest.validates, memberController.resetPasswordEmail)
+app.post("/api/member/resetPassword", jwtHandler.verifyAccessToken, resetPasswordRules, validateRequest.validates, memberController.resetPassword)
 // Travel Schedule
 app.post("/api/mainScheduleCreate",
   jwtHandler.verifyAccessToken,
