@@ -66,7 +66,7 @@ export default {
         },
         memberRequest: () => {
           const axiosInstance = axios.create({
-            baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/`
+            baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/member`
           })
 
           $axios.addLoadingInterceptor(axiosInstance)
@@ -117,11 +117,11 @@ export default {
         },
         apiRegister: (params) => {
           const instance = $axios.instances.memberRequest()
-          return instance.post("/memberRegister", params)
+          return instance.post("/register", params)
         },
         apiLogin: (params) => {
           const instance = $axios.instances.memberRequest()
-          return instance.post("/memberLogin", params)
+          return instance.post("/login", params)
         },
         apiVerifyMember: (token) => {
           const instance = $axios.instances.memberRequest()
