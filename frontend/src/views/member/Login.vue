@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 import { useMemberStore } from "@/stores/member"
 import { storeToRefs } from 'pinia'
 import { useRouter } from "vue-router"
@@ -39,6 +39,10 @@ async function sendVerifyEmail() {
 function hideBox(boxname) {
   memberStore[boxname] = false
 }
+
+onMounted(() => {
+  if (memberStore.isLogin) return router.push({ name: "MainSchedules" })
+})
 
 </script>
 <template>

@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from "vue"
 import { useMemberStore } from "@/stores/member"
 import { useRouter } from "vue-router"
 import RegisterForm from "@/components/form/RegisterForm.vue";
