@@ -60,8 +60,12 @@ const router = createRouter({
   ]
 })
 
+const withoutAuthList = [
+  "Register", "VerifyEmail", "ForgotPassword", "ResetPassword"
+]
+
 router.beforeEach(async (to, from) => {
-  if (to.name !== "Register" && to.name !== "VerifyEmail" && to.name !== "ForgotPassword" && to.name !== "ResetPassword") {
+  if (withoutAuthList.findIndex(routeName => routeName === to.name) === -1) {
     const memberStore = useMemberStore()
     const result = await memberStore.getMemberInfo()
     if (to.name !== "Login" && !result) return { name: "Login" }
