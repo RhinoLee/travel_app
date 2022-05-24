@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from "vue"
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from "vue"
 import robot from "@/assets/images/png/robot.png"
 import useInputValidator from "@/composition-api/useInputValidator"
 
@@ -27,7 +27,7 @@ const inputParams = {
   value: ""
 }
 
-const { errors, validateSingeImageInput } = useInputValidator()
+const { errors, validateInit, validateSingeImageInput } = useInputValidator()
 
 const validateInput = () => {
   validateSingeImageInput(inputParams);
@@ -71,6 +71,10 @@ function clearInput() {
 
 onMounted(() => {
   validateInput()
+})
+
+onBeforeUnmount(() => {
+  validateInit()
 })
 
 </script>

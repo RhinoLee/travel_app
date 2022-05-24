@@ -4,6 +4,12 @@ import { isEmpty, isEmail, isRepeatCorrect, isImageFormat, isSizeUnderLimit } fr
 const errors = reactive({})
 
 export default function useInputValidator() {
+  const validateInit = () => {
+    for(let key in errors){
+      delete errors[key];
+    }
+  }
+
   const validateAccountInput = ({ inputName, inputKey, value }) => {
     errors[inputKey] = isEmpty(inputName, value) ? isEmpty(inputName, value) : isEmail(inputName, value);
   }
@@ -24,5 +30,5 @@ export default function useInputValidator() {
     errors[inputKey] = ""
   }
 
-  return { errors, validateAccountInput, validatePasswordInput, validatePasswordIRepeatnput, validateSingeImageInput }
+  return { errors, validateInit, validateAccountInput, validatePasswordInput, validatePasswordIRepeatnput, validateSingeImageInput }
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { watch } from "vue"
+import { onBeforeUnmount, watch } from "vue"
 import useInputValidator from "@/composition-api/useInputValidator"
 
 const props = defineProps({
@@ -22,11 +22,15 @@ watch(
   }
 )
 
-const { errors, validateAccountInput } = useInputValidator()
+const { errors, validateInit, validateAccountInput } = useInputValidator()
 const validateInput = () => {
   validateAccountInput(inputParams);
   emit("update:email", inputParams.value);
 }
+
+onBeforeUnmount(() => {
+  validateInit()
+})
 
 </script>
 <template>

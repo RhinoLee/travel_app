@@ -1,5 +1,5 @@
 <script setup>
-import { watch } from "vue"
+import { watch, onBeforeUnmount } from "vue"
 import useInputValidator from "@/composition-api/useInputValidator"
 
 const props = defineProps({
@@ -24,11 +24,15 @@ watch(
   }
 )
 
-const { errors, validatePasswordIRepeatnput } = useInputValidator()
+const { errors, validateInit, validatePasswordIRepeatnput } = useInputValidator()
 const validateInput = () => {
   validatePasswordIRepeatnput(inputParams, props.password);
   emit("update:repassword", inputParams.value);
 }
+
+onBeforeUnmount(() => {
+  validateInit()
+})
 
 </script>
 <template>
