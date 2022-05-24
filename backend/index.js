@@ -55,7 +55,7 @@ app.post("/api/member/register",
 app.post("/api/member/login", loginRules, validateRequest.validates, memberController.login)
 app.get("/api/member/memberInfo", jwtHandler.verifyAccessToken, memberController.getMemberInfo)
 // app.patch("/api/memberInfo", jwtHandler.verifyAccessToken, memberController.updateMemberInfo)
-app.patch("/api/avatar",
+app.patch("/api/member/avatar",
   jwtHandler.verifyAccessToken,
   upload.single('avatar'), 
   imageRules,
