@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from "@/views/Home.vue"
 import Login from "@/views/member/Login.vue"
+import AddMainSchedule from "@/views/travel/AddMainSchedule.vue"
 import { useMemberStore } from "@/stores/member"
 
 const router = createRouter({

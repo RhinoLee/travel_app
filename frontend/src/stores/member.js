@@ -29,6 +29,7 @@ export const useMemberStore = defineStore("member", {
         id: null,
         email: "",
         avatar: "",
+        nickName: "",
       },
       verifyMemberEmail: null,
       avatarFile: null,
@@ -42,6 +43,14 @@ export const useMemberStore = defineStore("member", {
   getters: {
     avatarSrc() {
       return this.memberInfo.avatar ? this.memberInfo.avatar : robot
+    },
+    memberName() {
+      if (!this.memberInfo) return ""
+      if (this.memberInfo.nickName) return this.memberInfo.nickName
+      if (this.memberInfo.email) {
+        const account = this.memberInfo.email.split("@")[0]
+        return account
+      }
     }
   },
   actions: {

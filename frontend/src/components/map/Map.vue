@@ -97,6 +97,7 @@ function initMap() {
   map.data = new google.maps.Map(document.getElementById("map"), {
     center: taiwanCenter,
     zoom: mapDefaultZoom,
+    disableDefaultUI: true,
   });
 }
 

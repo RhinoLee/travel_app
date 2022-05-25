@@ -4,6 +4,7 @@ export const useCommonStore = defineStore("common", {
   state: () => {
     return {
       isLoading: false,
+      isMenuOpen: false
     }
   },
   getters: {
@@ -12,6 +13,9 @@ export const useCommonStore = defineStore("common", {
   actions: {
     trigger(val) {
       this.isLoading = val
+    },
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen
     }
   }
 })

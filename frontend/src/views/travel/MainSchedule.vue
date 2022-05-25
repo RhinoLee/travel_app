@@ -107,12 +107,12 @@ onUnmounted(() => {
 <template>
   <div>
     <div class="flex relative">
-      <!-- 左側面板 -->
-      <div class="relative w-[30%] h-screen overflow-scroll bg-sky-800 no-scrollbar
+      <!-- 左側行程面板 -->
+      <div class="relative w-[30%] lg:max-w-[380px] h-screen border-r-[2px] border-travel-green px-[25px] bg-white overflow-scroll no-scrollbar
       ">
-        <div class="px-[20px]">
+        <div>
           <SearchPlace class="mt-8" @searchTextHandler="searchTextHandler"></SearchPlace>
-          <h1 class="font-bold mb-[20px] mt-[40px] text-white">{{ mainScheduleInfo.title }}</h1>
+          <h2 class="mb-[8px] text-travel-textgreen text-[24px]">{{ mainScheduleInfo.title }}</h2>
           <!-- 天數列表 -->
           <ScheduleDates></ScheduleDates>
           <!-- 行程列表 -->
@@ -124,7 +124,7 @@ onUnmounted(() => {
           </ScheduleList>
         </div>
       </div>
-      <!-- 詳細資訊面板 -->
+      <!-- 地點詳細資訊面板 -->
       <PlaceDetailPanel 
         :placeDetail="placeInfoComputed"
         @addLocateToSchedule="addLocateToSchedule" 
@@ -134,7 +134,7 @@ onUnmounted(() => {
       >
       </PlaceDetailPanel>
       <!-- 地圖 -->
-      <div class="w-[70%] h-screen">
+      <div class="w-[70%] lg:w-full lg:max-w-[calc(100%-380px)] h-screen">
         <Map :scheduleList="nowSelectSchedule" :locationSearchList="locationSearchList"
           :placeDetail="placeInfoComputed" :directions="directions" @closePanel="closePanel" :placeCollectionsList="placeCollectionsList"></Map>
       </div>
