@@ -100,7 +100,7 @@ const memberController = {
       const memberResult = await memberModel.findMemberById(id)
       const originAvatar = memberResult.rows[0].avatar
       if (originAvatar) {
-        const deleteResult = await deleteCloudImage({ userId: id, avatarLink: originAvatar, category })
+        const deleteResult = await deleteCloudImage({ userId: id, fileLink: originAvatar, category })
       }
 
       const imageUrl = await uploadCloudImage(file, id, category)

@@ -1,10 +1,10 @@
 const db = require("../db")
 const mainScheduleModel = {
-  create: async ({ title, startDate, endDate, memberId }) => {
+  create: async ({ title, startDate, endDate, member_id }) => {
     const query = {
       text: `INSERT INTO main_schedule (title, start_date, end_date, member_id)
             VALUES($1, $2, $3, $4) RETURNING *`,
-      values: [title, startDate, endDate, memberId]
+      values: [title, startDate, endDate, member_id]
     }
 
     try {
@@ -29,8 +29,26 @@ const mainScheduleModel = {
   },
   getSchedule: async (schedule_id) => {
     const query = {
-      text: "SELECT * from main_schedule WHERE id = $1",
+      text: "SELECT id, title, start_date, end_date, member_id, picture from main_schedule WHERE id = $1",
       values: [schedule_id]
+    }
+
+    try {
+      const result = await db.query(query)
+      return result
+    } catch (err) {
+      return err
+    }
+  },
+  update: async ({ member_id, main_schedule_id, startDate, endDate, title, imageUrl }) => {
+    const query = {
+      text: `
+      UPDATE main_schedule 
+      SET title = $1, start_date = $2, end_date = $3, picture = COALESCE($4, picture)
+      WHERE id = $5 AND member_id = $6
+      RETURNING *
+      `,
+      values: [title, startDate, endDate, imageUrl, main_schedule_id, member_id]
     }
 
     try {

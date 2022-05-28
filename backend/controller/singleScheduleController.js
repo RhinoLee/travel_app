@@ -6,8 +6,8 @@ const singleScheduleController = {
     try {
       const location = req.location
       const member_id = req.jwtData.id
-      const { title, place_name, place_id, date, start_time, end_time, main_schedule_id } = req.body
-      const result = await singleScheduleModel.create({ title, place_name, place_id, date, start_time, end_time, location, member_id, main_schedule_id })
+      const { title, place_name, place_id, date, start_time, end_time, day_order, main_schedule_id } = req.body
+      const result = await singleScheduleModel.create({ title, place_name, place_id, date, start_time, end_time, location, member_id, day_order, main_schedule_id })
       console.log("singleScheduleController.create result", result);
       if (result && result.rows.length === 1) {
         return responseHandler.success(res, { id: result.rows[0] })
@@ -19,30 +19,41 @@ const singleScheduleController = {
       return responseHandler.catchErr(res, error)
     }
   },
-  getAllSchedules: async (req, res) => {
-    try {
-      const member_id = req.jwtData.id
-      const main_schedule_id = req.params.id
-      const result = await singleScheduleModel.getAllSchedules({ member_id, main_schedule_id })
-      if (result && result.rows.length >= 0) {
-        return responseHandler.success(res, { mainScheduleList: result.rows })
-      }
-
-      responseHandler.responseErr(res, "取得資料失敗")
-
-    } catch (error) {
-      return responseHandler.catchErr(res, error)
-    }
-  },
   update: async (req, res) => {
     try {
       const member_id = req.jwtData.id
       const result = await singleScheduleModel.update(req.body, member_id)
-      console.log("singleScheduleController.update result", result);
       if (result && result.rows.length === 1) {
         return responseHandler.success(res, { id: result.rows[0] })
       }
-    } catch(error) {
+    } catch (error) {
+      console.log("singleScheduleController.update error", error);
+      return responseHandler.catchErr(res, error)
+    }
+  },
+  updateDate: async (req, res) => {
+    try {
+      const member_id = req.jwtData.id
+      const { dates, main_schedule_id } = req.body
+      let promises = []
+
+      dates.forEach((date, idx) => {
+        promises.push(singleScheduleModel.updateDate(
+          {
+            date: date.date,
+            day_order: idx + 1,
+            main_schedule_id,
+            member_id
+          }
+        ))
+      })
+
+      const result = await Promise.all(promises)
+      console.log("singleScheduleController.update result", result);
+      if (result) {
+        return responseHandler.success(res)
+      }
+    } catch (error) {
       console.log("singleScheduleController.update error", error);
       return responseHandler.catchErr(res, error)
     }
@@ -56,7 +67,7 @@ const singleScheduleController = {
       if (result && result.rows.length === 1) {
         return responseHandler.success(res, result.rows[0])
       }
-    } catch(error) {
+    } catch (error) {
       console.log("singleScheduleController.delete error", error);
       return responseHandler.catchErr(res, error)
     }

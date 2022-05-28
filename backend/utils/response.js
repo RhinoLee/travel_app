@@ -22,6 +22,27 @@ const responseHandler = {
       error: "資料庫存取失敗"
     }
     return res.status(500).json(json);
+  },
+  formatSchedule: (scheduleList) => {
+    // console.log("formatSchedule scheduleList", scheduleList);
+    let list = []
+    let dateList = []
+    scheduleList.forEach(schedule => {
+      dateList.push(schedule.date)
+    })
+
+    const uniqueDateList = [...new Set(dateList)]
+
+    uniqueDateList.forEach(date => {
+      let obj = {}
+      obj.date = date
+      obj.scheduleList = scheduleList.filter(schedule => schedule.date === date)
+      list.push(obj)
+    })
+
+    console.log("formatSchedule result", list);
+    return list
+
   }
 }
 

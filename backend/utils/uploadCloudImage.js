@@ -3,7 +3,9 @@ const bucket = storage.bucket('rhinoman-travel-bucket')
 
 const uploadCloudImage = (file, userId, category) => new Promise((resolve, reject) => {
   const { originalname, buffer } = file
-  const bucketFile = bucket.file(`user_${userId}/${category}/${originalname}`);
+  const folder = process.env.NODE_ENV === "development" ? "test/" : "" 
+  console.log("folder", folder)
+  const bucketFile = bucket.file(`${folder}user_${userId}/${category}/${originalname}`);
   const bucketFileStream = bucketFile.createWriteStream({
     resumable: false
   })

@@ -1,4 +1,4 @@
-const imageRules = (req, res, next) => {
+const avatarRules = (req, res, next) => {
   let json;
   if (!req.file) {
     json = {
@@ -29,4 +29,4 @@ const imageRules = (req, res, next) => {
   next()
 }
 
-module.exports = imageRules
+module.exports = avatarRules

@@ -1,9 +1,6 @@
 const { body } = require("express-validator");
 
 const mainScheduleRules = [
-  body("memberId")
-    .notEmpty()
-    .withMessage("memberId 欄位必填"),
   body("startDate")
     .isISO8601()
     .withMessage("時間格式不符"),

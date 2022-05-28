@@ -34,7 +34,16 @@ const singleScheduleCreateRules = [
     .withMessage("end_time 欄位必填")
     .matches(/([0-9]|1\d|2[0-3]):([1-5]{2}|6[0]|[0-9])/)
     .withMessage("end_time 格式不符"),
-  
+  body("day_order")
+    .notEmpty()
+    .withMessage("day_order 欄位必填")
+    .custom((value, { req }) => {
+      // 判斷數字或浮點數
+      if (Number.isInteger(value) && value > 0) return true
+
+      throw new Error("day_order 格式不符")
+    })
+    .withMessage("day_order 格式不符"),
   body("location")
     .notEmpty()
     .withMessage("location 欄位必填")

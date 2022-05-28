@@ -1,10 +1,11 @@
 const storage = require('./config/cloudStorage')
 const bucket = storage.bucket('rhinoman-travel-bucket')
 
-const deleteCloudImage = ({ userId, avatarLink, category }) => new Promise(async (resolve, reject) => {
-  const arr = avatarLink.split("/")
+const deleteCloudImage = ({ userId, fileLink, category }) => new Promise(async (resolve, reject) => {
+  const arr = fileLink.split("/")
   const imageName = arr[arr.length - 1]
-  const dbAvatarName = `user_${userId}/${category}/${imageName}`
+  const folder = process.env.NODE_ENV === "development" ? "test/" : ""
+  const dbAvatarName = `${folder}user_${userId}/${category}/${imageName}`
 
   const [files] = await storage.bucket(bucket.name).getFiles();
 

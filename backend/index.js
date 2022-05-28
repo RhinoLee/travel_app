@@ -13,7 +13,8 @@ const jwtHandler = require("./utils/jwtHandler.js")
 const registerRules = require("./validates/registerRules")
 const loginRules = require("./validates/loginRules")
 const refreshTokenRules = require("./validates/refreshTokenRules")
-const imageRules = require("./validates/imageRules")
+const avatarRules = require("./validates/avatarRules")
+const mainSchedulePictureRules = require("./validates/mainSchedulePictureRules")
 const mainScheduleRules = require("./validates/mainScheduleRules")
 const singleScheduleCreateRules = require("./validates/singleScheduleCreateRules")
 const singleScheduleUpdateRules = require("./validates/singleScheduleUpdateRules")
@@ -55,10 +56,10 @@ app.post("/api/member/register",
 app.post("/api/member/login", loginRules, validateRequest.validates, memberController.login)
 app.get("/api/member/memberInfo", jwtHandler.verifyAccessToken, memberController.getMemberInfo)
 // app.patch("/api/memberInfo", jwtHandler.verifyAccessToken, memberController.updateMemberInfo)
-app.patch("/api/member/avatar",
+app.put("/api/member/avatar",
   jwtHandler.verifyAccessToken,
   upload.single('avatar'), 
-  imageRules,
+  avatarRules,
   memberController.updateMemberAvatar
 )
 
@@ -75,6 +76,15 @@ app.post("/api/mainScheduleCreate",
   mainScheduleController.create
 )
 
+app.put("/api/mainScheduleUpdate/:id",
+  jwtHandler.verifyAccessToken,
+  upload.single('picture'),
+  mainScheduleRules,
+  mainSchedulePictureRules,
+  validateRequest.validates,
+  mainScheduleController.update
+)
+
 app.post("/api/singleScheduleCreate",
   jwtHandler.verifyAccessToken,
   singleScheduleCreateRules,
@@ -83,11 +93,16 @@ app.post("/api/singleScheduleCreate",
   singleScheduleController.create
 )
 
-app.patch("/api/singleSchedule/:id",
+app.put("/api/singleSchedule/:id",
   jwtHandler.verifyAccessToken,
   singleScheduleUpdateRules,
   validateRequest.validates,
   singleScheduleController.update
+)
+
+app.put("/api/singleSchedule_date",
+  jwtHandler.verifyAccessToken,
+  singleScheduleController.updateDate
 )
 
 app.delete("/api/singleSchedule/:id",
@@ -97,7 +112,6 @@ app.delete("/api/singleSchedule/:id",
 
 app.get("/api/mainSchedules", jwtHandler.verifyAccessToken, mainScheduleController.getAllSchedules)
 app.get("/api/mainSchedule/:id", jwtHandler.verifyAccessToken, mainScheduleController.getSchedule)
-app.get("/api/mainSchedule/:id/singleSchedules", jwtHandler.verifyAccessToken, singleScheduleController.getAllSchedules)
 
 // place_collection
 app.post("/api/placeCollection",
