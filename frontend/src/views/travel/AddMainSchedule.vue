@@ -6,9 +6,9 @@ import { useTravelStore } from "@/stores/travel/travel"
 
 const router = useRouter()
 const travelStore = useTravelStore()
-const { dutationDays, addMainScheduleParams } = storeToRefs(travelStore)
+const { durationDays, addMainScheduleParams } = storeToRefs(travelStore)
 
-async function updateDate({ startDate, endDate }) {
+function updateDate({ startDate, endDate }) {
   travelStore.addMainScheduleParams.startDate = startDate
   travelStore.addMainScheduleParams.endDate = endDate
 }
@@ -35,7 +35,7 @@ async function addMainSchedule() {
           </div>
         </div>
       </form>
-      <div v-if="dutationDays" class="total">總天數：{{ dutationDays + 1 }}天{{ dutationDays }}夜</div>
+      <div v-if="durationDays" class="total">總天數：{{ durationDays }}天{{ durationDays }}夜</div>
       <div class="mt-4">
         <button @click="addMainSchedule" class="px-3 py-1 border">新增旅程</button>
       </div>

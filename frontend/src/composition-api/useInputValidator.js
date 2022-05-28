@@ -5,7 +5,7 @@ const errors = reactive({})
 
 export default function useInputValidator() {
   const validateInit = () => {
-    for(let key in errors){
+    for (let key in errors) {
       delete errors[key];
     }
   }
@@ -22,13 +22,17 @@ export default function useInputValidator() {
     errors[inputKey] = isEmpty(inputName, value) ? isEmpty(inputName, value) : isRepeatCorrect(inputName, value, password)
   }
 
+  const validateTitleInput = ({ inputName, inputKey, value }) => {
+    errors[inputKey] = isEmpty(inputName, value)
+  }
+
   const validateSingeImageInput = ({ inputName, inputKey, value }) => {
     if (isEmpty(inputName, value)) return errors[inputKey] = isEmpty(inputName, value)
     if (isImageFormat(inputName, value)) return errors[inputKey] = isImageFormat(inputName, value)
     if (isSizeUnderLimit(inputName, value)) return errors[inputKey] = isSizeUnderLimit(inputName, value)
-    
+
     errors[inputKey] = ""
   }
 
-  return { errors, validateInit, validateAccountInput, validatePasswordInput, validatePasswordIRepeatnput, validateSingeImageInput }
+  return { errors, validateInit, validateAccountInput, validatePasswordInput, validateTitleInput, validatePasswordIRepeatnput, validateSingeImageInput }
 }

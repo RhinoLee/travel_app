@@ -1,10 +1,15 @@
 <script setup>
-import { ref } from "vue"
+import { onBeforeUnmount, onMounted, ref, watch } from "vue"
+import { storeToRefs } from 'pinia'
+import { useTravelStore } from "@/stores/travel/travel"
 import DefaultImage from "@/components/common/DefaultImage.vue"
 import iconAction from "@/assets/images/svg/icon_action.svg"
 import iconDelete from "@/assets/images/svg/icon_delete.svg"
 import iconUpload from "@/assets/images/svg/icon_upload.svg"
 import iconCopy from "@/assets/images/svg/icon_copy.svg"
+
+const travelStore = useTravelStore()
+const { nowMainScheduleId, isEditMainScheduleBoxOpen } = storeToRefs(travelStore)
 
 const props = defineProps({
   mainSchedule: {
@@ -12,8 +17,49 @@ const props = defineProps({
   }
 })
 
-const isActionsOepn = ref(false)
+watch(
+  nowMainScheduleId,
+  (newVal) => {
+    // 開啟區塊的 action 列表，並關閉其他區塊 action 列表
+    if (newVal !== props.mainSchedule.id) isActionsOpen.value = false
+  }
+)
 
+watch(
+  isEditMainScheduleBoxOpen,
+  (newVal) => {
+    // 編輯光箱關閉，關閉 action 列表
+    if (!newVal) isActionsOpen.value = false
+  }
+)
+
+const isActionsOpen = ref(false)
+
+function closeActions() {
+  if (travelStore.nowMainScheduleId === null || isEditMainScheduleBoxOpen) return
+  travelStore.nowMainScheduleId = null
+  isActionsOpen.value = false
+}
+
+function toggleActions() {
+  travelStore.nowMainScheduleId = props.mainSchedule.id
+  isActionsOpen.value = !isActionsOpen.value
+}
+
+async function editMainSchedule() {
+  travelStore.nowMainScheduleId = props.mainSchedule.id
+  const result = await travelStore.getMainSchedule()
+  travelStore.isEditMainScheduleBoxOpen = true
+}
+
+onMounted(() => {
+  window.addEventListener("click", (e) => closeActions(e))
+})
+
+onBeforeUnmount(() => {
+  closeActions()
+  window.removeEventListener("click", closeActions)
+})
 
 
 </script>
@@ -24,13 +70,13 @@ const isActionsOepn = ref(false)
     hover:after:opacity-100
   ">
     <div class="relative rounded-[10px] bg-white shadow overflow-hidden">
-      <button @click="isActionsOepn = !isActionsOepn" class="absolute top-[12px] right-[12px] w-[26px] cursor-pointer z-10"><img :src="iconAction" class="w-full h-auto" alt="動作"></button>
+      <button @click.stop="toggleActions" class="absolute top-[12px] right-[12px] w-[26px] cursor-pointer z-10"><img :src="iconAction" class="w-full h-auto" alt="動作"></button>
       <!-- 動作選單 -->
-      <div :class="{ 'block': isActionsOepn, 'hidden': !isActionsOepn }" class="absolute top-[36px] right-[12px] py-[8px] px-[6px] w-[140px] bg-white shadow-md rounded-[5px] overflow-hidden z-10">
+      <div :class="{ 'block': isActionsOpen, 'hidden': !isActionsOpen }" class="absolute top-[36px] right-[12px] py-[8px] px-[6px] w-[140px] bg-white shadow-md rounded-[5px] overflow-hidden z-10">
         <ul class="w-full">
-          <li class="actionlist-item">
+          <li @click.stop="editMainSchedule" class="actionlist-item">
             <div class="w-[16px]"><img class="w-full h-auto" :src="iconUpload"></div>
-            <div class="ml-[6px] text-[14px] tracking-wider">上傳封面</div>
+            <div class="ml-[6px] text-[14px] tracking-wider">編輯行程</div>
           </li>
           <li class="actionlist-item">
             <div class="w-[16px]"><img class="w-full h-auto" :src="iconCopy"></div>
@@ -45,7 +91,7 @@ const isActionsOepn = ref(false)
       </div>
       <!-- 圖片 -->
       <div>
-        <DefaultImage></DefaultImage>
+        <DefaultImage :picture="mainSchedule.picture"></DefaultImage>
       </div>
       <!-- 卡片文字 -->
       <router-link :to="{ name: 'MainSchedule', params: { mainScheduleId: mainSchedule.id } }" class="block">
@@ -54,7 +100,7 @@ const isActionsOepn = ref(false)
             <p>{{ mainSchedule.title }}</p>
           </div>
           <div>
-            <p>{{ mainSchedule.start_date }} ~ {{ mainSchedule.end_date }}</p>
+            <p>{{ mainSchedule.startDate }} ~ {{ mainSchedule.endDate }}</p>
           </div>
         </div>
       </router-link>

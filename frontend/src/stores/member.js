@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 // import { apiRegister, apiLogin, apiMemberInfo, apiRefreshToken } from "@/utils/api/api"
-import { errorHandler } from "../utils/api/errorHandler"
+import { errorHandler } from "@/utils/errorHandler"
 import robot from "@/assets/images/png/robot.png"
 
 export const useMemberStore = defineStore("member", {

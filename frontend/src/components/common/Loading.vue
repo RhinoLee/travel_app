@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject } from "vue"
+import { ref, reactive } from "vue"
 import loadingGIF from "@/assets/images/svg/loading.svg"
 import { useCommonStore } from "@/stores/common"
 import { storeToRefs } from "pinia";

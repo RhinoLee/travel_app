@@ -14,11 +14,11 @@ const props = defineProps({
 const emit = defineEmits(["editLocateToSchedule"])
 
 const travelStore = useTravelStore()
-const { nowSingleScheduleId, nowSelectSingleSchedule } = storeToRefs(travelStore)
+const { nowScheduleId, nowSchedule } = storeToRefs(travelStore)
 
 function selectSchedule(scheduleId, date) {
-  travelStore.nowSingleScheduleId = scheduleId
-  travelStore.nowSingleScheduleDate = date
+  travelStore.nowScheduleId = scheduleId
+  travelStore.nowScheduleDate = date
 }
 
 async function getLocationInfo(placeId, scheduleId, date) {
@@ -64,7 +64,7 @@ function dropHandler(e, schedule, date) {
 
 <template>
   <div>
-    <!-- <pre>{{ nowSelectSingleSchedule }}</pre> -->
+    <!-- <pre>{{ nowSchedule }}</pre> -->
     <div v-for="singleSchedule in props.singleScheduleList" :key="singleSchedule.date"
       class="py-[20px] text-white border-t">
       <div class="font-bold text-lg">
@@ -76,7 +76,7 @@ function dropHandler(e, schedule, date) {
       <div v-for="(schedule, idx) in singleSchedule.scheduleList" :key="idx" class="min-h-[118px]"
         @drop="dropHandler($event, schedule, singleSchedule.date)" @dragenter.prevent @dragover.prevent>
         <div class="px-[14px] py-[10px] mt-[10px] cursor-pointer hover:bg-sky-900 relative schedule"
-          :class="{ 'bg-sky-900': nowSingleScheduleId === schedule.id }"
+          :class="{ 'bg-sky-900': nowScheduleId === schedule.id }"
           @click="getLocationInfo(schedule.place_id, schedule.id, singleSchedule.date)"
           @dragstart="dragStartHandler($event, schedule, singleSchedule.date)" 
           draggable="true">

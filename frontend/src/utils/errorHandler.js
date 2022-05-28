@@ -1,4 +1,4 @@
-import router from "../../router/index"
+import router from "@/router/index"
 import { useMemberStore } from "@/stores/member"
 // import axios from "axios"
 

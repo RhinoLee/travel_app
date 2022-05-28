@@ -1,6 +1,6 @@
 import { useCommonStore } from "@/stores/common"
 import { useMemberStore } from "@/stores/member"
-import { errorHandler } from "@/utils/api/errorHandler"
+import { errorHandler } from "@/utils/errorHandler"
 import axios from "axios"
 export default {
   install(app, { pinia, router }) {
@@ -157,7 +157,7 @@ export default {
         },
         apiUpdateAvatar: (params) => {
           const instance = $axios.instances.memberRequest()
-          return instance.patch("/avatar", params, {
+          return instance.put("/avatar", params, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
               "Content-Type": "multipart/form-data"
@@ -192,6 +192,15 @@ export default {
             },
           })
         },
+        apiUpdateMainSchedule: (id, params) => {
+          const instance = $axios.instances.scheduleRequest()
+          return instance.put(`/mainScheduleUpdate/${id}`, params, {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "multipart/form-data"
+            },
+          })
+        },
         apiGetSingleSchedule: (id) => {
           const instance = $axios.instances.scheduleRequest()
           return instance.get(`/mainSchedule/${id}/singleSchedules`, {
@@ -209,9 +218,17 @@ export default {
           })
         },
         apiUpdateSingleSchedule: (params) => {
-          console.log("apiUpdateSingleSchedule");
           const instance = $axios.instances.scheduleRequest()
-          return instance.patch(`/singleSchedule/${params.id}`, params, {
+          return instance.put(`/singleSchedule/${params.id}`, params, {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+
+          })
+        },
+        apiUpdateSingleScheduleDate: (params) => {
+          const instance = $axios.instances.scheduleRequest()
+          return instance.put(`/singleSchedule_date`, params, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`
             }

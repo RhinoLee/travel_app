@@ -3,6 +3,8 @@ import { storeToRefs } from 'pinia'
 import { useTravelStore } from "@/stores/travel/travel"
 import { onMounted } from '@vue/runtime-core'
 import ScheduleItem from "@/components/travel/ScheduleItem.vue"
+import MainScheduleForm from "@/components/form/MainScheduleForm.vue"
+
 const travelStore = useTravelStore()
 const { mainScheduleList } = storeToRefs(travelStore)
 
@@ -42,4 +44,6 @@ onMounted(() => {
       </div>
     </div>
   </div>
+
+  <MainScheduleForm></MainScheduleForm>
 </template>

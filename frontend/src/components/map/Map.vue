@@ -7,8 +7,8 @@ const travelStore = useTravelStore()
 
 const props = defineProps({
   scheduleList: {
-    type: Object,
-    default: () => ({})
+    type: Array,
+    default: () => ([])
   },
   locationSearchList: {
     type: Array,
@@ -50,7 +50,8 @@ watch(
     removeAllMarkers()
     renderScheduleLocation()
     travelStore.getDirections()
-  }
+  },
+  { immediate: true }
 )
 
 // 偵測目前搜尋的地點
@@ -152,7 +153,7 @@ function setMarker({ location, placeId, icon, title, label, group, animation, sc
     clearMarkersAnitmation()
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setZoom(13, marker.position)
-    if (marker.scheduleId !== null) travelStore.nowSingleScheduleId = marker.scheduleId
+    if (marker.scheduleId !== null) travelStore.nowScheduleId = marker.scheduleId
     const res = await travelStore.getLocationInfo(marker.placeId)
   })
 

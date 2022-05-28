@@ -5,11 +5,13 @@ import { dateHandler } from "@/utils/dateTransform"
 export const useTravelStore = defineStore('travel', {
   state: () => {
     return {
+      // api params start
       addMainScheduleParams: {
         title: "",
         startDate: "",
         endDate: "",
       },
+      editMainScheduleParams: null,
       addScheDuleParams: {
         title: "",
         date: "",
@@ -21,7 +23,8 @@ export const useTravelStore = defineStore('travel', {
         location: {
           lat: null,
           lng: null
-        }
+        },
+        day_order: ""
       },
       editScheDuleParams: {
         id: "",
@@ -29,8 +32,10 @@ export const useTravelStore = defineStore('travel', {
         date: "",
         start_time: "",
         end_time: "",
+        day_order: ""
       },
-      nowMainScheduleId: null,
+      editMainSchedulePicture: null,
+      // api params end
       // 既有總旅程計畫列表
       mainScheduleList: [
         {
@@ -59,23 +64,18 @@ export const useTravelStore = defineStore('travel', {
         },
       ],
       // 總旅程計畫的資訊
-      mainScheduleInfo: {
-        id: 1,
-        pic: "https://picsum.photos/480/260?random=1",
-        title: "花東五天四夜",
-        startDate: "2022-01-01",
-        endDate: "2022-01-05",
-        intro: "內容內容內容內容內容內容內容內容內容內容內容內容內容內容",
-      },
+      mainScheduleInfo: null,
       // 地點搜尋結果列表
       locationSearchList: [],
       // 總旅程計畫底下的每日行程
-      singleScheduleList: [],
-      nowSingleScheduleId: null,
+      allSchedules: [],
+      nowMainScheduleId: null,
+      // 目前選到的 schedule Id
+      nowScheduleId: null,
       // 單日計畫日期
       nowSelectDate: "",
       // 目前點擊 schedule 的日期
-      nowSingleScheduleDate: "",
+      nowScheduleDate: "",
       // 目前選取到地點的相關資訊
       placeDetail: null,
       // 目前收藏的地點
@@ -85,46 +85,43 @@ export const useTravelStore = defineStore('travel', {
         routesPolyline: "",
         routesBounds: "",
       },
-      // routesPolyline: ""
+      // lightbox state
+      isEditMainScheduleBoxOpen: false
     }
   },
   getters: {
-    dutationDays(state) {
+    // 計算總旅程天數
+    durationDays(state) {
       if (!state.addMainScheduleParams.startDate || !state.addMainScheduleParams.endDate) return false
       return dateHandler.calcDurationDays(state.addMainScheduleParams.startDate, state.addMainScheduleParams.endDate)
     },
-    // 該計畫底下的日期選擇列表
-    singleScheduleSelectList(state) {
-      const list = []
-      if (state.singleScheduleList) {
-        state.singleScheduleList.forEach(schedule => {
-          const date = schedule.date
-          const day = dateHandler.getDayOfWeek(date)
-          const obj = {
-            date,
-            day
-          }
+    // 總計畫日期區間 -> 日期列表
+    durationDateList(state) {
+      if (!state.mainScheduleInfo) return []
+      const list = dateHandler.toDaysList(state.mainScheduleInfo.start_date, state.mainScheduleInfo.end_date)
 
-          list.push(obj)
-        })
-      }
+      return list
+    },
+    editDurationDateList(state) {
+      if (!state.editMainScheduleParams) return []
+      const list = dateHandler.toDaysList(state.editMainScheduleParams.startDate, state.editMainScheduleParams.endDate)
 
       return list
     },
     // 被選到的的當日計畫列表（依日期）
-    nowSelectSchedule(state) {
-      let list;
+    nowDateScheduleList(state) {
+      let list = []
       if (state.nowSelectDate) {
-        list = state.singleScheduleList.filter(plan => plan.date === state.nowSelectDate)
+        list = state.allSchedules.filter(plan => plan.date === state.nowSelectDate)
       } else {
-        list = state.singleScheduleList
+        list = state.allSchedules
       }
       return list
     },
     // 收藏地點列表（去除跟計劃點位重複的地點）
     placeCollectionsList(state) {
-      if (!state.nowSelectSchedule[0]) return []
-      const nowSelectScheduleList = state.nowSelectSchedule[0].scheduleList
+      if (!state.nowDateScheduleList[0]) return []
+      const nowSelectScheduleList = state.nowDateScheduleList[0].scheduleList
       if (nowSelectScheduleList.length === 0) return state.placeCollections
 
       let placeCollections = JSON.parse(JSON.stringify(state.placeCollections))
@@ -136,13 +133,32 @@ export const useTravelStore = defineStore('travel', {
       return placeCollections
     },
     // 被選到的單一計畫資訊
-    nowSelectSingleSchedule(state) {
-      let scheduleInfo = null
-      if (Number.isInteger(state.nowSingleScheduleId) && state.nowSingleScheduleDate) {
-        const scheduleList = state.singleScheduleList.filter(plan => plan.date === state.nowSingleScheduleDate)[0].scheduleList
-        scheduleInfo = scheduleList.filter(schedule => schedule.id === state.nowSingleScheduleId)[0]
+    nowSchedule(state) {
+      if (state.allSchedules.length === 0) return null
+      let schedule = null
+      if (Number.isInteger(state.nowScheduleId) && state.nowScheduleDate) {
+        // 先找到該日期
+        const scheduleList = state.allSchedules.filter(plan => plan.date === state.nowScheduleDate)[0].scheduleList
+        // 在針對該日期底下的每筆 schedule 找到目標
+        schedule = scheduleList.filter(schedule => schedule.id === state.nowScheduleId)[0]
       }
-      return scheduleInfo
+      return schedule
+    },
+    // 被選到的單一計畫資訊 - time 整理成 datepicker 需要格式
+    nowScheduleTime(state) {
+      if (!this.nowSchedule) return null
+      const format = [
+        {
+          hours: this.nowSchedule.start_time.split(':')[0],
+          minutes: this.nowSchedule.start_time.split(':')[1]
+        },
+        {
+          hours: this.nowSchedule.end_time.split(':')[0],
+          minutes: this.nowSchedule.end_time.split(':')[1]
+        }
+      ]
+
+      return format
     },
     memberId() {
       const memberStore = useMemberStore()
@@ -168,13 +184,38 @@ export const useTravelStore = defineStore('travel', {
     }
   },
   actions: {
+    // 選取 schedule
+    selectSchedule(scheduleId, date) {
+      this.nowScheduleId = scheduleId
+      this.nowScheduleDate = date
+    },
+    // 取消選取 schedule
+    cancelSelectSchedule() {
+      this.nowScheduleId = null
+      this.nowScheduleDate = ""
+    },
+    // 設定編輯單一行程參數
     setEditScheduleParams() {
-      if (!this.nowSelectSingleSchedule) return
-      const editScheDuleParams = JSON.parse(JSON.stringify(this.nowSelectSingleSchedule))
+      if (!this.nowSchedule) return
+      const editScheDuleParams = JSON.parse(JSON.stringify(this.nowSchedule))
       this.editScheDuleParams = editScheDuleParams
     },
+    // 設定編輯總行程參數
+    setEditMainScheduleParams() {
+      if (!this.nowMainScheduleId) return this.editMainScheduleParams = null
+      const info = this.mainScheduleList.filter(schedule => schedule.id === this.nowMainScheduleId)[0]
+      this.editMainScheduleParams = {}
+      this.editMainScheduleParams.id = info.id
+      this.editMainScheduleParams.title = info.title
+      this.editMainScheduleParams.durationDays = info.durationDays
+      this.editMainScheduleParams.startDateObj = info.startDateObj
+      this.editMainScheduleParams.endDateObj = info.endDateObj
+      this.editMainScheduleParams.startDate = info.utcStartDate
+      this.editMainScheduleParams.endDate = info.utcEndDate
+    },
+    // 單一行程拖拉排序
     exchangeSchedule({ element, oldIndex, newIndex }) {
-      const list = this.singleScheduleList.filter(schedule => schedule.date === element.date)[0].scheduleList
+      const list = this.allSchedules.filter(schedule => schedule.date === element.date)[0].scheduleList
 
       if (newIndex === list.length - 1) {
         element.start_time = list[newIndex - 1].end_time
@@ -272,9 +313,16 @@ export const useTravelStore = defineStore('travel', {
 
           mainScheduleList.forEach(schedule => {
             // 處理 UTC 日期
-            schedule.start_date = dateHandler.localFormat(schedule.start_date)
-            schedule.end_date = dateHandler.localFormat(schedule.end_date)
+            schedule.startDateObj = dateHandler.dateFormatDate(schedule.start_date)
+            schedule.endDateObj = dateHandler.dateFormatDate(schedule.end_date)
+            schedule.startDate = dateHandler.localFormatString(schedule.start_date)
+            schedule.endDate = dateHandler.localFormatString(schedule.end_date)
+            schedule.utcStartDate = schedule.start_date
+            schedule.utcEndDate = schedule.end_date
+            schedule.durationDays = dateHandler.calcDurationDays(schedule.start_date, schedule.end_date)
           })
+
+          console.log("this.mainScheduleList", result.data.results.mainScheduleList);
 
           return this.mainScheduleList = result.data.results.mainScheduleList
         }
@@ -287,23 +335,60 @@ export const useTravelStore = defineStore('travel', {
     async getMainSchedule() {
       try {
         const result = await this.$axios.api.apiGetMainSchedule(this.nowMainScheduleId)
-        if (result && result.data.success) {
-          const { mainscheduleInfo } = result.data.results
-          // 計算總天數
-          mainscheduleInfo.daysList = dateHandler.toDaysList(mainscheduleInfo.start_date, mainscheduleInfo.end_date)
+        if (!result || !result.data.success) return
 
-          this.mainScheduleInfo = mainscheduleInfo
+        const allSchedules = result.data.results.allSchedules
 
-          const singeScheduleResult = await this.getSingleSchedule()
+        allSchedules.forEach(schedule => {
+          // 跟收藏列表比對，新增 isCollect 欄位
+          // const index = this.placeCollections.findIndex(place => place.place_id === schedule.place_id)
+          // schedule.isCollect = index >= 0
 
-          return true
-        }
+          // 新增星期欄位
+          schedule.day = dateHandler.getDayOfWeek(schedule.date)
+        })
 
-        this.mainScheduleInfo = {}
-        return false
+        this.allSchedules = allSchedules
+        this.mainScheduleInfo = result.data.results.mainscheduleInfo
+        this.nowSelectDate = allSchedules[0].date // 預設選擇第一天日期
       } catch (error) {
         return false
       }
+    },
+    async updateMainSchedule() {
+      if (!this.editMainScheduleParams) return
+      const formData = new FormData()
+      const mainScheduleId = this.editMainScheduleParams.id
+      if (this.editMainSchedulePicture) {
+        formData.append("picture", this.editMainSchedulePicture)
+      }
+      formData.append("title", this.editMainScheduleParams.title)
+      formData.append("startDate", this.editMainScheduleParams.startDate)
+      formData.append("endDate", this.editMainScheduleParams.endDate)
+
+      console.log("this.editMainScheduleParams", this.editMainScheduleParams);
+      // 更新主表單
+      const editMainSchduleResult = await this.$axios.api.apiUpdateMainSchedule(mainScheduleId, formData)
+      console.log("updateMainSchedule editMainSchduleResult", editMainSchduleResult);
+
+      // 判斷日期區間是否有更改，無更改不需更新子行程日期
+      if (this.mainScheduleInfo.start_date !== this.editMainScheduleParams.startDate ||
+        this.mainScheduleInfo.end_date !== this.editMainScheduleParams.endDate) {
+          console.log("this.editDurationDateList", this.editDurationDateList);
+          
+          const updateDateResult = await this.$axios.api.apiUpdateSingleScheduleDate({
+            dates: this.editDurationDateList,
+            main_schedule_id: mainScheduleId
+          })
+          
+      }
+
+      // 主表單更新成功，更新目前資料
+      if (editMainSchduleResult.data.success) {
+        this.getMainSchedule()
+        this.getMainScheduleList()
+      }
+
     },
     async addSingleSchedule() {
       try {
@@ -321,35 +406,19 @@ export const useTravelStore = defineStore('travel', {
         if (!result || !result.data.success) return
 
         const sheduleList = result.data.results.mainScheduleList
-        if (!Array.isArray(sheduleList) || sheduleList.length === 0) return
 
-        const mainList = []
-        const obj = {}
-        sheduleList.forEach(shedule => {
+        sheduleList.forEach(schedule => {
           // 跟收藏列表比對，新增 isCollect 欄位
-          const index = this.placeCollections.findIndex(place => place.place_id === shedule.place_id)
-          shedule.isCollect = index >= 0
+          // const index = this.placeCollections.findIndex(place => place.place_id === schedule.place_id)
+          // schedule.isCollect = index >= 0
 
-          // 做成列表所需格式
-          if (!obj[shedule.date]) {
-            obj[shedule.date] = {}
-
-            let obj2 = {}
-            obj2.date = shedule.date
-            obj2.day = dateHandler.getDayOfWeek(shedule.date)
-            obj2.scheduleList = []
-            mainList.push(obj2)
-          }
-
-          mainList.forEach(item => {
-            if (item.date === shedule.date) {
-              item.scheduleList.push(shedule)
-            }
-          })
+          // 新增星期欄位
+          schedule.day = dateHandler.getDayOfWeek(schedule.date)
         })
 
-        this.singleScheduleList = mainList
-        this.nowSelectDate = mainList[0].date // 預設選擇第一天日期
+        this.allSchedules = sheduleList
+        this.mainScheduleInfo = result.data.results.mainscheduleInfo
+        this.nowSelectDate = sheduleList[0].date // 預設選擇第一天日期
       } catch (error) {
         return false
       }
@@ -359,7 +428,7 @@ export const useTravelStore = defineStore('travel', {
       try {
         const result = await this.$axios.api.apiUpdateSingleSchedule(this.editScheDuleParams)
         if (result && result.data.success) {
-          const getResult = await this.getSingleSchedule()
+          const getResult = await this.getMainSchedule()
           return true
         }
       } catch (error) {
@@ -367,7 +436,7 @@ export const useTravelStore = defineStore('travel', {
       }
     },
     async updateSingleScheduleGroup(date) {
-      const list = this.singleScheduleList.filter(schedule => schedule.date === date)[0].scheduleList
+      const list = this.allSchedules.filter(schedule => schedule.date === date)[0].scheduleList
       const promiseArr = []
 
       list.forEach(schedule => {
@@ -379,7 +448,7 @@ export const useTravelStore = defineStore('travel', {
       try {
         const result = await Promise.all(promiseArr)
         if (result) {
-          const getResult = await this.getSingleSchedule()
+          const getResult = await this.getMainSchedule()
           return true
         }
       } catch (error) {
@@ -388,9 +457,9 @@ export const useTravelStore = defineStore('travel', {
     },
     async deleteSingleSchedule() {
       try {
-        const result = await this.$axios.api.apiDeleteSingleSchedule(this.nowSingleScheduleId)
+        const result = await this.$axios.api.apiDeleteSingleSchedule(this.nowScheduleId)
         if (result && result.data.success) {
-          const getResult = await this.getSingleSchedule()
+          const getResult = await this.getMainSchedule()
           return true
         }
       } catch (error) {
@@ -399,11 +468,12 @@ export const useTravelStore = defineStore('travel', {
     },
     // 路徑 API
     async getDirections() {
-      const { scheduleList } = this.nowSelectSchedule[0]
+      if (!this.nowDateScheduleList[0]) return
+      const { scheduleList } = this.nowDateScheduleList[0]
       const origin = scheduleList[0].place_id
       const destination = scheduleList[scheduleList.length - 1].place_id
       const waypoints = []
-      if (scheduleList.length > 2) {
+      if (scheduleList.length > 1) {
         scheduleList.forEach((schedule, idx) => {
           if (idx > 0 && idx < scheduleList.length - 1) {
             waypoints.push(schedule.place_id)

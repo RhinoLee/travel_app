@@ -2,7 +2,7 @@
 import { reactive } from "vue";
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member"
-import InputSingleImage from "@/components/form/InputSingleImage.vue"
+import InputAvatar from "@/components/form/InputAvatar.vue"
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
 import LightBox from "@/components/common/LightBox.vue"
@@ -30,8 +30,8 @@ async function uploadAvatar() {
     <template v-slot:header>編輯頭像</template>
     <template v-slot:main>
       <form @submit.prevent class="w-full h-full flex flex-col items-start" novalidate>
-        <InputSingleImage :avatar="memberInfo.avatar" :isBoxOpen="memberStore.isEditBoxOpen" v-model:avatar="formParams.avatar">
-        </InputSingleImage>
+        <InputAvatar :avatar="memberInfo.avatar" :isBoxOpen="memberStore.isEditBoxOpen" v-model:avatar="formParams.avatar">
+        </InputAvatar>
       </form>
     </template>
     <template v-slot:footer>

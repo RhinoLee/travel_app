@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, reactive } from "vue";
+import { onMounted, onUnmounted, reactive, watch } from "vue";
 import { useRoute } from "vue-router"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from 'pinia'
@@ -12,10 +12,17 @@ import LightBox from "@/components/common/LightBox.vue"
 import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
 
 const travelStore = useTravelStore()
-const { nowMainScheduleId, mainScheduleInfo, addScheDuleParams, editScheDuleParams, locationSearchList, nowSelectSchedule, nowSelectSingleSchedule, directions, placeCollectionsList, placeInfoComputed } = storeToRefs(travelStore)
+const { nowMainScheduleId, mainScheduleInfo, addScheDuleParams, editScheDuleParams, locationSearchList, nowDateScheduleList, directions, placeCollectionsList, placeInfoComputed, durationDateList, nowScheduleTime, nowSelectDate } = storeToRefs(travelStore)
 
 const route = useRoute()
 const lightbox = reactive({ createBox: false, editBox: false, deleteBox: false })
+
+watch(
+  nowSelectDate,
+  (newVal) => {
+    travelStore.cancelSelectSchedule()
+  }
+)
 
 function hideBox(boxname) {
   lightbox[boxname] = false
@@ -27,7 +34,7 @@ function openBox(boxname) {
 
 function closePanel() {
   travelStore.placeDetail = null
-  travelStore.nowSingleScheduleId = null
+  travelStore.nowScheduleId = null
 }
 
 async function searchTextHandler(searchText) {
@@ -67,7 +74,7 @@ async function addSingleSchedule() {
   const result = await travelStore.addSingleSchedule()
   if (result) {
     // get all single schedules under now main schedule
-    await travelStore.getSingleSchedule()
+    await travelStore.getMainSchedule()
     hideBox("createBox")
   }
 }
@@ -106,7 +113,7 @@ onUnmounted(() => {
 
 <template>
   <div>
-    <div class="flex relative">
+    <div v-if="mainScheduleInfo" class="flex relative">
       <!-- 左側行程面板 -->
       <div class="relative w-[30%] lg:max-w-[380px] h-screen border-r-[2px] border-travel-green px-[25px] bg-white overflow-scroll no-scrollbar
       ">
@@ -114,9 +121,9 @@ onUnmounted(() => {
           <SearchPlace class="mt-8" @searchTextHandler="searchTextHandler"></SearchPlace>
           <h2 class="mb-[8px] text-travel-textgreen text-[24px]">{{ mainScheduleInfo.title }}</h2>
           <!-- 天數列表 -->
-          <ScheduleDates></ScheduleDates>
+          <ScheduleDates v-model:selectDate="nowSelectDate"></ScheduleDates>
           <!-- 行程列表 -->
-          <!-- :singleScheduleList="nowSelectSchedule" -->
+          <!-- :singleScheduleList="nowDateScheduleList" -->
           <ScheduleList 
             @editLocateToSchedule="editLocateToSchedule" 
             @deleteSingleSchedule="deleteSingleSchedule"
@@ -135,7 +142,7 @@ onUnmounted(() => {
       </PlaceDetailPanel>
       <!-- 地圖 -->
       <div class="w-[70%] lg:w-full lg:max-w-[calc(100%-380px)] h-screen">
-        <Map :scheduleList="nowSelectSchedule" :locationSearchList="locationSearchList"
+        <Map :scheduleList="nowDateScheduleList" :locationSearchList="locationSearchList"
           :placeDetail="placeInfoComputed" :directions="directions" @closePanel="closePanel" :placeCollectionsList="placeCollectionsList"></Map>
       </div>
     </div>
@@ -150,11 +157,12 @@ onUnmounted(() => {
         </div>
         <div class="mb-3">
           <label class="block mb-1">選擇日期</label>
-          <select v-model="addScheDuleParams.date" class="w-full border py-2 px-2 outline-none" id="date">
+          <ScheduleDates v-model:selectDate="addScheDuleParams.date" v-model:dayOrder="addScheDuleParams.day_order"></ScheduleDates>
+          <!-- <select v-model="addScheDuleParams.date" class="w-full border py-2 px-2 outline-none" id="date">
             <option :value="null">選擇日期</option>
             <option v-for="day in mainScheduleInfo.daysList" :key="day.date" :value="day.date">{{ day.date
             }} {{ day.day }}</option>
-          </select>
+          </select> -->
         </div>
         <div class="mb-3">
           <label class="block mb-1">選擇時間區間</label>
@@ -183,18 +191,19 @@ onUnmounted(() => {
         </div>
         <div class="mb-3">
           <label class="block mb-1">選擇日期</label>
-          <select v-model="editScheDuleParams.date" class="w-full border py-2 px-2 outline-none" id="date">
+          <!-- 天數列表 -->
+          <ScheduleDates v-model:selectDate="editScheDuleParams.date" v-model:dayOrder="editScheDuleParams.day_order"></ScheduleDates>
+          <!-- <select v-model="editScheDuleParams.date" class="w-full border py-2 px-2 outline-none" id="date">
             <option :value="null">選擇日期</option>
-            <option v-for="day in mainScheduleInfo.daysList" :key="day.date" :value="day.date">{{ day.date
+            <option v-for="day in durationDateList" :key="day.date" :value="day.date">{{ day.date
             }} {{ day.day }}</option>
-          </select>
+          </select> -->
         </div>
         <div class="mb-3">
           <label class="block mb-1">選擇時間區間</label>
-          <DatePickerWrap v-if="nowSelectSingleSchedule"
+          <DatePickerWrap v-if="nowScheduleTime"
             @updateTime="(...args) => updateTime(['editScheDuleParams', ...args])" :timePicker="true"
-            :startTime="[{ hours: nowSelectSingleSchedule.start_time.split(':')[0], minutes: nowSelectSingleSchedule.start_time.split(':')[1] },
-            { hours: nowSelectSingleSchedule.end_time.split(':')[0], minutes: nowSelectSingleSchedule.end_time.split(':')[1] }]">
+            :startTime="nowScheduleTime">
           </DatePickerWrap>
         </div>
         <div class="mb-3">

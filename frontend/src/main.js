@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import apiHandler from '@/utils/apiHandler'
 import './assets/css/index.css'
-import "./utils/api/api"
 import App from './App.vue'
 import router from './router'
 

@@ -7,20 +7,24 @@ export const dateHandler = {
 
     return dayList[day]
   },
-  localFormat: (dateStr) => {
+  localFormatString: (dateStr) => {
     const localDateValue = new Date(dateStr)
     const year = localDateValue.getFullYear()
     const month = localDateValue.getMonth() + 1 < 10 ? "0" + (localDateValue.getMonth() + 1) : localDateValue.getMonth() + 1
     const date = localDateValue.getDate() < 10 ? "0" + localDateValue.getDate() : localDateValue.getDate()
     return `${year}-${month}-${date}`
   },
+  dateFormatDate: (dateStr) => {
+    const localDateValue = new Date(dateStr)
+    return localDateValue
+  },
   calcDurationDays: (startDate, endDate) => {
     const startDateMs = new Date(startDate).getTime()
     const endDateMs = new Date(endDate).getTime()
     const durationMs = endDateMs - startDateMs
-    const dutationDays = durationMs / (24 * 60 * 60 * 1000)
+    const durationDays = Math.ceil(durationMs / (24 * 60 * 60 * 1000))
 
-    return dutationDays
+    return durationDays
   },
   toDaysList: (startDate, endDate) => {
     // 回傳格式
@@ -31,14 +35,14 @@ export const dateHandler = {
     //   },
     // ]
     const daysList = []
-    const dutationDays = dateHandler.calcDurationDays(startDate, endDate)
+    const durationDays = dateHandler.calcDurationDays(startDate, endDate)
 
-    for (let i = 0; i <= dutationDays; i++) {
+    for (let i = 0; i <= durationDays; i++) {
       const localDateValue = new Date(startDate)
       localDateValue.setDate(localDateValue.getDate() + i)
 
       let obj = {}
-      obj.date = dateHandler.localFormat(localDateValue)
+      obj.date = dateHandler.localFormatString(localDateValue)
       obj.day = dateHandler.getDayOfWeek(localDateValue)
 
       daysList.push(obj)

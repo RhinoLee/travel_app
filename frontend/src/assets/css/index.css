@@ -42,7 +42,19 @@
   .actionlist-item {
     @apply flex items-center justify-center py-[8px] px-[14px] rounded-[5px] overflow-hidden cursor-pointer hover:bg-travel-lightgreen
   }
+  .lightbox-submit-btn {
+    @apply block px-[8px] py-[2px] text-[14px] text-white text-center rounded-[5px] tracking-[1px]
+  }
+  .blur-mask {
+    @apply after:absolute after:left-0 after:top-0 after:w-full after:h-full after:bg-[rgba(255,255,255,0)] after:transition-all after:duration-700
+    hover:after:bg-[rgba(255,255,255,.4)]
+  }
+  .icon-circle {
+    @apply mx-[10px] w-[40px] h-[40px] rounded-full overflow-hidden opacity-0 pointer-events-none
+  }
 }
+/* after:bg-white/[.00]
+:hover:after:bg-white/[.08] */
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;

@@ -28,6 +28,11 @@ module.exports = {
     function ({ addVariant }) {
       addVariant('child', '& > *');
       addVariant('descendant', '& *');
+      // addVariant('data-active', ({ modifySelectors, separator }) => {
+      //   modifySelectors(({ className }) => {
+      //     return `.${e(`data-active${separator}${className}`)}[data-active="true"]`;
+      //   })
+      // });
     }
   ],
 }
