@@ -61,6 +61,7 @@ function onSelectFile() {
       image.src = e.target.result
       validateInput()
       emit("update:picture", inputParams.value)
+      emit("update:deletePicture", false)
     })
 
     reader.readAsDataURL(files[0])

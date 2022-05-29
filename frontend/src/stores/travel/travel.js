@@ -10,6 +10,7 @@ export const useTravelStore = defineStore('travel', {
         title: "",
         startDate: "",
         endDate: "",
+        picture: null
       },
       editMainScheduleParams: {
         id: "",
@@ -19,7 +20,8 @@ export const useTravelStore = defineStore('travel', {
         endDateObj: null,
         startDate: "",
         endDate: "",
-        deletePicture: false
+        deletePicture: false,
+        picture: null,
       },
       addScheDuleParams: {
         title: "",
@@ -43,8 +45,6 @@ export const useTravelStore = defineStore('travel', {
         end_time: "",
         day_order: ""
       },
-      addMainSchedulePicture: null,
-      editMainSchedulePicture: null,
       // api params end
       // 既有總旅程計畫列表
       mainScheduleList: [],
@@ -181,11 +181,10 @@ export const useTravelStore = defineStore('travel', {
       this.nowScheduleDate = ""
     },
     clearAddMainScheduleParams() {
-      this.addMainScheduleParams = {
-        title: "",
-        startDate: "",
-        endDate: "",
-      }
+      this.addMainScheduleParams.title = ""
+      this.addMainScheduleParams.startDate = ""
+      this.addMainScheduleParams.endDate = ""
+      this.addMainScheduleParams.picture = null
     },
     // 設定編輯單一行程參數
     setEditScheduleParams() {
@@ -208,6 +207,7 @@ export const useTravelStore = defineStore('travel', {
       this.editMainScheduleParams.startDate = info.utcStartDate
       this.editMainScheduleParams.endDate = info.utcEndDate
       this.editMainScheduleParams.deletePicture = false
+      this.editMainScheduleParams.picture = null
     },
     // 單一行程拖拉排序
     exchangeSchedule({ element, oldIndex, newIndex }) {
@@ -288,15 +288,11 @@ export const useTravelStore = defineStore('travel', {
     // Schedule API
     async addMainSchedule() {
       if (!this.addMainScheduleParams.title) return
-      console.log("addMainSchedule");
-      console.log("this.addMainScheduleParams", this.addMainScheduleParams);
-      console.log("this.addMainSchedulePicture", this.addMainSchedulePicture);
 
       try {
         const formData = new FormData()
-        console.log("formData", formData);
-        if (this.addMainSchedulePicture) {
-          formData.append("picture", this.addMainSchedulePicture)
+        if (this.addMainScheduleParams.picture) {
+          formData.append("picture", this.addMainScheduleParams.picture)
         }
         formData.append("title", this.addMainScheduleParams.title)
         formData.append("startDate", this.addMainScheduleParams.startDate)
@@ -367,8 +363,9 @@ export const useTravelStore = defineStore('travel', {
       try {
         const formData = new FormData()
         const mainScheduleId = this.editMainScheduleParams.id
-        if (this.editMainSchedulePicture) {
-          formData.append("picture", this.editMainSchedulePicture)
+        console.log("this.editMainScheduleParams.picture", this.editMainScheduleParams.picture);
+        if (this.editMainScheduleParams.picture) {
+          formData.append("picture", this.editMainScheduleParams.picture)
         }
         formData.append("title", this.editMainScheduleParams.title)
         formData.append("startDate", this.editMainScheduleParams.startDate)

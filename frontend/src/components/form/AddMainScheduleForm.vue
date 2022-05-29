@@ -13,7 +13,7 @@ import DefaultImage from "@/components/common/DefaultImage.vue"
 
 
 const travelStore = useTravelStore()
-const { isAddMainScheduleBoxOpen, addMainScheduleParams, addMainSchedulePicture } = storeToRefs(travelStore)
+const { isAddMainScheduleBoxOpen } = storeToRefs(travelStore)
 
 watch(
   isAddMainScheduleBoxOpen,
@@ -23,7 +23,8 @@ watch(
 )
 
 const { errors } = useInputValidator()
-const { isSubmitBtnDisabled } = useSubmitBtnState(travelStore.addMainScheduleParams, errors)
+const canBeEmptyKeys = ["picture"]
+const { isSubmitBtnDisabled } = useSubmitBtnState(travelStore.addMainScheduleParams, errors, canBeEmptyKeys)
 
 function hideBox() {
 
@@ -57,14 +58,12 @@ async function addMainSchedule() {
       <!-- 圖片 -->
       <div>
         <!-- <DefaultImage></DefaultImage> -->
-        <InputScheduleBanner v-model:picture="travelStore.addMainSchedulePicture"
+        <InputScheduleBanner v-model:picture="travelStore.addMainScheduleParams.picture"
           pictureUrl="" :isBoxOpen="travelStore.isAddMainScheduleBoxOpen">
         </InputScheduleBanner>
       </div>
     </template>
     <template v-slot:main>
-      <!-- <pre>{{ addMainSchedulePicture }}</pre> -->
-      <!-- <pre>{{ addMainScheduleParams }}</pre> -->
       <form @submit.prevent class="w-full h-full flex flex-col items-start" novalidate>
         <InputTitle v-model:title="travelStore.addMainScheduleParams.title"></InputTitle>
         <div class="w-full">

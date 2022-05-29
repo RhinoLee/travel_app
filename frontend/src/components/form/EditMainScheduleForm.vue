@@ -14,7 +14,6 @@ import DefaultImage from "@/components/common/DefaultImage.vue"
 
 const travelStore = useTravelStore()
 const { isEditMainScheduleBoxOpen, editMainScheduleParams, editMainSchedulePicture, mainScheduleInfo } = storeToRefs(travelStore)
-
 watch(
   isEditMainScheduleBoxOpen,
   (newVal) => {
@@ -23,7 +22,8 @@ watch(
 )
 
 const { errors } = useInputValidator()
-const { isSubmitBtnDisabled } = useSubmitBtnState(travelStore.editMainScheduleParams, errors)
+const canBeEmptyKeys = ["deletePicture", "picture"]
+const { isSubmitBtnDisabled } = useSubmitBtnState(travelStore.editMainScheduleParams, errors, canBeEmptyKeys)
 
 function hideBox() {
 
@@ -57,7 +57,7 @@ async function updateMainSchedule() {
       <!-- 圖片 -->
       <div>
         <!-- <DefaultImage></DefaultImage> -->
-        <InputScheduleBanner v-model:picture="travelStore.editMainSchedulePicture"
+        <InputScheduleBanner v-model:picture="travelStore.editMainScheduleParams.picture"
           v-model:deletePicture="travelStore.editMainScheduleParams.deletePicture"
           :pictureUrl="mainScheduleInfo.picture" :isBoxOpen="travelStore.isEditMainScheduleBoxOpen">
         </InputScheduleBanner>
