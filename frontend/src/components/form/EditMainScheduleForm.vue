@@ -13,7 +13,7 @@ import DefaultImage from "@/components/common/DefaultImage.vue"
 
 
 const travelStore = useTravelStore()
-const { nowMainScheduleId, isEditMainScheduleBoxOpen, editMainScheduleParams, editMainSchedulePicture, mainScheduleInfo } = storeToRefs(travelStore)
+const { isEditMainScheduleBoxOpen, editMainScheduleParams, editMainSchedulePicture, mainScheduleInfo } = storeToRefs(travelStore)
 
 watch(
   isEditMainScheduleBoxOpen,
@@ -58,6 +58,7 @@ async function updateMainSchedule() {
       <div>
         <!-- <DefaultImage></DefaultImage> -->
         <InputScheduleBanner v-model:picture="travelStore.editMainSchedulePicture"
+          v-model:deletePicture="travelStore.editMainScheduleParams.deletePicture"
           :pictureUrl="mainScheduleInfo.picture" :isBoxOpen="travelStore.isEditMainScheduleBoxOpen">
         </InputScheduleBanner>
       </div>

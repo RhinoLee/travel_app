@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from "vue"
+import { ref, reactive, watch, onMounted, onBeforeUnmount } from "vue"
 import DefaultImage from "@/components/common/DefaultImage.vue"
 import useInputValidator from "@/composition-api/useInputValidator"
 import iconUploadImg from "@/assets/images/svg/icon_uploadimg.svg"
@@ -14,10 +14,13 @@ const props = defineProps({
   },
   isBoxOpen: {
     type: Boolean
+  },
+  deletePicture: {
+    type: Boolean
   }
 })
 
-const emit = defineEmits(["update:picture"])
+const emit = defineEmits(["update:picture", "update:deletePicture"])
 
 const fileInput = ref(null)
 const image = reactive({ src: "" })
@@ -67,8 +70,13 @@ function onSelectFile() {
 function clearInput() {
   fileInput.value.value = ""
   inputParams.value = ""
-  image.src = props.pictureUrl
-  emit("update:picture", inputParams.value)
+  image.src = ""
+  // image.src = props.pictureUrl
+  emit("update:picture", null)
+
+  // 如果上 pictureUrl 有值（原資料有封面照連結），代表 user 要刪除照片
+  if (props.pictureUrl) emit("update:deletePicture", true)
+  else emit("update:deletePicture", false)
 }
 
 onMounted(() => {
@@ -89,10 +97,13 @@ onBeforeUnmount(() => {
       <DefaultImage height="pt-[45%]" :picture="image.src"></DefaultImage>
       <!-- buttons -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10">
-        <button @click="chooseImage" type="button" class="icon-circle group-hover:opacity-100 group-hover:pointer-events-auto">
+        <button @click="chooseImage" type="button"
+          class="icon-circle group-hover:opacity-100 group-hover:pointer-events-auto">
           <img :src="iconUploadImg" class="w-full h-full object-contain" alt="選擇圖片">
         </button>
-        <button @click="clearInput" type="button" class="icon-circle group-hover:opacity-100 group-hover:pointer-events-auto">
+        <button v-if="image.src" @click="clearInput" type="button"
+          :class="{ 'group-hover:opacity-100': image.src, 'group-hover:pointer-events-auto': image.src }"
+          class="icon-circle">
           <img :src="iconCancel" class="w-full h-full object-contain" alt="取消">
         </button>
       </div>

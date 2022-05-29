@@ -19,6 +19,7 @@ export const useTravelStore = defineStore('travel', {
         endDateObj: null,
         startDate: "",
         endDate: "",
+        deletePicture: false
       },
       addScheDuleParams: {
         title: "",
@@ -42,35 +43,11 @@ export const useTravelStore = defineStore('travel', {
         end_time: "",
         day_order: ""
       },
+      addMainSchedulePicture: null,
       editMainSchedulePicture: null,
       // api params end
       // 既有總旅程計畫列表
-      mainScheduleList: [
-        {
-          id: 1,
-          pic: "https://picsum.photos/480/260?random=1",
-          title: "花東五天四夜",
-          startDate: "2022-01-01",
-          endDate: "2022-01-05",
-          intro: "內容內容內容內容內容內容內容內容內容內容內容內容內容內容",
-        },
-        {
-          id: 2,
-          pic: "https://picsum.photos/480/260?random=2",
-          title: "環島八天七夜",
-          startDate: "2022-02-01",
-          endDate: "2022-02-08",
-          intro: "內容內容內容內容內容內容內容內容內容內容內容內容內容內容",
-        },
-        {
-          id: 3,
-          pic: "https://picsum.photos/480/260?random=3",
-          title: "台南一日遊",
-          startDate: "2022-03-01",
-          endDate: "2022-03-01",
-          intro: "內容內容內容內容內容內容內容內容內容內容內容內容內容內容",
-        },
-      ],
+      mainScheduleList: [],
       // 總旅程計畫的資訊
       mainScheduleInfo: null,
       // 地點搜尋結果列表
@@ -94,7 +71,8 @@ export const useTravelStore = defineStore('travel', {
         routesBounds: "",
       },
       // lightbox state
-      isEditMainScheduleBoxOpen: false
+      isEditMainScheduleBoxOpen: false,
+      isAddMainScheduleBoxOpen: false,
     }
   },
   getters: {
@@ -202,6 +180,13 @@ export const useTravelStore = defineStore('travel', {
       this.nowScheduleId = null
       this.nowScheduleDate = ""
     },
+    clearAddMainScheduleParams() {
+      this.addMainScheduleParams = {
+        title: "",
+        startDate: "",
+        endDate: "",
+      }
+    },
     // 設定編輯單一行程參數
     setEditScheduleParams() {
       if (!this.nowSchedule) return
@@ -210,9 +195,11 @@ export const useTravelStore = defineStore('travel', {
     },
     // 設定編輯總行程參數
     setEditMainScheduleParams() {
+      console.log("setEditMainScheduleParams");
       if (!this.nowMainScheduleId) return
       const info = this.mainScheduleList.filter(schedule => schedule.id === this.nowMainScheduleId)[0]
-      // this.editMainScheduleParams = {}
+
+      // 設定 default params
       this.editMainScheduleParams.id = info.id
       this.editMainScheduleParams.title = info.title
       this.editMainScheduleParams.durationDays = info.durationDays
@@ -220,6 +207,7 @@ export const useTravelStore = defineStore('travel', {
       this.editMainScheduleParams.endDateObj = info.endDateObj
       this.editMainScheduleParams.startDate = info.utcStartDate
       this.editMainScheduleParams.endDate = info.utcEndDate
+      this.editMainScheduleParams.deletePicture = false
     },
     // 單一行程拖拉排序
     exchangeSchedule({ element, oldIndex, newIndex }) {
@@ -299,17 +287,27 @@ export const useTravelStore = defineStore('travel', {
     },
     // Schedule API
     async addMainSchedule() {
-      try {
-        const params = {
-          memberId: this.memberId,
-          title: this.addMainScheduleParams.title,
-          startDate: this.addMainScheduleParams.startDate,
-          endDate: this.addMainScheduleParams.endDate,
-        }
+      if (!this.addMainScheduleParams.title) return
+      console.log("addMainSchedule");
+      console.log("this.addMainScheduleParams", this.addMainScheduleParams);
+      console.log("this.addMainSchedulePicture", this.addMainSchedulePicture);
 
-        const result = await this.$axios.api.apiCreateMainSchedule(params)
+      try {
+        const formData = new FormData()
+        console.log("formData", formData);
+        if (this.addMainSchedulePicture) {
+          formData.append("picture", this.addMainSchedulePicture)
+        }
+        formData.append("title", this.addMainScheduleParams.title)
+        formData.append("startDate", this.addMainScheduleParams.startDate)
+        formData.append("endDate", this.addMainScheduleParams.endDate)
+
+        console.log("why??");
+        const result = await this.$axios.api.apiCreateMainSchedule(formData)
+        if (result && result.data.success) this.getMainScheduleList()
 
       } catch (error) {
+        console.log("error", error);
         return false
       }
     },
@@ -364,31 +362,42 @@ export const useTravelStore = defineStore('travel', {
     },
     async updateMainSchedule() {
       if (!this.editMainScheduleParams.title) return
-      const formData = new FormData()
-      const mainScheduleId = this.editMainScheduleParams.id
-      if (this.editMainSchedulePicture) {
-        formData.append("picture", this.editMainSchedulePicture)
-      }
-      formData.append("title", this.editMainScheduleParams.title)
-      formData.append("startDate", this.editMainScheduleParams.startDate)
-      formData.append("endDate", this.editMainScheduleParams.endDate)
+      let editMainSchduleResult = null
 
-      // 更新主表單
-      const editMainSchduleResult = await this.$axios.api.apiUpdateMainSchedule(mainScheduleId, formData)
+      try {
+        const formData = new FormData()
+        const mainScheduleId = this.editMainScheduleParams.id
+        if (this.editMainSchedulePicture) {
+          formData.append("picture", this.editMainSchedulePicture)
+        }
+        formData.append("title", this.editMainScheduleParams.title)
+        formData.append("startDate", this.editMainScheduleParams.startDate)
+        formData.append("endDate", this.editMainScheduleParams.endDate)
+        formData.append("deletePicture", this.editMainScheduleParams.deletePicture)
+
+        // 更新主表單
+        editMainSchduleResult = await this.$axios.api.apiUpdateMainSchedule(mainScheduleId, formData)
+
+      } catch (error) {
+        return false
+      }
 
       // 判斷日期區間是否有更改，無更改不需更新子行程日期
       if (this.mainScheduleInfo.start_date !== this.editMainScheduleParams.startDate ||
         this.mainScheduleInfo.end_date !== this.editMainScheduleParams.endDate) {
-          
+
+        try {
           const updateDateResult = await this.$axios.api.apiUpdateSingleScheduleDate({
             dates: this.editDurationDateList,
             main_schedule_id: mainScheduleId
           })
-          
+        } catch (error) {
+          return false
+        }
       }
 
       // 主表單更新成功，更新目前資料
-      if (editMainSchduleResult.data.success) {
+      if (editMainSchduleResult && editMainSchduleResult.data.success) {
         this.getMainSchedule()
         this.getMainScheduleList()
       }

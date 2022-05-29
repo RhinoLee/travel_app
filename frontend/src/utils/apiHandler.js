@@ -172,7 +172,8 @@ export default {
           const instance = $axios.instances.scheduleRequest()
           return instance.post("/mainScheduleCreate", params, {
             headers: {
-              "Authorization": `Bearer ${localStorage.getItem("token")}`
+              "Authorization": `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "multipart/form-data"
             }
           })
         },

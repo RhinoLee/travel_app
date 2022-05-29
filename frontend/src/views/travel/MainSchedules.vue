@@ -3,10 +3,15 @@ import { storeToRefs } from 'pinia'
 import { useTravelStore } from "@/stores/travel/travel"
 import { onMounted } from '@vue/runtime-core'
 import ScheduleItem from "@/components/travel/ScheduleItem.vue"
-import MainScheduleForm from "@/components/form/MainScheduleForm.vue"
+import AddMainScheduleForm from "@/components/form/AddMainScheduleForm.vue"
+import EditMainScheduleForm from "@/components/form/EditMainScheduleForm.vue"
 
 const travelStore = useTravelStore()
 const { mainScheduleList } = storeToRefs(travelStore)
+
+function addMainSchedule() {
+  travelStore.isAddMainScheduleBoxOpen = true
+}
 
 onMounted(() => {
   travelStore.getMainScheduleList()
@@ -26,9 +31,10 @@ onMounted(() => {
         <div class="flex justify-between border-b border-travel-green pb-[10px]">
           <div></div>
           <div class="flex items-center">
-            <button class="block mr-[16px] text-[16px] text-travel-darkgreen">選取</button>
-            <router-link class="block py-[4px] px-[12px] text-[16px] text-white bg-travel-textgreen rounded-[5px]"
-              :to="{ name: 'AddMainSchedule' }">+New</router-link>
+            <!-- <button class="block mr-[16px] text-[16px] text-travel-darkgreen">選取</button> -->
+            <button @click="addMainSchedule" class="block py-[4px] px-[12px] text-[16px] text-white bg-travel-textgreen rounded-[5px]" type="button">+New</button>
+            <!-- <router-link class="block py-[4px] px-[12px] text-[16px] text-white bg-travel-textgreen rounded-[5px]"
+              :to="{ name: 'AddMainSchedule' }">+New</router-link> -->
           </div>
         </div>
       </div>
@@ -37,13 +43,14 @@ onMounted(() => {
         <div v-for="mainSchedule in mainScheduleList" :key="mainSchedule.id">
           <ScheduleItem :mainSchedule="mainSchedule"></ScheduleItem>
         </div>
-        <router-link :to="{ name: 'AddMainSchedule' }"
+        <!-- <router-link :to="{ name: 'AddMainSchedule' }"
           class="relative block w-full rounded-[10px] bg-white shadow overflow-hidden cursor-pointer">
           <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">+New</div>
-        </router-link>
+        </router-link> -->
       </div>
     </div>
   </div>
 
-  <MainScheduleForm></MainScheduleForm>
+  <AddMainScheduleForm></AddMainScheduleForm>
+  <EditMainScheduleForm></EditMainScheduleForm>
 </template>
