@@ -49,7 +49,7 @@ onBeforeUnmount(() => {
   </div>
 
   <LightBox v-model:isBoxOpen="memberStore.isVerifyResultBoxOpen">
-    <template v-slot:header>寄信通知</template>
+    <template v-slot:title>寄信通知</template>
     <template v-slot:main>
       <div>{{ verifyMsg }}</div>
     </template>

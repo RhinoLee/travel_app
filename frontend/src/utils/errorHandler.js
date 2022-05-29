@@ -11,7 +11,6 @@ const errorHandler = {
           {
             try {
               const result = await errorHandler.handle401(error, axiosInstance, router)
-              console.log("handle 401 result", result);
               return resolve(result)
             } catch (error) {
               return reject(error)
@@ -34,7 +33,6 @@ const errorHandler = {
     memberStore.refreshedCall.map(cb => cb(newToken))
   },
   handle401: async (error, axios, router) => {
-    console.log("401", error.config);
     const memberStore = useMemberStore()
     const { config, response: { status } } = error;
     const originalRequest = config;

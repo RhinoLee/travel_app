@@ -55,7 +55,6 @@ export const useMemberStore = defineStore("member", {
   },
   actions: {
     clearLoginParams() {
-      console.log("clearLoginParams");
       this.loginParams.email = ""
       this.loginParams.password = ""
     },
@@ -102,7 +101,6 @@ export const useMemberStore = defineStore("member", {
       const formData = new FormData()
       formData.append("avatar", this.avatarFile)
       const result = await this.$axios.api.apiUpdateAvatar(formData)
-      console.log("updateAvatar result", result);
       if (result.data.success) {
         this.memberInfo.avatar = result.data.avatar
       }
@@ -139,7 +137,6 @@ export const useMemberStore = defineStore("member", {
         const result = await this.$axios.api.apiVerifyEmail({ email })
         return result.data
       } catch (error) {
-        console.log("error", error);
         return error.response.data
       }
     },
@@ -149,7 +146,6 @@ export const useMemberStore = defineStore("member", {
         const result = await this.$axios.api.apiResetPasswordEmail({ email })
         return result.data
       } catch (error) {
-        console.log("error", error);
         return error.response.data
       }
     },
@@ -160,12 +156,10 @@ export const useMemberStore = defineStore("member", {
         const result = await this.$axios.api.apiResetPassword(token, params)
         return result.data
       } catch (error) {
-        console.log("error", error);
         return error.response.data
       }
     },
     logoutHandler() {
-      console.log("logoutHandler");
       localStorage.removeItem("token")
       localStorage.removeItem("refreshToken")
       this.isLogin = false

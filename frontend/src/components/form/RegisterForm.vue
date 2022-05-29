@@ -15,7 +15,7 @@ const formParams = reactive({
 const emit = defineEmits(["submitHandler"])
 
 const { errors } = useInputValidator()
-const { isSignInBtnDisabled } = useSubmitBtnState(formParams, errors)
+const { isSubmitBtnDisabled } = useSubmitBtnState(formParams, errors)
 
 function submitHandler() {
   emit("submitHandler", formParams)
@@ -28,6 +28,6 @@ function submitHandler() {
     <InputPassword v-model:password="formParams.password"></InputPassword>
     <InputPasswordRepeat v-model:repassword="formParams.repassword" :password="formParams.password"></InputPasswordRepeat>
 
-    <button :disabled="isSignInBtnDisabled" type="submit" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
+    <button :disabled="isSubmitBtnDisabled" type="submit" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
   </form>
 </template>

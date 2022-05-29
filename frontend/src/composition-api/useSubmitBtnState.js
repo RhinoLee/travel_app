@@ -1,7 +1,7 @@
 import { computed } from "vue"
 
 export default function useSubmitBtnState(params, errors) {
-  const isSignInBtnDisabled = computed(() => {
+  const isSubmitBtnDisabled = computed(() => {
     let disabled = true;
     for (let prop in params) {
       if (!params[prop] || errors[prop]) {
@@ -13,5 +13,5 @@ export default function useSubmitBtnState(params, errors) {
     return disabled;
   })
 
-  return { isSignInBtnDisabled }
+  return { isSubmitBtnDisabled }
 }

@@ -11,7 +11,15 @@ export const useTravelStore = defineStore('travel', {
         startDate: "",
         endDate: "",
       },
-      editMainScheduleParams: null,
+      editMainScheduleParams: {
+        id: "",
+        title: "",
+        durationDays: "",
+        startDateObj: null,
+        endDateObj: null,
+        startDate: "",
+        endDate: "",
+      },
       addScheDuleParams: {
         title: "",
         date: "",
@@ -103,7 +111,7 @@ export const useTravelStore = defineStore('travel', {
       return list
     },
     editDurationDateList(state) {
-      if (!state.editMainScheduleParams) return []
+      if (!state.editMainScheduleParams.title) return []
       const list = dateHandler.toDaysList(state.editMainScheduleParams.startDate, state.editMainScheduleParams.endDate)
 
       return list
@@ -202,9 +210,9 @@ export const useTravelStore = defineStore('travel', {
     },
     // 設定編輯總行程參數
     setEditMainScheduleParams() {
-      if (!this.nowMainScheduleId) return this.editMainScheduleParams = null
+      if (!this.nowMainScheduleId) return
       const info = this.mainScheduleList.filter(schedule => schedule.id === this.nowMainScheduleId)[0]
-      this.editMainScheduleParams = {}
+      // this.editMainScheduleParams = {}
       this.editMainScheduleParams.id = info.id
       this.editMainScheduleParams.title = info.title
       this.editMainScheduleParams.durationDays = info.durationDays
@@ -322,7 +330,6 @@ export const useTravelStore = defineStore('travel', {
             schedule.durationDays = dateHandler.calcDurationDays(schedule.start_date, schedule.end_date)
           })
 
-          console.log("this.mainScheduleList", result.data.results.mainScheduleList);
 
           return this.mainScheduleList = result.data.results.mainScheduleList
         }
@@ -356,7 +363,7 @@ export const useTravelStore = defineStore('travel', {
       }
     },
     async updateMainSchedule() {
-      if (!this.editMainScheduleParams) return
+      if (!this.editMainScheduleParams.title) return
       const formData = new FormData()
       const mainScheduleId = this.editMainScheduleParams.id
       if (this.editMainSchedulePicture) {
@@ -366,15 +373,12 @@ export const useTravelStore = defineStore('travel', {
       formData.append("startDate", this.editMainScheduleParams.startDate)
       formData.append("endDate", this.editMainScheduleParams.endDate)
 
-      console.log("this.editMainScheduleParams", this.editMainScheduleParams);
       // 更新主表單
       const editMainSchduleResult = await this.$axios.api.apiUpdateMainSchedule(mainScheduleId, formData)
-      console.log("updateMainSchedule editMainSchduleResult", editMainSchduleResult);
 
       // 判斷日期區間是否有更改，無更改不需更新子行程日期
       if (this.mainScheduleInfo.start_date !== this.editMainScheduleParams.startDate ||
         this.mainScheduleInfo.end_date !== this.editMainScheduleParams.endDate) {
-          console.log("this.editDurationDateList", this.editDurationDateList);
           
           const updateDateResult = await this.$axios.api.apiUpdateSingleScheduleDate({
             dates: this.editDurationDateList,

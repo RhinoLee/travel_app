@@ -91,7 +91,7 @@ onBeforeUnmount(() => {
       <button @click="chooseImage" type="button" class="border px-4 py-2">
         請選擇照片
       </button>
-      <div v-if="errors[inputParams.inputKey]" class="text-red-500 text-center">{{ errors[inputParams.inputKey] }}</div>
+      <div v-if="errors[inputParams.inputKey]" class="text-alert text-center">{{ errors[inputParams.inputKey] }}</div>
     </div>
 
     <input class="hidden" ref="fileInput" type="file" @input="onSelectFile">

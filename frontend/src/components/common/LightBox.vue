@@ -12,7 +12,6 @@ const props = defineProps({
 const emit = defineEmits(["update:isBoxOpen"])
 
 function hideBox(e) {
-  console.log("hideBox e", e.target);
   if (e.target.id === "lightboxMask" || e.target.id === "closeBtn") {
     emit("update:isBoxOpen", false)
   }
@@ -29,7 +28,7 @@ function hideBox(e) {
                 <CloseBtn @click.stop="hideBox"></CloseBtn>
               </div>
               <div class="text-[20px] text-travel-textgreen">
-                <slot name="header"></slot>
+                <slot name="title"></slot>
               </div>
             </div>
             <div>

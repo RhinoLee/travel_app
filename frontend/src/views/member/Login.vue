@@ -61,7 +61,7 @@ onMounted(() => {
   </div>
 
   <LightBox v-model:isBoxOpen="memberStore.isErrorBoxOpen">
-    <template v-slot:header>登入失敗</template>
+    <template v-slot:title>登入失敗</template>
     <template v-slot:main>
       <div>信箱尚未驗證</div>
     </template>
@@ -74,7 +74,7 @@ onMounted(() => {
   </LightBox>
 
   <LightBox v-model:isBoxOpen="memberStore.isVerifyResultBoxOpen">
-    <template v-slot:header>寄信通知</template>
+    <template v-slot:title>寄信通知</template>
     <template v-slot:main>
       <div>{{ verifyMsg }}</div>
     </template>

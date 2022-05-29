@@ -38,7 +38,6 @@ function deleteSingleSchedule(scheduleId, date) {
 
 // drag & drop
 function dragStartHandler(e, schedule, date) {
-  console.log("dragStartHandler date", date);
   const { id, start_time, end_time } = schedule
   e.dataTransfer.dropEffect = "move"
   e.dataTransfer.effectAllowed = "move"

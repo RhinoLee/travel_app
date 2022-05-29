@@ -18,6 +18,8 @@ module.exports = {
         "travel-lightgreen": "var(--travel-lightgreen)",
         "travel-green": "var(--travel-green)",
         "travel-darkgreen": "var(--travel-darkgreen)",
+        "disabled": "var(--disabled)",
+        "alert": "var(--alert)",
       },
       backgroundImage: {
         "select-arrow": "url('@/assets/images/svg/icon_arrow.svg')",

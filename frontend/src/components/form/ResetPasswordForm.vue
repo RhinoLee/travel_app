@@ -15,7 +15,7 @@ const { resetPasswordParams } = storeToRefs(memberStore)
 const emit = defineEmits(["submitHandler"])
 
 const { errors } = useInputValidator()
-const { isSignInBtnDisabled } = useSubmitBtnState(unref(resetPasswordParams), errors)
+const { isSubmitBtnDisabled } = useSubmitBtnState(unref(resetPasswordParams), errors)
 
 function submitHandler() {
   emit("submitHandler")
@@ -27,6 +27,6 @@ function submitHandler() {
     <InputPassword v-model:password="memberStore.resetPasswordParams.password"></InputPassword>
     <InputPasswordRepeat v-model:repassword="memberStore.resetPasswordParams.repassword" :password="memberStore.resetPasswordParams.password"></InputPasswordRepeat>
 
-    <button :disabled="isSignInBtnDisabled" type="submit" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
+    <button :disabled="isSubmitBtnDisabled" type="submit" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
   </form>
 </template>

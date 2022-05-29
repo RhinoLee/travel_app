@@ -60,15 +60,21 @@ const time = ref(props.startTime);
 const selectDate = ref([])
 
 // 欄位驗證 
-const { errors, validateInit, validateTitleInput } = useInputValidator()
-const inputParams = {
-  inputName: "時間",
-  inputKey: "date",
+const { errors, validateInit, validateRequiredInput } = useInputValidator()
+const inputParams1 = {
+  inputName: "起始時間",
+  inputKey: "startDate",
+  value: ""
+}
+const inputParams2 = {
+  inputName: "結束時間",
+  inputKey: "endDate",
   value: ""
 }
 
 function validateInput() {
-  validateTitleInput(inputParams);
+  validateRequiredInput(inputParams1);
+  validateRequiredInput(inputParams2);
 }
 
 watch(time, val => {
@@ -103,9 +109,10 @@ watch(
 )
 
 function handleDate(modelData) {
-  // console.log("handleDate", modelData);
   if (!modelData) {
-    inputParams.value = ""
+    inputParams1.value = ""
+    inputParams2.value = ""
+    date.value = []
     validateInput()
     return
   }
@@ -116,7 +123,8 @@ function handleDate(modelData) {
     endDate: modelData[1]
   }
 
-  inputParams.value = dateRange
+  inputParams1.value = dateRange.startDate
+  inputParams2.value = dateRange.endDate
   validateInput()
 
   emit("updateDate", dateRange)
@@ -168,5 +176,6 @@ const minDate = computed(() => {
     format="HH:mm" :transitions="false">
   </Datepicker>
 
-  <div v-if="errors[inputParams.inputKey]" class="text-red-500">{{ errors[inputParams.inputKey] }}</div>
+  <div v-if="errors[inputParams1.inputKey]" class="text-alert">{{ errors[inputParams1.inputKey] }}</div>
+  <div v-if="errors[inputParams2.inputKey]" class="text-alert">{{ errors[inputParams2.inputKey] }}</div>
 </template>

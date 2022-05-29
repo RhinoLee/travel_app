@@ -15,7 +15,7 @@ const formParams = reactive({
 })
 
 const { errors } = useInputValidator()
-const { isSignInBtnDisabled } = useSubmitBtnState(formParams, errors)
+const { isSubmitBtnDisabled } = useSubmitBtnState(formParams, errors)
 
 async function uploadAvatar() {
   memberStore.avatarFile = formParams.avatar
@@ -27,7 +27,7 @@ async function uploadAvatar() {
 
 <template>
   <LightBox v-model:isBoxOpen="memberStore.isEditBoxOpen">
-    <template v-slot:header>編輯頭像</template>
+    <template v-slot:title>編輯頭像</template>
     <template v-slot:main>
       <form @submit.prevent class="w-full h-full flex flex-col items-start" novalidate>
         <InputAvatar :avatar="memberInfo.avatar" :isBoxOpen="memberStore.isEditBoxOpen" v-model:avatar="formParams.avatar">
@@ -37,7 +37,7 @@ async function uploadAvatar() {
     <template v-slot:footer>
       <div class="flex w-full">
         <button @click="hideBox" type="button" class="block mt-auto mr-4 px-4 py-2 shadow-lg">Cancel</button>
-        <button :disabled="isSignInBtnDisabled" @click="uploadAvatar" type="button" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
+        <button :disabled="isSubmitBtnDisabled" @click="uploadAvatar" type="button" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
       </div>
     </template>
   </LightBox>

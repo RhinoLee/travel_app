@@ -22,7 +22,7 @@ export default function useInputValidator() {
     errors[inputKey] = isEmpty(inputName, value) ? isEmpty(inputName, value) : isRepeatCorrect(inputName, value, password)
   }
 
-  const validateTitleInput = ({ inputName, inputKey, value }) => {
+  const validateRequiredInput = ({ inputName, inputKey, value }) => {
     errors[inputKey] = isEmpty(inputName, value)
   }
 
@@ -34,5 +34,5 @@ export default function useInputValidator() {
     errors[inputKey] = ""
   }
 
-  return { errors, validateInit, validateAccountInput, validatePasswordInput, validateTitleInput, validatePasswordIRepeatnput, validateSingeImageInput }
+  return { errors, validateInit, validateAccountInput, validatePasswordInput, validateRequiredInput, validatePasswordIRepeatnput, validateSingeImageInput }
 }

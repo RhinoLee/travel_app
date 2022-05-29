@@ -16,13 +16,6 @@ const travelStore = useTravelStore()
 const { nowMainScheduleId, isEditMainScheduleBoxOpen, editMainScheduleParams, editMainSchedulePicture, mainScheduleInfo } = storeToRefs(travelStore)
 
 watch(
-  nowMainScheduleId,
-  (newVal) => {
-    travelStore.setEditMainScheduleParams()
-  }
-)
-
-watch(
   isEditMainScheduleBoxOpen,
   (newVal) => {
     travelStore.setEditMainScheduleParams()
@@ -30,14 +23,13 @@ watch(
 )
 
 const { errors } = useInputValidator()
-const { isSignInBtnDisabled } = useSubmitBtnState(travelStore.editMainScheduleParams, errors)
+const { isSubmitBtnDisabled } = useSubmitBtnState(travelStore.editMainScheduleParams, errors)
 
 function hideBox() {
 
 }
 
 function updateDate({ startDate, endDate }) {
-  // console.log("updateDate", { startDate, endDate });
   travelStore.editMainScheduleParams.startDateObj = dateHandler.dateFormatDate(startDate)
   travelStore.editMainScheduleParams.endDateObj = dateHandler.dateFormatDate(endDate)
   travelStore.editMainScheduleParams.startDate = startDate
@@ -55,12 +47,11 @@ async function updateMainSchedule() {
 
 <template>
   <LightBox v-model:isBoxOpen="travelStore.isEditMainScheduleBoxOpen">
-    <template v-slot:header>編輯行程</template>
-    <!-- <template v-slot:close-btn>
-      <button @click="hideBox" type="button" class="block mt-auto mr-4 px-4 py-2 shadow-lg">Cancel</button>
-    </template> -->
+    <template v-slot:title>編輯行程</template>
     <template v-slot:submit-btn>
-      <button @click="updateMainSchedule" type="button" class="lightbox-submit-btn bg-travel-textgreen">儲存</button>
+      <button :disabled="isSubmitBtnDisabled" @click="updateMainSchedule"
+        :class="{ 'bg-disabled': isSubmitBtnDisabled, 'bg-travel-textgreen': !isSubmitBtnDisabled }"
+        class="lightbox-submit-btn" type="button">儲存</button>
     </template>
     <template v-slot:banner>
       <!-- 圖片 -->
@@ -84,12 +75,6 @@ async function updateMainSchedule() {
           </DatePickerWrap>
         </div>
       </form>
-    </template>
-    <template v-slot:footer>
-      <!-- <div class="flex w-full">
-        <button @click="hideBox" type="button" class="block mt-auto mr-4 px-4 py-2 shadow-lg">Cancel</button>
-        <button @click="updateMainSchedule" type="button" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
-      </div> -->
     </template>
   </LightBox>
 </template>

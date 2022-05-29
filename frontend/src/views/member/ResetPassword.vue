@@ -44,7 +44,7 @@ function hideBox(boxname) {
   </div>
 
   <LightBox v-model:isBoxOpen="memberStore.isResetPasswordResultBoxOpen">
-    <template v-slot:header>重設密碼通知</template>
+    <template v-slot:title>重設密碼通知</template>
     <template v-slot:main>
       <div>{{ verifyMsg }}</div>
     </template>

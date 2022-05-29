@@ -13,7 +13,7 @@ const { loginParams } = storeToRefs(memberStore)
 const emit = defineEmits(["submitHandler"])
 
 const { errors } = useInputValidator()
-const { isSignInBtnDisabled } = useSubmitBtnState(unref(loginParams), errors)
+const { isSubmitBtnDisabled } = useSubmitBtnState(unref(loginParams), errors)
 
 function submitHandler() {
   emit("submitHandler", loginParams)
@@ -26,7 +26,7 @@ function submitHandler() {
     <InputPassword v-model:password="memberStore.loginParams.password"></InputPassword>
 
     <div class="flex items-center mt-auto">
-      <button :disabled="isSignInBtnDisabled" type="submit" class="block px-4 py-2 shadow-lg">Submit</button>
+      <button :disabled="isSubmitBtnDisabled" type="submit" class="block px-4 py-2 shadow-lg">Submit</button>
       <router-link class="pl-4 py-2" :to="{ name: 'ForgotPassword' }">忘記密碼？</router-link>
     </div>
   </form>

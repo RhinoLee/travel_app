@@ -10,6 +10,8 @@
   --travel-green: #e7ebd5;
   --travel-darkgreen: #9b9f89;
   --travel-gray: #969696;
+  --disabled: #B4B4B4;
+  --alert: #C55252;
 }
 
 @layer base {
@@ -50,7 +52,7 @@
     hover:after:bg-[rgba(255,255,255,.4)]
   }
   .icon-circle {
-    @apply mx-[10px] w-[40px] h-[40px] rounded-full overflow-hidden opacity-0 pointer-events-none
+    @apply mx-[10px] w-[40px] h-[40px] rounded-full overflow-hidden opacity-0 pointer-events-none transition-opacity duration-700 hover:opacity-100
   }
 }
 /* after:bg-white/[.00]

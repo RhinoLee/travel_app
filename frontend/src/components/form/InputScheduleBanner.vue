@@ -98,7 +98,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
   </div>
-  <div v-if="errors[inputParams.inputKey]" class="text-red-500 text-center">{{ errors[inputParams.inputKey] }}</div>
+  <div v-if="errors[inputParams.inputKey]" class="text-alert text-center">{{ errors[inputParams.inputKey] }}</div>
   <div class="flex justify-center w-full">
 
     <input class="hidden" ref="fileInput" type="file" @input="onSelectFile">
