@@ -82,10 +82,9 @@ const mainScheduleController = {
       const { startDate, endDate, title, deletePicture } = req.body
       let category = "main_schedule"
       let imageUrl = null
-      console.log("mainScheduleController update req picture", picture);
 
       // 如果前端有傳 picture 或要刪除 picture
-      if (picture || deletePicture) {
+      if (picture || deletePicture === "true") {
         const mainScheduleResult = await mainScheduleModel.getSchedule(main_schedule_id)
         category += `_${main_schedule_id}`
         const originPicture = mainScheduleResult.rows[0].picture
@@ -93,8 +92,8 @@ const mainScheduleController = {
           const deleteResult = await deleteCloudImage({ userId: member_id, fileLink: originPicture, category })
         }
 
-        if (deletePicture) await mainScheduleModel.deletePicture({ member_id, main_schedule_id })
-        if(!deletePicture) imageUrl = await uploadCloudImage(picture, member_id, category)
+        if (deletePicture === "true") await mainScheduleModel.deletePicture({ member_id, main_schedule_id })
+        if (deletePicture === "false") imageUrl = await uploadCloudImage(picture, member_id, category)
       }
 
       
