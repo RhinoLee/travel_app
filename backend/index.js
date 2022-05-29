@@ -71,7 +71,9 @@ app.post("/api/member/resetPassword", jwtHandler.verifyAccessToken, resetPasswor
 // Travel Schedule
 app.post("/api/mainScheduleCreate",
   jwtHandler.verifyAccessToken,
+  upload.single('picture'),
   mainScheduleRules,
+  mainSchedulePictureRules,
   validateRequest.validates,
   mainScheduleController.create
 )

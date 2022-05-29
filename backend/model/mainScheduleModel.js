@@ -16,7 +16,7 @@ const mainScheduleModel = {
   },
   getAllSchedules: async (member_id) => {
     const query = {
-      text: "SELECT * from main_schedule WHERE member_id = $1",
+      text: "SELECT * from main_schedule WHERE member_id = $1 ORDER BY start_date DESC",
       values: [member_id]
     }
 
@@ -58,6 +58,24 @@ const mainScheduleModel = {
       return err
     }
   },
+  deletePicture: async ({ main_schedule_id, member_id }) => {
+    const query = {
+      text: `
+      UPDATE main_schedule
+      SET picture = $1
+      WHERE id = $2 AND member_id = $3
+      RETURNING *
+      `,
+      values: [null, main_schedule_id, member_id]
+    }
+
+    try {
+      const result = await db.query(query)
+      return result
+    } catch (err) {
+      return err
+    }
+  }
 }
 
 module.exports = mainScheduleModel

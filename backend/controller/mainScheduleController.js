@@ -9,13 +9,29 @@ const mainScheduleController = {
     try {
       const member_id = req.jwtData.id
       const { title, startDate, endDate } = req.body
+      const picture = req.file
+      let category = "main_schedule"
+
       const result = await mainScheduleModel.create({ title, startDate, endDate, member_id })
+
       console.log("mainScheduleController.create result", result);
       if (result && result.rows.length === 1) {
-        return responseHandler.success(res, { id: result.rows[0].id })
+        const main_schedule_id = result.rows[0].id
+        // 如果前端有傳 picture
+        if (picture) {
+          
+          category += `_${main_schedule_id}`
+          imageUrl = await uploadCloudImage(picture, member_id, category)
+
+          // 拿到 imageUrl -> call update
+          const updateResult = await mainScheduleModel.update({ member_id, main_schedule_id, startDate, endDate, title, imageUrl })
+        }
+
+
+        return responseHandler.success(res, { id: main_schedule_id })
       }
 
-      responseHandler.responseErr(res, "新增資料失敗")
+      responseHandler.responseErr(res, "新增資料 or 新增圖片失敗")
     } catch (error) {
       console.log("mainScheduleController.create error", error);
       return responseHandler.catchErr(res, error)
@@ -63,22 +79,25 @@ const mainScheduleController = {
       const member_id = req.jwtData.id
       const main_schedule_id = req.params.id
       const picture = req.file
-      const category = "main_schedule"
+      const { startDate, endDate, title, deletePicture } = req.body
+      let category = "main_schedule"
       let imageUrl = null
-
       console.log("mainScheduleController update req picture", picture);
-      // 如果前端有傳 picture
-      if (picture) {
+
+      // 如果前端有傳 picture 或要刪除 picture
+      if (picture || deletePicture) {
         const mainScheduleResult = await mainScheduleModel.getSchedule(main_schedule_id)
+        category += `_${main_schedule_id}`
         const originPicture = mainScheduleResult.rows[0].picture
         if (originPicture) {
           const deleteResult = await deleteCloudImage({ userId: member_id, fileLink: originPicture, category })
         }
 
-        imageUrl = await uploadCloudImage(picture, member_id, category)
+        if (deletePicture) await mainScheduleModel.deletePicture({ member_id, main_schedule_id })
+        if(!deletePicture) imageUrl = await uploadCloudImage(picture, member_id, category)
       }
 
-      const { startDate, endDate, title } = req.body
+      
       const result = await mainScheduleModel.update({ member_id, main_schedule_id, startDate, endDate, title, imageUrl })
       console.log("mainScheduleController update req", { member_id, main_schedule_id, startDate, endDate, title, imageUrl });
       if (result && result.rows.length >= 0) {
