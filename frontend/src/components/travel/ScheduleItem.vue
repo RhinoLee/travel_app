@@ -52,6 +52,11 @@ async function editMainSchedule() {
   travelStore.isEditMainScheduleBoxOpen = true
 }
 
+async function deleteMainSchedule() {
+  travelStore.nowMainScheduleId = props.mainSchedule.id
+  travelStore.isDeleteMainScheduleBoxOpen = true
+}
+
 onMounted(() => {
   window.addEventListener("click", (e) => closeActions(e))
 })
@@ -82,7 +87,7 @@ onBeforeUnmount(() => {
             <div class="w-[16px]"><img class="w-full h-auto" :src="iconCopy"></div>
             <div class="ml-[6px] text-[14px] tracking-wider">複製行程</div>
           </li>
-          <li class="actionlist-item">
+          <li @click.stop="deleteMainSchedule" class="actionlist-item">
             <div class="w-[16px]"><img class="w-full h-auto" :src="iconDelete"></div>
             <div class="ml-[6px] text-[14px] tracking-wider">刪除行程</div>
           </li>

@@ -195,11 +195,19 @@ export default {
         },
         apiUpdateMainSchedule: (id, params) => {
           const instance = $axios.instances.scheduleRequest()
-          return instance.put(`/mainScheduleUpdate/${id}`, params, {
+          return instance.put(`/mainSchedule/${id}`, params, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
               "Content-Type": "multipart/form-data"
             },
+          })
+        },
+        apiDeleteMainSchedule: (id) => {
+          const instance = $axios.instances.scheduleRequest()
+          return instance.delete(`/mainSchedule/${id}`, {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
           })
         },
         apiGetSingleSchedule: (id) => {

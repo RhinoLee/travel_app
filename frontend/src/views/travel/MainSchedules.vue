@@ -5,12 +5,18 @@ import { onMounted } from '@vue/runtime-core'
 import ScheduleItem from "@/components/travel/ScheduleItem.vue"
 import AddMainScheduleForm from "@/components/form/AddMainScheduleForm.vue"
 import EditMainScheduleForm from "@/components/form/EditMainScheduleForm.vue"
+import LightBox from "@/components/common/LightBox.vue"
 
 const travelStore = useTravelStore()
 const { mainScheduleList } = storeToRefs(travelStore)
 
 function addMainSchedule() {
   travelStore.isAddMainScheduleBoxOpen = true
+}
+
+async function deleteMainSchedule() {
+  const result = await travelStore.deleteMainSchedule()
+  travelStore.isDeleteMainScheduleBoxOpen = false
 }
 
 onMounted(() => {
@@ -33,8 +39,6 @@ onMounted(() => {
           <div class="flex items-center">
             <!-- <button class="block mr-[16px] text-[16px] text-travel-darkgreen">選取</button> -->
             <button @click="addMainSchedule" class="block py-[4px] px-[12px] text-[16px] text-white bg-travel-textgreen rounded-[5px]" type="button">+New</button>
-            <!-- <router-link class="block py-[4px] px-[12px] text-[16px] text-white bg-travel-textgreen rounded-[5px]"
-              :to="{ name: 'AddMainSchedule' }">+New</router-link> -->
           </div>
         </div>
       </div>
@@ -43,14 +47,21 @@ onMounted(() => {
         <div v-for="mainSchedule in mainScheduleList" :key="mainSchedule.id">
           <ScheduleItem :mainSchedule="mainSchedule"></ScheduleItem>
         </div>
-        <!-- <router-link :to="{ name: 'AddMainSchedule' }"
-          class="relative block w-full rounded-[10px] bg-white shadow overflow-hidden cursor-pointer">
-          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">+New</div>
-        </router-link> -->
       </div>
     </div>
   </div>
 
   <AddMainScheduleForm></AddMainScheduleForm>
   <EditMainScheduleForm></EditMainScheduleForm>
+  <LightBox v-model:isBoxOpen="travelStore.isDeleteMainScheduleBoxOpen">
+    <template v-slot:title>刪除行程</template>
+    <template v-slot:submit-btn>
+      <button @click="deleteMainSchedule"
+        class="lightbox-submit-btn bg-travel-textgreen" type="button">刪除</button>
+    </template>
+    <template v-slot:main>
+      <div>確定要刪除行程？</div>
+    </template>
+  </LightBox>
+
 </template>

@@ -73,6 +73,7 @@ export const useTravelStore = defineStore('travel', {
       // lightbox state
       isEditMainScheduleBoxOpen: false,
       isAddMainScheduleBoxOpen: false,
+      isDeleteMainScheduleBoxOpen: false,
     }
   },
   getters: {
@@ -399,6 +400,17 @@ export const useTravelStore = defineStore('travel', {
         this.getMainScheduleList()
       }
 
+    },
+    async deleteMainSchedule() {
+      try {
+        const result = await this.$axios.api.apiDeleteMainSchedule(this.nowMainScheduleId)
+        if (result && result.data.success) {
+          this.getMainScheduleList()
+          return true
+        }
+      } catch (error) {
+        return false
+      }
     },
     async addSingleSchedule() {
       try {
