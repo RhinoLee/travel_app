@@ -75,7 +75,23 @@ const mainScheduleModel = {
     } catch (err) {
       return err
     }
-  }
+  },
+  delete: async ({ member_id, id }) => {
+    const query = {
+      text: `DELETE FROM main_schedule 
+              WHERE member_id = $1 AND id = $2
+              RETURNING id
+            `,
+      values: [member_id, id]
+    }
+
+    try {
+      const result = await db.query(query)
+      return result
+    } catch (err) {
+      return err
+    }
+  },
 }
 
 module.exports = mainScheduleModel

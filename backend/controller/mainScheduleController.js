@@ -19,7 +19,7 @@ const mainScheduleController = {
         const main_schedule_id = result.rows[0].id
         // 如果前端有傳 picture
         if (picture) {
-          
+
           category += `_${main_schedule_id}`
           imageUrl = await uploadCloudImage(picture, member_id, category)
 
@@ -96,7 +96,7 @@ const mainScheduleController = {
         if (deletePicture === "false") imageUrl = await uploadCloudImage(picture, member_id, category)
       }
 
-      
+
       const result = await mainScheduleModel.update({ member_id, main_schedule_id, startDate, endDate, title, imageUrl })
       console.log("mainScheduleController update req", { member_id, main_schedule_id, startDate, endDate, title, imageUrl });
       if (result && result.rows.length >= 0) {
@@ -106,6 +106,33 @@ const mainScheduleController = {
       responseHandler.responseErr(res, "存取資料失敗")
 
     } catch (error) {
+      return responseHandler.catchErr(res, error)
+    }
+  },
+  delete: async (req, res) => {
+    try {
+      const member_id = req.jwtData.id
+      const main_schedule_id = req.params.id
+      let category = "main_schedule"
+
+      // delete schedule 之前，先刪除該筆 schedule 雲端 picture（有的話）
+      const mainScheduleResult = await mainScheduleModel.getSchedule(main_schedule_id)
+      const originPicture = mainScheduleResult.rows[0].picture
+      if (originPicture) {
+        category += `_${main_schedule_id}`
+        const deleteResult = await deleteCloudImage({ userId: member_id, fileLink: originPicture, category })
+      }
+
+      // 刪除 mainSchedule
+      const deleteScheduleResult = await mainScheduleModel.delete({ member_id, id: main_schedule_id })
+      console.log("mainScheduleModel.delete result", deleteScheduleResult);
+      if (deleteScheduleResult && deleteScheduleResult.rows.length === 1) {
+        return responseHandler.success(res, deleteScheduleResult.rows[0])
+      } else {
+        return responseHandler.responseErr(res, "資料庫存取失敗")
+      }
+    } catch (error) {
+      console.log("singleScheduleController.delete error", error);
       return responseHandler.catchErr(res, error)
     }
   }

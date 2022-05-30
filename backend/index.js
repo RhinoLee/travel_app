@@ -87,6 +87,11 @@ app.put("/api/mainScheduleUpdate/:id",
   mainScheduleController.update
 )
 
+app.delete("/api/mainSchedule/:id",
+  jwtHandler.verifyAccessToken,
+  mainScheduleController.delete
+)
+
 app.post("/api/singleScheduleCreate",
   jwtHandler.verifyAccessToken,
   singleScheduleCreateRules,
