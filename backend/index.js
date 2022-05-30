@@ -68,8 +68,13 @@ app.post("/api/member/verifyMember", jwtHandler.verifyAccessToken, memberControl
 app.post("/api/member/verifyEmail", verifyEmailRules, validateRequest.validates, memberController.verifyEmail)
 app.post("/api/member/resetPasswordEmail", verifyEmailRules, validateRequest.validates, memberController.resetPasswordEmail)
 app.post("/api/member/resetPassword", jwtHandler.verifyAccessToken, resetPasswordRules, validateRequest.validates, memberController.resetPassword)
-// Travel Schedule
-app.post("/api/mainScheduleCreate",
+
+// Travel Schedule - main schedule
+app.get("/api/schedule/mainSchedules", jwtHandler.verifyAccessToken, mainScheduleController.getAllSchedules)
+
+app.get("/api/schedule/mainSchedule/:id", jwtHandler.verifyAccessToken, mainScheduleController.getSchedule)
+
+app.post("/api/schedule/mainSchedule",
   jwtHandler.verifyAccessToken,
   upload.single('picture'),
   mainScheduleRules,
@@ -78,7 +83,7 @@ app.post("/api/mainScheduleCreate",
   mainScheduleController.create
 )
 
-app.put("/api/mainScheduleUpdate/:id",
+app.put("/api/schedule/mainSchedule/:id",
   jwtHandler.verifyAccessToken,
   upload.single('picture'),
   mainScheduleRules,
@@ -87,12 +92,14 @@ app.put("/api/mainScheduleUpdate/:id",
   mainScheduleController.update
 )
 
-app.delete("/api/mainSchedule/:id",
+app.delete("/api/schedule/mainSchedule/:id",
   jwtHandler.verifyAccessToken,
   mainScheduleController.delete
 )
 
-app.post("/api/singleScheduleCreate",
+// Travel Schedule - single schedule
+
+app.post("/api/schedule/singleSchedule",
   jwtHandler.verifyAccessToken,
   singleScheduleCreateRules,
   validateRequest.validates,
@@ -100,25 +107,22 @@ app.post("/api/singleScheduleCreate",
   singleScheduleController.create
 )
 
-app.put("/api/singleSchedule/:id",
+app.put("/api/schedule/singleSchedule/:id",
   jwtHandler.verifyAccessToken,
   singleScheduleUpdateRules,
   validateRequest.validates,
   singleScheduleController.update
 )
 
-app.put("/api/singleSchedule_date",
+app.put("/api/schedule/singleScheduleDate",
   jwtHandler.verifyAccessToken,
   singleScheduleController.updateDate
 )
 
-app.delete("/api/singleSchedule/:id",
+app.delete("/api/schedule/singleSchedule/:id",
   jwtHandler.verifyAccessToken,
   singleScheduleController.delete
 )
-
-app.get("/api/mainSchedules", jwtHandler.verifyAccessToken, mainScheduleController.getAllSchedules)
-app.get("/api/mainSchedule/:id", jwtHandler.verifyAccessToken, mainScheduleController.getSchedule)
 
 // place_collection
 app.post("/api/placeCollection",
