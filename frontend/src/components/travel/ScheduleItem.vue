@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref, watch } from "vue"
+import { computed, ref, watch } from "vue"
 import { storeToRefs } from 'pinia'
 import { useTravelStore } from "@/stores/travel/travel"
 import DefaultImage from "@/components/common/DefaultImage.vue"
@@ -9,7 +9,8 @@ import iconUpload from "@/assets/images/svg/icon_upload.svg"
 import iconCopy from "@/assets/images/svg/icon_copy.svg"
 
 const travelStore = useTravelStore()
-const { nowMainScheduleId, isEditMainScheduleBoxOpen } = storeToRefs(travelStore)
+const { nowMainScheduleId, isEditMainScheduleBoxOpen, isActionBoxOpenId } = storeToRefs(travelStore)
+
 
 const props = defineProps({
   mainSchedule: {
@@ -18,32 +19,23 @@ const props = defineProps({
 })
 
 watch(
-  nowMainScheduleId,
-  (newVal) => {
-    // 開啟區塊的 action 列表，並關閉其他區塊 action 列表
-    if (newVal !== props.mainSchedule.id) isActionsOpen.value = false
-  }
-)
-
-watch(
   isEditMainScheduleBoxOpen,
   (newVal) => {
     // 編輯光箱關閉，關閉 action 列表
-    if (!newVal) isActionsOpen.value = false
+    if (!newVal) closeActions()
+    // if (!newVal) isActionsOpen.value = false
   }
 )
 
-const isActionsOpen = ref(false)
-
 function closeActions() {
-  if (travelStore.nowMainScheduleId === null || isEditMainScheduleBoxOpen) return
-  travelStore.nowMainScheduleId = null
-  isActionsOpen.value = false
+  travelStore.closeAction()
 }
 
 function toggleActions() {
+  if (travelStore.isActionBoxOpenId === props.mainSchedule.id) return closeActions()
+
   travelStore.nowMainScheduleId = props.mainSchedule.id
-  isActionsOpen.value = !isActionsOpen.value
+  travelStore.isActionBoxOpenId = props.mainSchedule.id
 }
 
 async function editMainSchedule() {
@@ -53,19 +45,8 @@ async function editMainSchedule() {
 }
 
 async function deleteMainSchedule() {
-  travelStore.nowMainScheduleId = props.mainSchedule.id
   travelStore.isDeleteMainScheduleBoxOpen = true
 }
-
-onMounted(() => {
-  window.addEventListener("click", (e) => closeActions(e))
-})
-
-onBeforeUnmount(() => {
-  closeActions()
-  window.removeEventListener("click", closeActions)
-})
-
 
 </script>
 <template>
@@ -77,7 +58,8 @@ onBeforeUnmount(() => {
     <div class="relative rounded-[10px] bg-white shadow overflow-hidden">
       <button @click.stop="toggleActions" class="absolute top-[12px] right-[12px] w-[26px] cursor-pointer z-10"><img :src="iconAction" class="w-full h-auto" alt="動作"></button>
       <!-- 動作選單 -->
-      <div :class="{ 'block': isActionsOpen, 'hidden': !isActionsOpen }" class="absolute top-[36px] right-[12px] py-[8px] px-[6px] w-[140px] bg-white shadow-md rounded-[5px] overflow-hidden z-10">
+      <!-- <div :class="{ 'block': isActionsOpen, 'hidden': !isActionsOpen }" class="absolute top-[36px] right-[12px] py-[8px] px-[6px] w-[140px] bg-white shadow-md rounded-[5px] overflow-hidden z-10"> -->
+      <div :class="{ 'block': isActionBoxOpenId === mainSchedule.id, 'hidden': isActionBoxOpenId !== mainSchedule.id }" class="absolute top-[36px] right-[12px] py-[8px] px-[6px] w-[140px] bg-white shadow-md rounded-[5px] overflow-hidden z-10">
         <ul class="w-full">
           <li @click.stop="editMainSchedule" class="actionlist-item">
             <div class="w-[16px]"><img class="w-full h-auto" :src="iconUpload"></div>

@@ -74,6 +74,8 @@ export const useTravelStore = defineStore('travel', {
       isEditMainScheduleBoxOpen: false,
       isAddMainScheduleBoxOpen: false,
       isDeleteMainScheduleBoxOpen: false,
+      // actionbox - mainSchedule id 有對上就開啟（null = 全關）
+      isActionBoxOpenId: null,
     }
   },
   getters: {
@@ -250,6 +252,9 @@ export const useTravelStore = defineStore('travel', {
       return true
 
     },
+    closeAction() {
+      this.isActionBoxOpenId = null
+    },
     async getLocationInfo(placeId) {
       const params = {
         place_id: placeId
@@ -359,12 +364,11 @@ export const useTravelStore = defineStore('travel', {
     },
     async updateMainSchedule() {
       if (!this.editMainScheduleParams.title) return
+      const mainScheduleId = this.editMainScheduleParams.id
       let editMainSchduleResult = null
 
       try {
         const formData = new FormData()
-        const mainScheduleId = this.editMainScheduleParams.id
-        console.log("this.editMainScheduleParams.picture", this.editMainScheduleParams.picture);
         if (this.editMainScheduleParams.picture) {
           formData.append("picture", this.editMainScheduleParams.picture)
         }
@@ -381,9 +385,13 @@ export const useTravelStore = defineStore('travel', {
       }
 
       // 判斷日期區間是否有更改，無更改不需更新子行程日期
+      console.log("this.mainScheduleInfo.start_date", this.mainScheduleInfo.start_date);
+      console.log("this.editMainScheduleParams.startDate", this.editMainScheduleParams.startDate);
+      console.log(this.mainScheduleInfo.start_date !== this.editMainScheduleParams.startDate);
       if (this.mainScheduleInfo.start_date !== this.editMainScheduleParams.startDate ||
         this.mainScheduleInfo.end_date !== this.editMainScheduleParams.endDate) {
 
+        console.log("updateDateResult");
         try {
           const updateDateResult = await this.$axios.api.apiUpdateSingleScheduleDate({
             dates: this.editDurationDateList,
@@ -422,30 +430,6 @@ export const useTravelStore = defineStore('travel', {
         return false
       }
     },
-    // async getSingleSchedule() {
-    //   try {
-    //     const result = await this.$axios.api.apiGetSingleSchedule(this.nowMainScheduleId)
-    //     if (!result || !result.data.success) return
-
-    //     const sheduleList = result.data.results.mainScheduleList
-
-    //     sheduleList.forEach(schedule => {
-    //       // 跟收藏列表比對，新增 isCollect 欄位
-    //       // const index = this.placeCollections.findIndex(place => place.place_id === schedule.place_id)
-    //       // schedule.isCollect = index >= 0
-
-    //       // 新增星期欄位
-    //       schedule.day = dateHandler.getDayOfWeek(schedule.date)
-    //     })
-
-    //     this.allSchedules = sheduleList
-    //     this.mainScheduleInfo = result.data.results.mainscheduleInfo
-    //     this.nowSelectDate = sheduleList[0].date // 預設選擇第一天日期
-    //   } catch (error) {
-    //     return false
-    //   }
-
-    // },
     async updateSingleSchedule() {
       try {
         const result = await this.$axios.api.apiUpdateSingleSchedule(this.editScheDuleParams)

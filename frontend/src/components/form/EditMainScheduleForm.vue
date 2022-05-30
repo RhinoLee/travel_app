@@ -38,9 +38,7 @@ function updateDate({ startDate, endDate }) {
 
 async function updateMainSchedule() {
   const result = await travelStore.updateMainSchedule()
-  // memberStore.avatarFile = formParams.avatar
-  // await memberStore.updateAvatar()
-  // memberStore.isEditBoxOpen = false
+  travelStore.isEditMainScheduleBoxOpen = false
 }
 
 </script>

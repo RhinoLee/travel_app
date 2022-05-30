@@ -1,7 +1,7 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useTravelStore } from "@/stores/travel/travel"
-import { onMounted } from '@vue/runtime-core'
+import { onMounted, onBeforeUnmount } from '@vue/runtime-core'
 import ScheduleItem from "@/components/travel/ScheduleItem.vue"
 import AddMainScheduleForm from "@/components/form/AddMainScheduleForm.vue"
 import EditMainScheduleForm from "@/components/form/EditMainScheduleForm.vue"
@@ -16,11 +16,22 @@ function addMainSchedule() {
 
 async function deleteMainSchedule() {
   const result = await travelStore.deleteMainSchedule()
+  travelStore.nowMainScheduleId = null
   travelStore.isDeleteMainScheduleBoxOpen = false
 }
 
+function closeActions() {
+  travelStore.closeAction()
+}
+
 onMounted(() => {
+  window.addEventListener("click", () => closeActions())
   travelStore.getMainScheduleList()
+})
+
+onBeforeUnmount(() => {
+  closeActions()
+  window.removeEventListener("click", closeActions)
 })
 
 </script>
