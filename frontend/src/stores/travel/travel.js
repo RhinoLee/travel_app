@@ -422,30 +422,30 @@ export const useTravelStore = defineStore('travel', {
         return false
       }
     },
-    async getSingleSchedule() {
-      try {
-        const result = await this.$axios.api.apiGetSingleSchedule(this.nowMainScheduleId)
-        if (!result || !result.data.success) return
+    // async getSingleSchedule() {
+    //   try {
+    //     const result = await this.$axios.api.apiGetSingleSchedule(this.nowMainScheduleId)
+    //     if (!result || !result.data.success) return
 
-        const sheduleList = result.data.results.mainScheduleList
+    //     const sheduleList = result.data.results.mainScheduleList
 
-        sheduleList.forEach(schedule => {
-          // 跟收藏列表比對，新增 isCollect 欄位
-          // const index = this.placeCollections.findIndex(place => place.place_id === schedule.place_id)
-          // schedule.isCollect = index >= 0
+    //     sheduleList.forEach(schedule => {
+    //       // 跟收藏列表比對，新增 isCollect 欄位
+    //       // const index = this.placeCollections.findIndex(place => place.place_id === schedule.place_id)
+    //       // schedule.isCollect = index >= 0
 
-          // 新增星期欄位
-          schedule.day = dateHandler.getDayOfWeek(schedule.date)
-        })
+    //       // 新增星期欄位
+    //       schedule.day = dateHandler.getDayOfWeek(schedule.date)
+    //     })
 
-        this.allSchedules = sheduleList
-        this.mainScheduleInfo = result.data.results.mainscheduleInfo
-        this.nowSelectDate = sheduleList[0].date // 預設選擇第一天日期
-      } catch (error) {
-        return false
-      }
+    //     this.allSchedules = sheduleList
+    //     this.mainScheduleInfo = result.data.results.mainscheduleInfo
+    //     this.nowSelectDate = sheduleList[0].date // 預設選擇第一天日期
+    //   } catch (error) {
+    //     return false
+    //   }
 
-    },
+    // },
     async updateSingleSchedule() {
       try {
         const result = await this.$axios.api.apiUpdateSingleSchedule(this.editScheDuleParams)

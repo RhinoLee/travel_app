@@ -74,7 +74,7 @@ export default {
           return axiosInstance
         },
         scheduleRequest: () => {
-          const axiosInstance = axios.create({ baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/` })
+          const axiosInstance = axios.create({ baseURL: `${import.meta.env.VITE_API_DOMAINN}/api/schedule` })
           $axios.addLoadingInterceptor(axiosInstance)
           $axios.addErrorInterceptor(axiosInstance)
           return axiosInstance
@@ -170,7 +170,7 @@ export default {
         },
         apiCreateMainSchedule: (params) => {
           const instance = $axios.instances.scheduleRequest()
-          return instance.post("/mainScheduleCreate", params, {
+          return instance.post("/mainSchedule", params, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`,
               "Content-Type": "multipart/form-data"
@@ -210,17 +210,17 @@ export default {
             }
           })
         },
-        apiGetSingleSchedule: (id) => {
-          const instance = $axios.instances.scheduleRequest()
-          return instance.get(`/mainSchedule/${id}/singleSchedules`, {
-            headers: {
-              "Authorization": `Bearer ${localStorage.getItem("token")}`
-            },
-          })
-        },
+        // apiGetSingleSchedule: (id) => {
+        //   const instance = $axios.instances.scheduleRequest()
+        //   return instance.get(`/mainSchedule/${id}/singleSchedules`, {
+        //     headers: {
+        //       "Authorization": `Bearer ${localStorage.getItem("token")}`
+        //     },
+        //   })
+        // },
         apiCreateSingleSchedule: (params) => {
           const instance = $axios.instances.scheduleRequest()
-          return instance.post("/singleScheduleCreate", params, {
+          return instance.post("/singleSchedule", params, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`
             }
@@ -237,7 +237,7 @@ export default {
         },
         apiUpdateSingleScheduleDate: (params) => {
           const instance = $axios.instances.scheduleRequest()
-          return instance.put(`/singleSchedule_date`, params, {
+          return instance.put(`/singleScheduleDate`, params, {
             headers: {
               "Authorization": `Bearer ${localStorage.getItem("token")}`
             }
