@@ -6,8 +6,8 @@ const singleScheduleController = {
     try {
       const location = req.location
       const member_id = req.jwtData.id
-      const { title, place_name, place_id, date, start_time, end_time, day_order, main_schedule_id } = req.body
-      const result = await singleScheduleModel.create({ title, place_name, place_id, date, start_time, end_time, location, member_id, day_order, main_schedule_id })
+      const { title, place_name, place_id, date, start_time, day_order, main_schedule_id } = req.body
+      const result = await singleScheduleModel.create({ title, place_name, place_id, date, start_time, location, member_id, day_order, main_schedule_id })
       console.log("singleScheduleController.create result", result);
       if (result && result.rows.length === 1) {
         return responseHandler.success(res, { id: result.rows[0] })

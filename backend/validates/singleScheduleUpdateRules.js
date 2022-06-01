@@ -16,11 +16,11 @@ const singleScheduleUpdateRules = [
     .withMessage("start_time 欄位必填")
     .matches(/([0-9]|1\d|2[0-3]):([1-5]{2}|6[0]|[0-9])/)
     .withMessage("start_time 格式不符"),
-  body("end_time")
-    .notEmpty()
-    .withMessage("end_time 欄位必填")
-    .matches(/([0-9]|1\d|2[0-3]):([1-5]{2}|6[0]|[0-9])/)
-    .withMessage("end_time 格式不符"),
+  // body("end_time")
+  //   .notEmpty()
+  //   .withMessage("end_time 欄位必填")
+  //   .matches(/([0-9]|1\d|2[0-3]):([1-5]{2}|6[0]|[0-9])/)
+  //   .withMessage("end_time 格式不符"),
   body("day_order")
     .notEmpty()
     .withMessage("day_order 欄位必填")
