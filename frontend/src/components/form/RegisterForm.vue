@@ -2,9 +2,9 @@
 import { ref, reactive } from "vue"
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
-import InputAccount from "@/components/form/InputAccount.vue";
-import InputPassword from "@/components/form/InputPassword.vue";
-import InputPasswordRepeat from "@/components/form/InputPasswordRepeat.vue";
+import InputAccount from "@/components/form/input/InputAccount.vue";
+import InputPassword from "@/components/form/input/InputPassword.vue";
+import InputPasswordRepeat from "@/components/form/input/InputPasswordRepeat.vue";
 
 const formParams = reactive({
   email: "",

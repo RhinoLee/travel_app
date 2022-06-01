@@ -4,7 +4,7 @@ import { useMemberStore } from "@/stores/member"
 import { storeToRefs } from 'pinia'
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
-import InputAccount from "@/components/form/InputAccount.vue";
+import InputAccount from "@/components/form/input/InputAccount.vue";
 
 const memberStore = useMemberStore()
 const { forgotPasswordParams } = storeToRefs(memberStore)

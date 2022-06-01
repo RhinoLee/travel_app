@@ -2,7 +2,7 @@
 import { reactive } from "vue";
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member"
-import InputAvatar from "@/components/form/InputAvatar.vue"
+import InputAvatar from "@/components/form/input/InputAvatar.vue"
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
 import LightBox from "@/components/common/LightBox.vue"
