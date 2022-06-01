@@ -26,8 +26,8 @@ export const useTravelStore = defineStore('travel', {
       addScheDuleParams: {
         title: "",
         date: "",
-        start_time: "",
-        end_time: "",
+        start_time: "00:00",
+        end_time: "00:00",
         place_id: "",
         place_name: "",
         main_schedule_id: "",
@@ -69,13 +69,20 @@ export const useTravelStore = defineStore('travel', {
       directions: {
         routesPolyline: "",
         routesBounds: "",
+        durations: [],
+        distances: []
       },
       // lightbox state
       isEditMainScheduleBoxOpen: false,
       isAddMainScheduleBoxOpen: false,
       isDeleteMainScheduleBoxOpen: false,
+      isAddScheduleBoxOpen: false,
+      isEditScheduleBoxOpen: false,
+      isDeleteScheduleBoxOpen: false,
       // actionbox - mainSchedule id 有對上就開啟（null = 全關）
       isActionBoxOpenId: null,
+      // schedule sidebar
+      isMenuOpen: false
     }
   },
   getters: {
@@ -134,7 +141,7 @@ export const useTravelStore = defineStore('travel', {
       return schedule
     },
     // 被選到的單一計畫資訊 - time 整理成 datepicker 需要格式
-    nowScheduleTime(state) {
+    nowScheduleTimeRange(state) {
       if (!this.nowSchedule) return null
       const format = [
         {
@@ -173,6 +180,9 @@ export const useTravelStore = defineStore('travel', {
     }
   },
   actions: {
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen
+    },
     // 選取 schedule
     selectSchedule(scheduleId, date) {
       this.nowScheduleId = scheduleId
@@ -189,11 +199,35 @@ export const useTravelStore = defineStore('travel', {
       this.addMainScheduleParams.endDate = ""
       this.addMainScheduleParams.picture = null
     },
+    clearEditScheduleParams() {
+      this.editScheDuleParams.id = ""
+      this.editScheDuleParams.title = ""
+      this.editScheDuleParams.date = ""
+      this.editScheDuleParams.start_time = ""
+      this.editScheDuleParams.end_time = ""
+      this.editScheDuleParams.day_order = ""
+    },
+    clearDirections() {
+      this.directions.routesPolyline = ""
+      this.directions.routesBounds = ""
+      this.directions.durations = []
+      this.directions.distances = []
+    },
+    closeAllScheduleBox() {
+      this.isAddScheduleBoxOpen = false
+      this.isEditScheduleBoxOpen = false
+      this.isDeleteScheduleBoxOpen = false
+    },
     // 設定編輯單一行程參數
     setEditScheduleParams() {
       if (!this.nowSchedule) return
-      const editScheDuleParams = JSON.parse(JSON.stringify(this.nowSchedule))
-      this.editScheDuleParams = editScheDuleParams
+      this.editScheDuleParams.id = this.nowSchedule.id
+      this.editScheDuleParams.title = this.nowSchedule.title
+      this.editScheDuleParams.date = this.nowSchedule.date
+      this.editScheDuleParams.start_time = this.nowSchedule.start_time
+      this.editScheDuleParams.end_time = this.nowSchedule.end_time
+      this.editScheDuleParams.day_order = this.nowSchedule.day_order
+      this.editScheDuleParams.place_name = this.nowSchedule.place_name
     },
     // 設定編輯總行程參數
     setEditMainScheduleParams() {
@@ -446,8 +480,8 @@ export const useTravelStore = defineStore('travel', {
       const promiseArr = []
 
       list.forEach(schedule => {
-        const { id, title, date, start_time, end_time } = schedule
-        const params = { id, title, date, start_time, end_time }
+        const { id, title, date, start_time, end_time, day_order } = schedule
+        const params = { id, title, date, start_time, end_time, day_order }
         promiseArr.push(this.$axios.api.apiUpdateSingleSchedule(params))
       })
 
@@ -474,10 +508,14 @@ export const useTravelStore = defineStore('travel', {
     },
     // 路徑 API
     async getDirections() {
-      if (!this.nowDateScheduleList[0]) return
+      this.clearDirections()
+      if (!this.nowDateScheduleList[0] || this.nowDateScheduleList[0].scheduleList.length === 1) return
       const { scheduleList } = this.nowDateScheduleList[0]
+      // 起點行程
       const origin = scheduleList[0].place_id
+      // 終點行程
       const destination = scheduleList[scheduleList.length - 1].place_id
+      // waypoints = 中繼站
       const waypoints = []
       if (scheduleList.length > 1) {
         scheduleList.forEach((schedule, idx) => {
@@ -492,13 +530,26 @@ export const useTravelStore = defineStore('travel', {
         if (result.data.success) {
           this.directions.routesPolyline = result.data.results.routes[0].overview_polyline.points
           this.directions.routesBounds = result.data.results.routes[0].bounds
+
+          // 整理各地點間的交通時間 & 距離
+          const legs = result.data.results.routes[0].legs || null
+          if (legs) {
+            legs.forEach(leg => {
+              this.directions.durations.push(leg.duration)
+              this.directions.distances.push(leg.distance)
+            })
+          } else {
+            this.directions = []
+            this.distances = []
+          }
+
         } else {
-          this.directions.routesPolyline = ""
+          this.clearDirections()
         }
 
         return result && result.data.success
       } catch (error) {
-        this.directions.routesPolyline = ""
+        this.clearDirections()
         return false
       }
     },

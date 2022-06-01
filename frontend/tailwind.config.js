@@ -22,7 +22,8 @@ module.exports = {
         "alert": "var(--alert)",
       },
       backgroundImage: {
-        "select-arrow": "url('@/assets/images/svg/icon_arrow.svg')",
+        "select-arrow": "url('@/assets/images/svg/icon_select.svg')",
+        // "select-arrow": "url('@/assets/images/svg/icon_arrow.svg')",
       }
     },
   },

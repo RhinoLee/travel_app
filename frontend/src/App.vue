@@ -12,5 +12,5 @@ import Loading from "@/components/common/Loading.vue"
     <RouterView />
     <Sidebar></Sidebar>
   </div>
-  <Loading></Loading>
+  <!-- <Loading></Loading> -->
 </template>

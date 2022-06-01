@@ -27,17 +27,25 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  startTime: {
+  timeRange: {
     type: Array,
     default: () => ([
       {
-        hours: new Date().getHours(),
-        minutes: new Date().getMinutes()
+        hours: 0,
+        minutes: 0
       },
       {
-        hours: new Date().getHours(),
-        minutes: new Date().getMinutes()
+        hours: 0,
+        minutes: 0
       }
+      // {
+      //   hours: new Date().getHours(),
+      //   minutes: new Date().getMinutes()
+      // },
+      // {
+      //   hours: new Date().getHours(),
+      //   minutes: new Date().getMinutes()
+      // }
     ])
   },
   nowRange: {
@@ -55,44 +63,51 @@ const emit = defineEmits(["updateDate", "updateTime"])
 
 const date = ref()
 const startTimeDefault = ref([{ hours: 0, minutes: 0, seconds: 0 }, { hours: 0, minutes: 0, seconds: 0 }]);
-const time = ref(props.startTime);
+const time = ref(props.timeRange);
 // disabledDates 版本
 const selectDate = ref([])
 
 // 欄位驗證 
 const { errors, validateInit, validateRequiredInput } = useInputValidator()
-const inputParams1 = {
-  inputName: "起始時間",
+
+const inputStartDate = {
+  inputName: "起始日期",
   inputKey: "startDate",
   value: ""
 }
-const inputParams2 = {
-  inputName: "結束時間",
+const inputEndDate = {
+  inputName: "結束日期",
   inputKey: "endDate",
   value: ""
 }
 
-function validateInput() {
-  validateRequiredInput(inputParams1);
-  validateRequiredInput(inputParams2);
+const inputStartTime = {
+  inputName: "開始時間",
+  inputKey: "start_time",
+  value: ""
 }
 
-watch(time, val => {
-  if (!val) return
-  const timeRange = {
-    startTime: dateHandler.timeFormat(val[0].hours, val[0].minutes),
-    endTime: dateHandler.timeFormat(val[1].hours, val[1].minutes),
-  }
-  emit("updateTime", timeRange)
-},
-  { immediate: true }
-)
+const inputEndTime = {
+  inputName: "結束時間",
+  inputKey: "end_time",
+  value: ""
+}
+
+function validateDate() {
+  validateRequiredInput(inputStartDate);
+  validateRequiredInput(inputEndDate);
+}
+
+function validateTime() {
+  validateRequiredInput(inputStartTime);
+  validateRequiredInput(inputEndTime);
+}
 
 watch(
-  () => props.startTime,
+  () => props.timeRange,
   newVal => {
     if (!newVal) return
-    time.value = props.startTime
+    time.value = props.timeRange
   },
   { immediate: true }
 )
@@ -108,12 +123,13 @@ watch(
   { immediate: true }
 )
 
+// 更新日期
 function handleDate(modelData) {
   if (!modelData) {
-    inputParams1.value = ""
-    inputParams2.value = ""
+    inputStartDate.value = ""
+    inputEndDate.value = ""
     date.value = []
-    validateInput()
+    validateDate()
     return
   }
 
@@ -123,11 +139,33 @@ function handleDate(modelData) {
     endDate: modelData[1]
   }
 
-  inputParams1.value = dateRange.startDate
-  inputParams2.value = dateRange.endDate
-  validateInput()
+  inputStartDate.value = dateRange.startDate
+  inputEndDate.value = dateRange.endDate
+  validateDate()
 
   emit("updateDate", dateRange)
+}
+
+// 更新時間
+function handleTime(modelData) {
+  console.log("handleTime", modelData);
+  if (!modelData) {
+    inputStartTime.value = ""
+    inputEndTime.value = ""
+    validateTime()
+    return emit("updateTime", timeRange)
+  }
+
+  const timeRange = {
+    startTime: dateHandler.timeFormat(modelData[0].hours, modelData[0].minutes),
+    endTime: dateHandler.timeFormat(modelData[1].hours, modelData[1].minutes),
+  }
+
+  inputStartTime.value = timeRange.startTime
+  inputEndTime.value = timeRange.endTime
+  validateTime()
+
+  emit("updateTime", timeRange)
 }
 
 // disabledDates 版本 => user 編輯 mainSchedule 時間區間規則：一定要 >= 原本的區間天數
@@ -165,17 +203,19 @@ const minDate = computed(() => {
     >
   </Datepicker> -->
 
-  <!-- disabledDates 版本 -->
-  <!-- :utc="utc" -->
-  <Datepicker v-if="!timePicker" v-model="date" @update:modelValue="handleDate" :utc="utc" :range="range"
+  <!-- date picker disabledDates 版本 -->
+  <Datepicker v-if="!timePicker" v-model="date" @update:modelValue="handleDate" :range="range" :utc="utc"
     :enableTimePicker="enableTimePicker" :startTime="startTimeDefault" :disabledDates="disabledDates"
     @internalModelChange="handleInternal" :transitions="false" :minDate="minDate">
   </Datepicker>
 
-  <Datepicker v-if="timePicker" v-model="time" :range="range" :utc="utc" :timePicker="timePicker" :readonly="readonly"
-    format="HH:mm" :transitions="false">
+  <!-- time picker 版本 -->
+  <Datepicker v-if="timePicker" v-model="time" @update:modelValue="handleTime" :range="range" :utc="utc"
+    :timePicker="timePicker" :readonly="readonly" format="HH:mm" :transitions="false">
   </Datepicker>
 
-  <div v-if="errors[inputParams1.inputKey]" class="text-alert">{{ errors[inputParams1.inputKey] }}</div>
-  <div v-if="errors[inputParams2.inputKey]" class="text-alert">{{ errors[inputParams2.inputKey] }}</div>
+  <div v-if="errors[inputStartDate.inputKey]" class="text-alert">{{ errors[inputStartDate.inputKey] }}</div>
+  <div v-if="errors[inputEndDate.inputKey]" class="text-alert">{{ errors[inputEndDate.inputKey] }}</div>
+  <div v-if="errors[inputStartTime.inputKey]" class="text-alert">{{ errors[inputStartTime.inputKey] }}</div>
+  <div v-if="errors[inputEndTime.inputKey]" class="text-alert">{{ errors[inputEndTime.inputKey] }}</div>
 </template>

@@ -10,10 +10,10 @@ const { isMenuOpen } = storeToRefs(commonStore)
   <nav
     @mouseenter="commonStore.isMenuOpen = true"
     @mouseleave="commonStore.isMenuOpen = false"
-    :class="{ 'left-0': isMenuOpen, 'md:-left-[168px]': !isMenuOpen, '-left-[180px]': !isMenuOpen }"
-    class="fixed top-[54px] px-[10px] w-[180px] h-full border-r-[2px] border-travel-green bg-white tracking-[1px] transition-all duration-700 z-20">
-    <div class="relative w-full h-full">
-      <div class="pt-[53px]">
+    :class="{ 'left-0': isMenuOpen, 'md:-left-[268px]': !isMenuOpen, '-left-[280px]': !isMenuOpen }"
+    class="sidebar-menu border-travel-green w-[280px] bg-white z-20">
+    <div class="relative w-full h-full px-[30px]">
+      <div class="pt-[54px]">
         <h3 class="mb-[10px] px-[15px] text-travel-textgreen text-xs">主功能</h3>
         <ul class="child:mt-[8px]">
           <li class="rounded-[10px] overflow-hidden hover:bg-travel-lightgreen">
@@ -37,7 +37,7 @@ const { isMenuOpen } = storeToRefs(commonStore)
         </ul>
       </div>
 
-      <div class="pt-[53px]">
+      <div class="pt-[54px]">
         <h3 class="mb-[10px] px-[15px] text-travel-textgreen text-xs">捷徑</h3>
         <ul class="child:mt-[8px]">
           <li class="rounded-[10px] overflow-hidden hover:bg-travel-lightgreen">
@@ -50,8 +50,8 @@ const { isMenuOpen } = storeToRefs(commonStore)
       </div>
 
       <!-- sidebar-trigger -->
-      <button @click="commonStore.toggleMenu" class="hidden md:block absolute top-[140px] left-[calc(100%+12px)] w-[20px] h-[88px] text-[12px] text-travel-darkgreen bg-travel-green tracking-normal rounded-tr-[10px] rounded-br-[10px]">
-        展開選單
+      <button @click="commonStore.toggleMenu" class="sidebar-trigger hidden md:block top-[140px] text-travel-darkgreen bg-travel-green">
+        {{ isMenuOpen ? "收起選單" : "展開選單" }}
       </button>
     </div>
   </nav>

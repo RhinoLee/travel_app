@@ -1,7 +1,9 @@
 <script setup>
-import { onMounted, reactive, watch } from "vue";
+import { onMounted, onUnmounted, reactive, watch } from "vue";
 import { useTravelStore } from "@/stores/travel/travel"
-// import robotImage from "@/assets/images/png/robot.png"
+import iconCollect from "@/assets/images/map/collect.svg"
+import iconLocation from "@/assets/images/map/location.svg"
+import iconSearch from "@/assets/images/map/search.svg"
 
 const travelStore = useTravelStore()
 
@@ -34,6 +36,7 @@ const emit = defineEmits([
 const map = reactive({ data: null })
 const taiwanCenter = { lat: 23.97565, lng: 120.9738819 }
 const mapDefaultZoom = 8
+const mapZoomIn = 14
 
 const markerGroup = { // 分類 marker 圖層
   schedule: [],
@@ -49,15 +52,16 @@ watch(
   (newVal) => {
     removeAllMarkers()
     renderScheduleLocation()
-    travelStore.getDirections()
+    // travelStore.getDirections()
   },
-  { immediate: true }
+  // { immediate: true }
 )
 
 // 偵測目前搜尋的地點
 watch(
   () => props.locationSearchList,
   (newVal) => {
+    console.log("rops.locationSearchList", newVal);
     removeAllMarkers("search")
     emit("closePanel")
     renderSearchLocation()
@@ -88,7 +92,7 @@ watch(
   () => props.directions,
   (newObj) => {
     removeRoutesPolyLine()
-    if (!newObj) return
+    if (!newObj.routesPolyline && !newObj.routesBounds) return
     addRoutesPolyLine(newObj.routesPolyline, newObj.routesBounds)
   },
   { deep: true }
@@ -133,11 +137,11 @@ function scheduleMarkerTirigger(place_id) {
   // clearMarkersAnitmation("schedule")
   if (!marker) return
   marker.setAnimation(google.maps.Animation.BOUNCE);
-  setZoom(13, marker.position)
+  setZoom(mapZoomIn, marker.position)
 }
 
 // 設定點位
-function setMarker({ location, placeId, icon, title, label, group, animation, scheduleId=null }) {
+function setMarker({ location, placeId, icon, title, label, group, animation, scheduleId = null }) {
   // create marker
   const marker = new google.maps.Marker({
     position: location,
@@ -151,8 +155,9 @@ function setMarker({ location, placeId, icon, title, label, group, animation, sc
   // add click event for get location detail
   marker.addListener("click", async (e) => {
     clearMarkersAnitmation()
+    // marker active 動畫
     marker.setAnimation(google.maps.Animation.BOUNCE);
-    setZoom(13, marker.position)
+    setZoom(mapZoomIn, marker.position)
     if (marker.scheduleId !== null) travelStore.nowScheduleId = marker.scheduleId
     const res = await travelStore.getLocationInfo(marker.placeId)
   })
@@ -192,18 +197,30 @@ function removeAllMarkers(group) {
 // 把目前計畫中的點設定到地圖上
 function renderScheduleLocation() {
   const group = "schedule"
+
+  // 如果沒有行程，setZoom 至預設值
+  // if (props.scheduleList.length === 0) {
+  //   setZoom(mapDefaultZoom, taiwanCenter)
+  // }
+
   props.scheduleList.forEach(item => {
     item.scheduleList.forEach((schedule, idx) => {
       setMarker({
         location: { lat: schedule.lat, lng: schedule.lng },
         placeId: schedule.place_id,
-        // icon: "",
+        // icon: iconLocation,
+        icon: "",
         // title: `${idx}`,
         label: `${idx + 1}`,
         group,
         animation: google.maps.Animation.DROP,
         scheduleId: schedule.id
       })
+
+      // 如果只有一個行程，直接 set zoom 到該點，否則給 addRoutesPolyLine 處理即可
+      if (props.scheduleList.length === 1 && item.scheduleList.length === 1) {
+        // setZoom(mapZoomIn, { lat: schedule.lat, lng: schedule.lng })
+      }
     })
   })
 
@@ -243,11 +260,12 @@ function renderPlaceCollections() {
   })
 
   setMarkerToMap(map.data, group)
-  setZoom(mapDefaultZoom, taiwanCenter)
+  // setZoom(mapDefaultZoom, taiwanCenter)
 }
 
 // 設定導航路線
 function addRoutesPolyLine(routesPolyline, routesBounds) {
+  console.log("addRoutesPolyLine");
   const encodeCoordinates = google.maps.geometry.encoding.decodePath(routesPolyline);
   const path = new google.maps.Polyline({
     path: encodeCoordinates,
@@ -263,7 +281,7 @@ function addRoutesPolyLine(routesPolyline, routesBounds) {
   const LatLngBoundsCenter = new google.maps.LatLngBounds()
   LatLngBoundsCenter.extend(swLatLng)
   LatLngBoundsCenter.extend(neLatLng)
-  setZoom(14, null, LatLngBoundsCenter)
+  setZoom(mapZoomIn, null, LatLngBoundsCenter)
   path.setMap(map.data);
 }
 
@@ -279,6 +297,11 @@ function removeRoutesPolyLine() {
 onMounted(() => {
   initMap()
   renderScheduleLocation()
+})
+
+onUnmounted(() => {
+  removeAllMarkers()
+  setZoom(mapDefaultZoom, taiwanCenter)
 })
 
 </script>
