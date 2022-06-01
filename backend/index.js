@@ -18,6 +18,7 @@ const mainSchedulePictureRules = require("./validates/mainSchedulePictureRules")
 const mainScheduleRules = require("./validates/mainScheduleRules")
 const singleScheduleCreateRules = require("./validates/singleScheduleCreateRules")
 const singleScheduleUpdateRules = require("./validates/singleScheduleUpdateRules")
+const singleScheduleDateRules = require("./validates/singleScheduleDateRules")
 const mapDerectionsRules = require("./validates/mapDirectionsRules")
 const mapSearchRules = require("./validates/mapSearchRules")
 const mapDetailsRules = require("./validates/mapDetailsRules")
@@ -116,6 +117,8 @@ app.put("/api/schedule/singleSchedule/:id",
 
 app.put("/api/schedule/singleScheduleDate",
   jwtHandler.verifyAccessToken,
+  singleScheduleDateRules,
+  validateRequest.validates,
   singleScheduleController.updateDate
 )
 

@@ -16,10 +16,15 @@ const derectionsRules = [
     .withMessage("waypoints 格式不符")
     .custom(value => {
       if (value.length === 0) return true
-      let validated = false
-      value.forEach(item => {
-        validated = typeof item === "string"
-      })
+      let validated = true
+
+      for (let i = 0; i < value.length; i++) {
+        if (typeof value[i] !== "string") {
+          validated = false
+          break;
+        }
+      }
+
       if (!validated) throw new Error("waypoints 格式不符")
       return true
     })
