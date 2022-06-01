@@ -70,7 +70,7 @@ async function change({ moved }) {
               <div class="w-[calc(100%-75px)] pl-[12px]">
                 <div class="flex justify-between items-center">
                   <div class="child:text-travel-textgreen child:text-[15px] child:tracking-wider">
-                    <span>{{ element.start_time }} - {{ element.end_time }}</span>
+                    <span>{{ element.start_time }} - 預估時程</span>
                   </div>
                 </div>
                 <div class="mt-[7px] child:text-[16px] child:tracking-wider">

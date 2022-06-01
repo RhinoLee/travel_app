@@ -14,7 +14,7 @@ import EditScheduleForm from "@/components/form/EditScheduleForm.vue";
 import AddScheduleForm from "@/components/form/AddScheduleForm.vue";
 
 const travelStore = useTravelStore()
-const { nowMainScheduleId, mainScheduleInfo, locationSearchList, nowDateScheduleList, directions, placeCollectionsList, placeInfoComputed, durationDateList, nowScheduleTimeRange, nowSelectDate, isMenuOpen, isDeleteScheduleBoxOpen } = storeToRefs(travelStore)
+const { nowMainScheduleId, mainScheduleInfo, locationSearchList, nowDateScheduleList, directions, placeCollectionsList, placeInfoComputed, durationDateList, nowSelectDate, isMenuOpen, isDeleteScheduleBoxOpen } = storeToRefs(travelStore)
 const route = useRoute()
 
 // 偵測旅行日期變化

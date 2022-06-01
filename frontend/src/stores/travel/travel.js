@@ -5,7 +5,7 @@ import { dateHandler } from "@/utils/dateTransform"
 export const useTravelStore = defineStore('travel', {
   state: () => {
     return {
-      // api params start
+      // 主行程 新增 / 編輯 Params
       addMainScheduleParams: {
         title: "",
         startDate: "",
@@ -23,11 +23,11 @@ export const useTravelStore = defineStore('travel', {
         deletePicture: false,
         picture: null,
       },
+      // 子行程 新增 / 編輯 Params
       addScheDuleParams: {
         title: "",
         date: "",
         start_time: "00:00",
-        end_time: "00:00",
         place_id: "",
         place_name: "",
         main_schedule_id: "",
@@ -42,7 +42,6 @@ export const useTravelStore = defineStore('travel', {
         title: "",
         date: "",
         start_time: "",
-        end_time: "",
         day_order: ""
       },
       // api params end
@@ -141,21 +140,29 @@ export const useTravelStore = defineStore('travel', {
       return schedule
     },
     // 被選到的單一計畫資訊 - time 整理成 datepicker 需要格式
-    nowScheduleTimeRange(state) {
+    nowScheduleStartTime(state) {
       if (!this.nowSchedule) return null
-      const format = [
-        {
-          hours: this.nowSchedule.start_time.split(':')[0],
-          minutes: this.nowSchedule.start_time.split(':')[1]
-        },
-        {
-          hours: this.nowSchedule.end_time.split(':')[0],
-          minutes: this.nowSchedule.end_time.split(':')[1]
-        }
-      ]
-
+      const format = {
+        hours: this.nowSchedule.start_time.split(':')[0],
+        minutes: this.nowSchedule.start_time.split(':')[1]
+      }
       return format
     },
+    // nowScheduleTimeRange(state) {
+    //   if (!this.nowSchedule) return null
+    //   const format = [
+    //     {
+    //       hours: this.nowSchedule.start_time.split(':')[0],
+    //       minutes: this.nowSchedule.start_time.split(':')[1]
+    //     },
+    //     {
+    //       hours: this.nowSchedule.end_time.split(':')[0],
+    //       minutes: this.nowSchedule.end_time.split(':')[1]
+    //     }
+    //   ]
+
+    //   return format
+    // },
     memberId() {
       const memberStore = useMemberStore()
       return memberStore.memberInfo.id
@@ -204,7 +211,6 @@ export const useTravelStore = defineStore('travel', {
       this.editScheDuleParams.title = ""
       this.editScheDuleParams.date = ""
       this.editScheDuleParams.start_time = ""
-      this.editScheDuleParams.end_time = ""
       this.editScheDuleParams.day_order = ""
     },
     clearDirections() {
@@ -225,7 +231,6 @@ export const useTravelStore = defineStore('travel', {
       this.editScheDuleParams.title = this.nowSchedule.title
       this.editScheDuleParams.date = this.nowSchedule.date
       this.editScheDuleParams.start_time = this.nowSchedule.start_time
-      this.editScheDuleParams.end_time = this.nowSchedule.end_time
       this.editScheDuleParams.day_order = this.nowSchedule.day_order
       this.editScheDuleParams.place_name = this.nowSchedule.place_name
     },
@@ -248,42 +253,42 @@ export const useTravelStore = defineStore('travel', {
     },
     // 單一行程拖拉排序
     exchangeSchedule({ element, oldIndex, newIndex }) {
-      const list = this.allSchedules.filter(schedule => schedule.date === element.date)[0].scheduleList
+      // const list = this.allSchedules.filter(schedule => schedule.date === element.date)[0].scheduleList
 
-      if (newIndex === list.length - 1) {
-        element.start_time = list[newIndex - 1].end_time
-        element.end_time = dateHandler.calcPlusTime(element.start_time, 60)
+      // if (newIndex === list.length - 1) {
+      //   element.start_time = list[newIndex - 1].end_time
+      //   element.end_time = dateHandler.calcPlusTime(element.start_time, 60)
 
-        return true
-      }
+      //   return true
+      // }
 
-      if (newIndex === 0) {
-        list.forEach((schedule, idx) => {
-          if (idx === 0) {
-            element.start_time = list[1].start_time
-            element.end_time = list[1].end_time
-          }
-          if (idx > 0) {
-            schedule.start_time = list[idx - 1].end_time
-            schedule.end_time = dateHandler.calcPlusTime(schedule.start_time, 60)
-          }
-        })
+      // if (newIndex === 0) {
+      //   list.forEach((schedule, idx) => {
+      //     if (idx === 0) {
+      //       element.start_time = list[1].start_time
+      //       // element.end_time = list[1].end_time
+      //     }
+      //     if (idx > 0) {
+      //       schedule.start_time = list[idx - 1].end_time
+      //       schedule.end_time = dateHandler.calcPlusTime(schedule.start_time, 60)
+      //     }
+      //   })
 
-        return true
-      }
+      //   return true
+      // }
 
-      list.forEach((schedule, idx) => {
-        if (idx === newIndex) {
-          element.start_time = list[idx - 1].end_time
-          element.end_time = dateHandler.calcPlusTime(element.start_time, 60)
-        }
-        if (idx > newIndex) {
-          schedule.start_time = list[newIndex].end_time
-          schedule.end_time = dateHandler.calcPlusTime(element.end_time, 60)
-        }
-      })
+      // list.forEach((schedule, idx) => {
+      //   if (idx === newIndex) {
+      //     element.start_time = list[idx - 1].end_time
+      //     element.end_time = dateHandler.calcPlusTime(element.start_time, 60)
+      //   }
+      //   if (idx > newIndex) {
+      //     schedule.start_time = list[newIndex].end_time
+      //     schedule.end_time = dateHandler.calcPlusTime(element.end_time, 60)
+      //   }
+      // })
 
-      return true
+      // return true
 
     },
     closeAction() {

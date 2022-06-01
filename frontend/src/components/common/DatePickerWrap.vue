@@ -48,6 +48,10 @@ const props = defineProps({
       // }
     ])
   },
+  startTime: {
+    type: Object,
+    default: () => ({ hours: 0, minutes: 0 })
+  },
   nowRange: {
     type: Array,
     default: () => []
@@ -63,7 +67,7 @@ const emit = defineEmits(["updateDate", "updateTime"])
 
 const date = ref()
 const startTimeDefault = ref([{ hours: 0, minutes: 0, seconds: 0 }, { hours: 0, minutes: 0, seconds: 0 }]);
-const time = ref(props.timeRange);
+const time = ref();
 // disabledDates 版本
 const selectDate = ref([])
 
@@ -87,11 +91,11 @@ const inputStartTime = {
   value: ""
 }
 
-const inputEndTime = {
-  inputName: "結束時間",
-  inputKey: "end_time",
-  value: ""
-}
+// const inputEndTime = {
+//   inputName: "結束時間",
+//   inputKey: "end_time",
+//   value: ""
+// }
 
 function validateDate() {
   validateRequiredInput(inputStartDate);
@@ -100,17 +104,25 @@ function validateDate() {
 
 function validateTime() {
   validateRequiredInput(inputStartTime);
-  validateRequiredInput(inputEndTime);
+  // validateRequiredInput(inputEndTime);
 }
 
 watch(
-  () => props.timeRange,
+  () => props.startTime,
   newVal => {
     if (!newVal) return
-    time.value = props.timeRange
+    time.value = props.startTime
   },
   { immediate: true }
 )
+// watch(
+//   () => props.timeRange,
+//   newVal => {
+//     if (!newVal) return
+//     time.value = props.timeRange
+//   },
+//   { immediate: true }
+// )
 
 watch(
   () => props.nowRange,
@@ -151,21 +163,25 @@ function handleTime(modelData) {
   console.log("handleTime", modelData);
   if (!modelData) {
     inputStartTime.value = ""
-    inputEndTime.value = ""
+    // inputEndTime.value = ""
     validateTime()
-    return emit("updateTime", timeRange)
+    return emit("updateTime", "")
   }
 
-  const timeRange = {
-    startTime: dateHandler.timeFormat(modelData[0].hours, modelData[0].minutes),
-    endTime: dateHandler.timeFormat(modelData[1].hours, modelData[1].minutes),
-  }
+  const startTime = dateHandler.timeFormat(modelData.hours, modelData.minutes)
 
-  inputStartTime.value = timeRange.startTime
-  inputEndTime.value = timeRange.endTime
+  inputStartTime.value = startTime
+  // const timeRange = {
+  //   startTime: dateHandler.timeFormat(modelData[0].hours, modelData[0].minutes),
+  //   endTime: dateHandler.timeFormat(modelData[1].hours, modelData[1].minutes),
+  // }
+
+  // inputStartTime.value = timeRange.startTime
+  // inputEndTime.value = timeRange.endTime
   validateTime()
 
-  emit("updateTime", timeRange)
+  emit("updateTime", startTime)
+  // emit("updateTime", timeRange)
 }
 
 // disabledDates 版本 => user 編輯 mainSchedule 時間區間規則：一定要 >= 原本的區間天數
@@ -209,13 +225,18 @@ const minDate = computed(() => {
     @internalModelChange="handleInternal" :transitions="false" :minDate="minDate">
   </Datepicker>
 
-  <!-- time picker 版本 -->
-  <Datepicker v-if="timePicker" v-model="time" @update:modelValue="handleTime" :range="range" :utc="utc"
+  <!-- time picker range 版本 -->
+  <!-- <Datepicker v-if="timePicker" v-model="time" @update:modelValue="handleTime" :range="range" :utc="utc"
     :timePicker="timePicker" :readonly="readonly" format="HH:mm" :transitions="false">
+  </Datepicker> -->
+
+  <!-- time picker (just start time) 版本 -->
+  <Datepicker v-if="timePicker" v-model="time" :startTime="startTime" @update:modelValue="handleTime"
+    :utc="utc" :timePicker="timePicker" :readonly="readonly" format="HH:mm" :transitions="false">
   </Datepicker>
 
   <div v-if="errors[inputStartDate.inputKey]" class="text-alert">{{ errors[inputStartDate.inputKey] }}</div>
   <div v-if="errors[inputEndDate.inputKey]" class="text-alert">{{ errors[inputEndDate.inputKey] }}</div>
   <div v-if="errors[inputStartTime.inputKey]" class="text-alert">{{ errors[inputStartTime.inputKey] }}</div>
-  <div v-if="errors[inputEndTime.inputKey]" class="text-alert">{{ errors[inputEndTime.inputKey] }}</div>
+  <!-- <div v-if="errors[inputEndTime.inputKey]" class="text-alert">{{ errors[inputEndTime.inputKey] }}</div> -->
 </template>

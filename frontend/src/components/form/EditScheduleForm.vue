@@ -12,17 +12,20 @@ import ScheduleDates from "@/components/travel/ScheduleDates.vue"
 
 
 const travelStore = useTravelStore()
-const { isEditScheduleBoxOpen, editScheDuleParams, nowScheduleTimeRange } = storeToRefs(travelStore)
+const { isEditScheduleBoxOpen, editScheDuleParams, nowScheduleStartTime } = storeToRefs(travelStore)
 
 const { errors } = useInputValidator()
 const canBeEmptyKeys = ["place_name"]
 const { isSubmitBtnDisabled } = useSubmitBtnState(travelStore.editScheDuleParams, errors, canBeEmptyKeys)
 
 function updateTime(args) {
+  console.log("args", args);
   const parmasKey = args[0] // addScheDuleParams or editScheDuleParams ... 
-  const { startTime, endTime } = args[1]
+  const startTime = args[1]
   travelStore[parmasKey].start_time = startTime
-  travelStore[parmasKey].end_time = endTime
+  // const { startTime, endTime } = args[1]
+  // travelStore[parmasKey].start_time = startTime
+  // travelStore[parmasKey].end_time = endTime
 }
 
 async function updateSingleSchedule() {
@@ -54,9 +57,10 @@ async function updateSingleSchedule() {
         </ScheduleDates>
       </div>
       <div class="mb-3">
-        <label class="block mb-1">時間區間</label>
-        <DatePickerWrap v-if="nowScheduleTimeRange" @updateTime="(...args) => updateTime(['editScheDuleParams', ...args])"
-          :timePicker="true" :timeRange="nowScheduleTimeRange">
+        <label class="block mb-1">起始時間</label>
+        <!-- :timeRange="nowScheduleTimeRange" -->
+        <DatePickerWrap @updateTime="(...args) => updateTime(['editScheDuleParams', ...args])"
+        :startTime="nowScheduleStartTime" :timePicker="true">
         </DatePickerWrap>
       </div>
       <div class="mb-3">

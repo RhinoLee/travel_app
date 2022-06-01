@@ -20,10 +20,11 @@ const { isSubmitBtnDisabled } = useSubmitBtnState(travelStore.addScheDuleParams,
 
 function updateTime(args) {
   const parmasKey = args[0] // addScheDuleParams or editScheDuleParams ... 
-  const { startTime, endTime } = args[1]
-  console.log("updateTime", { startTime, endTime });
+  const startTime = args[1]
   travelStore[parmasKey].start_time = startTime
-  travelStore[parmasKey].end_time = endTime
+  // const { startTime, endTime } = args[1]
+  // travelStore[parmasKey].start_time = startTime
+  // travelStore[parmasKey].end_time = endTime
 }
 
 async function addSingleSchedule() {
@@ -58,7 +59,7 @@ async function addSingleSchedule() {
         </ScheduleDates>
       </div>
       <div class="mb-3">
-        <label class="block mb-1">選擇時間區間</label>
+        <label class="block mb-1">起始時間</label>
         <DatePickerWrap @updateTime="(...args) => updateTime(['addScheDuleParams', ...args])" :timePicker="true">
         </DatePickerWrap>
       </div>
