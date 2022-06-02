@@ -71,3 +71,8 @@
 .no-scrollbr {
   scrollbar-width: none;
 }
+
+/* map marker label text */
+.location-label {
+  margin-bottom: 12px;
+}

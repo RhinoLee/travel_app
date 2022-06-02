@@ -81,7 +81,7 @@ async function deleteMainSchedule() {
         <DefaultImage :picture="mainSchedule.picture"></DefaultImage>
       </div>
       <!-- 卡片文字 -->
-      <router-link :to="{ name: 'MainSchedule', params: { mainScheduleId: mainSchedule.id } }" class="block">
+      <router-link :to="{ name: 'MainSchedule', params: { mainScheduleId: mainSchedule.id, date: mainSchedule.startDate } }" class="block">
         <div class="py-[18px] px-[30px]">
           <div class="mb-[10px]">
             <p>{{ mainSchedule.title }}</p>

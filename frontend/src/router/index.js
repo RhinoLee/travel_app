@@ -53,7 +53,7 @@ const router = createRouter({
       component: () => import('@/views/travel/MainSchedules.vue')
     },
     {
-      path: '/mainSchedules/:mainScheduleId',
+      path: '/mainSchedules/:mainScheduleId/:date?',
       name: 'MainSchedule',
       component: () => import('@/views/travel/MainSchedule.vue')
     },

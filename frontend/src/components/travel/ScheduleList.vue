@@ -9,7 +9,7 @@ import editIcon from "@/assets/images/svg/icon_edit.svg"
 import cancelIcon from "@/assets/images/svg/icon_cancel_gray.svg"
 
 const travelStore = useTravelStore()
-const { nowScheduleId, allSchedules, nowDateScheduleList, directions } = storeToRefs(travelStore)
+const { nowScheduleId, nowDateScheduleList, directions } = storeToRefs(travelStore)
 const dragOptions = {
   animation: 200,
   disabled: false,
@@ -43,10 +43,10 @@ function dropHandler(e) {
 }
 
 async function change({ moved }) {
-  const moveResult = travelStore.exchangeSchedule(moved)
-  if (moveResult) {
-    await travelStore.updateSingleScheduleGroup(moved.element.date)
-  }
+  // const moveResult = travelStore.exchangeSchedule(moved)
+  // if (moveResult) {
+  //   await travelStore.updateSingleScheduleGroup(moved.element.date)
+  // }
 }
 
 </script>
@@ -70,7 +70,7 @@ async function change({ moved }) {
               <div class="w-[calc(100%-75px)] pl-[12px]">
                 <div class="flex justify-between items-center">
                   <div class="child:text-travel-textgreen child:text-[15px] child:tracking-wider">
-                    <span>{{ element.start_time }} - 預估時程</span>
+                    <span>{{ element.start_time }} - 預估離開：{{ element.end_time }}</span>
                   </div>
                 </div>
                 <div class="mt-[7px] child:text-[16px] child:tracking-wider">
@@ -90,7 +90,7 @@ async function change({ moved }) {
             </div>
 
             <!-- 路程距離 & 時間 -->
-            <div v-if="directions && index < directions.durations.length && singleSchedule.scheduleList.length > 1"
+            <div v-if="element.end_time && directions.durations[index]"
               class="py-2 px-4"
             >
               <p class="text-violet-400">路程時間：{{ directions.durations[index].text }}</p>

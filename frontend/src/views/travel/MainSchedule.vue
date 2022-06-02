@@ -1,6 +1,6 @@
 <script setup>
-import { onMounted, onUnmounted, reactive, watch } from "vue";
-import { useRoute } from "vue-router"
+import { onMounted, onBeforeUnmount, watch } from "vue";
+import { useRoute, useRouter } from "vue-router"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from 'pinia'
 import Map from "@/components/map/Map.vue"
@@ -14,21 +14,24 @@ import EditScheduleForm from "@/components/form/EditScheduleForm.vue";
 import AddScheduleForm from "@/components/form/AddScheduleForm.vue";
 
 const travelStore = useTravelStore()
-const { nowMainScheduleId, mainScheduleInfo, locationSearchList, nowDateScheduleList, directions, placeCollectionsList, placeInfoComputed, durationDateList, nowSelectDate, isMenuOpen, isDeleteScheduleBoxOpen } = storeToRefs(travelStore)
+const { mainScheduleInfo, locationSearchList, nowDateScheduleList, directions, placeCollectionsList, placeInfoComputed, durationDateList, nowSelectDate, isMenuOpen, isDeleteScheduleBoxOpen } = storeToRefs(travelStore)
 const route = useRoute()
+const router = useRouter()
 
 // 偵測旅行日期變化
 watch(
   nowSelectDate,
-  (newVal) => {
+  async (newVal) => {
     travelStore.cancelSelectSchedule()
     // 設定 addScheDuleParams 預設值
     travelStore.addScheDuleParams.date = newVal
-
-    if (newVal) travelStore.getDirections()
-    else travelStore.clearDirections()
-  },
-  { immediate: true }
+    // 關閉地點資訊面板
+    travelStore.placeDetail = null
+    // 重新取得路線
+    travelStore.clearDirections()
+    await travelStore.getDirections()
+    if (newVal) return router.push({ name: "MainSchedule", params: { date: newVal } })
+  }
 )
 
 function closePanel() {
@@ -66,22 +69,22 @@ async function removePlaceCollection(collectId) {
 
 async function confirmdelete() {
   const result = await travelStore.deleteSingleSchedule()
-  travelStore.getDirections()
   travelStore.isDeleteScheduleBoxOpen = false
 }
 
 onMounted(async () => {
+  console.log("mainSchedule page mounted");
+  // 根據網址設定參數
   travelStore.nowMainScheduleId = route.params.mainScheduleId
+  travelStore.nowSelectDate = route.params.date
+  // 先設定好新增行程的 main_schedule_id 參數
   travelStore.addScheDuleParams.main_schedule_id = route.params.mainScheduleId
-  const getPlaceCollectionsResult = await travelStore.getPlaceCollections()
-  const getMainResult = await travelStore.getMainSchedule()
+  const getMainFirstDate = await travelStore.getMainSchedule()
+
 })
 
-onUnmounted(() => {
-  // 關閉所有 lightbox
-  travelStore.closeAllScheduleBox()
-  // clear data
-  travelStore.clearDirections()
+onBeforeUnmount(() => {
+  travelStore.unMountMainSchedulePage()
 })
 
 </script>

@@ -8,6 +8,7 @@ import iconSearch from "@/assets/images/map/search.svg"
 const travelStore = useTravelStore()
 
 const props = defineProps({
+  // 當日行程列表
   scheduleList: {
     type: Array,
     default: () => ([])
@@ -46,13 +47,12 @@ const markerGroup = { // 分類 marker 圖層
 // 導航路線
 const pathList = []
 
-// 偵測目前選擇的計畫，計畫變更地圖需重新插點
+// 偵測目前選擇的當日行程列表，計畫變更地圖需重新插點
 watch(
   () => props.scheduleList,
   (newVal) => {
     removeAllMarkers()
     renderScheduleLocation()
-    // travelStore.getDirections()
   },
   // { immediate: true }
 )
@@ -61,7 +61,6 @@ watch(
 watch(
   () => props.locationSearchList,
   (newVal) => {
-    console.log("rops.locationSearchList", newVal);
     removeAllMarkers("search")
     emit("closePanel")
     renderSearchLocation()
@@ -106,10 +105,10 @@ function initMap() {
   });
 }
 
-function setZoom(zoom, postion = null, bounds = null) {
+function setZoom(zoom, position = null, bounds = null) {
   if (bounds) return map.data.fitBounds(bounds);
   map.data.setZoom(zoom);
-  if (postion) return map.data.panTo(postion);
+  if (position) return map.data.panTo(position);
 }
 
 // Marker Animation
@@ -141,7 +140,7 @@ function scheduleMarkerTirigger(place_id) {
 }
 
 // 設定點位
-function setMarker({ location, placeId, icon, title, label, group, animation, scheduleId = null }) {
+function setMarker({ location, placeId, icon, title, label, group, animation, scheduleId = null, zoomImmediate=false }) {
   // create marker
   const marker = new google.maps.Marker({
     position: location,
@@ -152,6 +151,7 @@ function setMarker({ location, placeId, icon, title, label, group, animation, sc
   });
   marker.placeId = placeId
   marker.scheduleId = scheduleId
+  if (zoomImmediate) setZoom(mapZoomIn, marker.position)
   // add click event for get location detail
   marker.addListener("click", async (e) => {
     clearMarkersAnitmation()
@@ -197,34 +197,33 @@ function removeAllMarkers(group) {
 // 把目前計畫中的點設定到地圖上
 function renderScheduleLocation() {
   const group = "schedule"
-
+  const dayScheduleList = props.scheduleList[0] ? props.scheduleList[0].scheduleList : []
   // 如果沒有行程，setZoom 至預設值
-  // if (props.scheduleList.length === 0) {
-  //   setZoom(mapDefaultZoom, taiwanCenter)
-  // }
+  if (dayScheduleList.length === 0) {
+    return setZoom(mapDefaultZoom, taiwanCenter)
+  }
 
-  props.scheduleList.forEach(item => {
-    item.scheduleList.forEach((schedule, idx) => {
-      setMarker({
-        location: { lat: schedule.lat, lng: schedule.lng },
-        placeId: schedule.place_id,
-        // icon: iconLocation,
-        icon: "",
-        // title: `${idx}`,
-        label: `${idx + 1}`,
-        group,
-        animation: google.maps.Animation.DROP,
-        scheduleId: schedule.id
-      })
-
-      // 如果只有一個行程，直接 set zoom 到該點，否則給 addRoutesPolyLine 處理即可
-      if (props.scheduleList.length === 1 && item.scheduleList.length === 1) {
-        // setZoom(mapZoomIn, { lat: schedule.lat, lng: schedule.lng })
-      }
+  dayScheduleList.forEach((schedule, idx) => {
+    setMarker({
+      location: { lat: schedule.lat, lng: schedule.lng },
+      placeId: schedule.place_id,
+      icon: iconLocation,
+      label: {
+        text: `${idx + 1}`,
+        color: "#FFFFFF",
+        className: "location-label",
+        fontWeight: "bold"
+      },
+      group,
+      animation: google.maps.Animation.DROP,
+      scheduleId: schedule.id,
+      // 只有一個點，直接 zoomin 到該點，不走路線功能
+      zoomImmediate: dayScheduleList.length === 1
     })
   })
 
   setMarkerToMap(map.data, group)
+
 }
 
 // 把搜尋結果設定到地圖上
@@ -242,7 +241,7 @@ function renderSearchLocation() {
   })
 
   setMarkerToMap(map.data, group)
-  setZoom(mapDefaultZoom, taiwanCenter)
+  // setZoom(mapDefaultZoom, taiwanCenter)
 }
 
 // 把收藏地點設定到地圖上
@@ -270,9 +269,9 @@ function addRoutesPolyLine(routesPolyline, routesBounds) {
   const path = new google.maps.Polyline({
     path: encodeCoordinates,
     geodesic: true,
-    strokeColor: "#FF0000",
-    strokeOpacity: 1.0,
-    strokeWeight: 2,
+    strokeColor: "#145049",
+    strokeOpacity: .5,
+    strokeWeight: 6,
   });
 
   pathList.push(path)

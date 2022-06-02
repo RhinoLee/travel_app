@@ -9,7 +9,7 @@ const props = defineProps({
 watch(
   () => props.placeDetail,
   newVal => {
-    triggerPanel(true)
+    triggerPanel(Boolean(newVal))
   }
 )
 const isPanelOpen = ref(false)

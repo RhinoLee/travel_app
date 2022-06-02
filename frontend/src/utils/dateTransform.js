@@ -80,24 +80,18 @@ export const dateHandler = {
     return dateHandler.timeFormat(endHour, endMin)
   },
   calcMinusTime: (time, num = 5) => {
-    let endHour = Number(time.split(":")[0])
-    let endMin = Number(time.split(":")[1])
+    // time 轉成分鐘
+    // time - num = end_min
+    // end_min 轉成時間格式
 
-    if (endMin - num < 0 && endHour !== 0) {
-      endHour -= 1
-      endMin = (endMin - num) + 60
+    const endHour = Number(time.split(":")[0])
+    const endMin = Number(time.split(":")[1]) + endHour * 60
+    const ceilNum = Math.ceil(num)
 
-      return dateHandler.timeFormat(endHour, endMin)
-    }
+    const result = endMin - ceilNum
+    const resultHour = Math.floor(result / 60)
+    const resultMin = Math.floor(result % 60)
 
-    if (endMin - num < 0 && endHour === 0) {
-      endHour = 0
-      endMin = 0
-
-      return dateHandler.timeFormat(endHour, endMin)
-    }
-
-    endMin = endMin - num
-    return dateHandler.timeFormat(endHour, endMin)
+    return dateHandler.timeFormat(resultHour, resultMin)
   },
 }

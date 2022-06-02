@@ -224,6 +224,18 @@ export const useTravelStore = defineStore('travel', {
       this.isEditScheduleBoxOpen = false
       this.isDeleteScheduleBoxOpen = false
     },
+    unMountMainSchedulePage() {
+      // 關閉所有 lightbox
+      this.closeAllScheduleBox()
+      // clear data
+      this.clearDirections()
+      this.allSchedules = []
+      this.nowMainScheduleId = null
+      this.nowScheduleId = null
+      this.locationSearchList = []
+      this.placeDetail = null
+      this.nowSelectDate = ""
+    },
     // 設定編輯單一行程參數
     setEditScheduleParams() {
       if (!this.nowSchedule) return
@@ -236,7 +248,6 @@ export const useTravelStore = defineStore('travel', {
     },
     // 設定編輯總行程參數
     setEditMainScheduleParams() {
-      console.log("setEditMainScheduleParams");
       if (!this.nowMainScheduleId) return
       const info = this.mainScheduleList.filter(schedule => schedule.id === this.nowMainScheduleId)[0]
 
@@ -330,6 +341,18 @@ export const useTravelStore = defineStore('travel', {
         return false
       }
     },
+    calcSchedulesEndTime() {
+      const daySchedule = this.allSchedules.find(daySchedule => daySchedule.date === this.nowSelectDate)
+      // EX: 4 個行程，3 個路程時間
+
+      if (this.directions.durations.length !== daySchedule.scheduleList.length - 1) return
+    
+      this.directions.durations.forEach((duration, idx) => {
+        let nextStopStart = daySchedule.scheduleList[idx + 1].start_time
+        let end_time = dateHandler.calcMinusTime(nextStopStart, duration.value / 60)
+        daySchedule.scheduleList[idx].end_time = end_time
+      })
+    },
     // Schedule API
     async addMainSchedule() {
       if (!this.addMainScheduleParams.title) return
@@ -343,7 +366,6 @@ export const useTravelStore = defineStore('travel', {
         formData.append("startDate", this.addMainScheduleParams.startDate)
         formData.append("endDate", this.addMainScheduleParams.endDate)
 
-        console.log("why??");
         const result = await this.$axios.api.apiCreateMainSchedule(formData)
         if (result && result.data.success) this.getMainScheduleList()
 
@@ -379,6 +401,7 @@ export const useTravelStore = defineStore('travel', {
       }
     },
     async getMainSchedule() {
+      console.log("getMainSchedule");
       try {
         const result = await this.$axios.api.apiGetMainSchedule(this.nowMainScheduleId)
         if (!result || !result.data.success) return
@@ -396,7 +419,9 @@ export const useTravelStore = defineStore('travel', {
 
         this.allSchedules = allSchedules
         this.mainScheduleInfo = result.data.results.mainscheduleInfo
-        this.nowSelectDate = allSchedules[0].date // 預設選擇第一天日期
+        await this.getDirections()
+        // this.nowSelectDate = allSchedules[0].date // 預設選擇第一天日期
+        return true
       } catch (error) {
         return false
       }
@@ -424,13 +449,9 @@ export const useTravelStore = defineStore('travel', {
       }
 
       // 判斷日期區間是否有更改，無更改不需更新子行程日期
-      console.log("this.mainScheduleInfo.start_date", this.mainScheduleInfo.start_date);
-      console.log("this.editMainScheduleParams.startDate", this.editMainScheduleParams.startDate);
-      console.log(this.mainScheduleInfo.start_date !== this.editMainScheduleParams.startDate);
       if (this.mainScheduleInfo.start_date !== this.editMainScheduleParams.startDate ||
         this.mainScheduleInfo.end_date !== this.editMainScheduleParams.endDate) {
 
-        console.log("updateDateResult");
         try {
           const updateDateResult = await this.$axios.api.apiUpdateSingleScheduleDate({
             dates: this.editDurationDateList,
@@ -462,8 +483,9 @@ export const useTravelStore = defineStore('travel', {
     async addSingleSchedule() {
       try {
         const result = await this.$axios.api.apiCreateSingleSchedule(this.addScheDuleParams)
+        await this.getMainSchedule()
+        await this.getDirections()
         this.locationSearchList = []
-
         return result.data.success
       } catch (error) {
         return false
@@ -474,6 +496,7 @@ export const useTravelStore = defineStore('travel', {
         const result = await this.$axios.api.apiUpdateSingleSchedule(this.editScheDuleParams)
         if (result && result.data.success) {
           const getResult = await this.getMainSchedule()
+          await this.getDirections()
           return true
         }
       } catch (error) {
@@ -505,6 +528,7 @@ export const useTravelStore = defineStore('travel', {
         const result = await this.$axios.api.apiDeleteSingleSchedule(this.nowScheduleId)
         if (result && result.data.success) {
           const getResult = await this.getMainSchedule()
+          await this.getDirections()
           return true
         }
       } catch (error) {
@@ -513,7 +537,8 @@ export const useTravelStore = defineStore('travel', {
     },
     // 路徑 API
     async getDirections() {
-      this.clearDirections()
+      console.log("getDirections");
+      // this.clearDirections()
       if (!this.nowDateScheduleList[0] || this.nowDateScheduleList[0].scheduleList.length === 1) return
       const { scheduleList } = this.nowDateScheduleList[0]
       // 起點行程
@@ -538,14 +563,15 @@ export const useTravelStore = defineStore('travel', {
 
           // 整理各地點間的交通時間 & 距離
           const legs = result.data.results.routes[0].legs || null
+          this.directions.durations = []
+          this.directions.distances = []
           if (legs) {
             legs.forEach(leg => {
               this.directions.durations.push(leg.duration)
               this.directions.distances.push(leg.distance)
             })
-          } else {
-            this.directions = []
-            this.distances = []
+
+            this.calcSchedulesEndTime()
           }
 
         } else {

@@ -31,8 +31,6 @@ async function addSingleSchedule() {
   const result = await travelStore.addSingleSchedule()
   if (result) {
     // get all single schedules under now main schedule
-    await travelStore.getMainSchedule()
-    await travelStore.getDirections()
     travelStore.isAddScheduleBoxOpen = false
   }
 }
