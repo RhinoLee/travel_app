@@ -4,6 +4,7 @@ import { useMemberStore } from "@/stores/member"
 import { useRoute, useRouter } from 'vue-router';
 import ResetPasswordForm from "@/components/form/ResetPasswordForm.vue";
 import LightBox from "@/components/common/LightBox.vue"
+import LandingPage from "@/components/member/LandingPage.vue"
 
 const router = useRouter()
 const routes = useRoute()
@@ -29,19 +30,25 @@ function hideBox(boxname) {
 
 </script>
 <template>
-  <div>
-    <div class="relative w-screen h-screen">
-      <div
-        class="absolute flex flex-col w-[500px] h-[450px] px-10 py-8 left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 shadow-2xl bg-white">
-        <header class="mb-[20px]">
-          <h1 class="font-bold text-lg">重設密碼</h1>
-        </header>
-        <main class="h-full">
-          <ResetPasswordForm @submitHandler="submitHandler"></ResetPasswordForm>
-        </main>
+  <LandingPage>
+    <template v-slot:nav>
+
+      <div class="member-form-nav">
+        <router-link class="member-form-nav-text" :to="{ name: 'Login' }">
+          登入
+        </router-link>
       </div>
-    </div>
-  </div>
+      <div class="member-form-nav">
+        <span class="member-form-nav-text-active">
+          重設密碼
+        </span>
+      </div>
+    </template>
+
+    <template v-slot:form>
+      <ResetPasswordForm @submitHandler="submitHandler"></ResetPasswordForm>
+    </template>
+  </LandingPage>
 
   <LightBox v-model:isBoxOpen="memberStore.isResetPasswordResultBoxOpen">
     <template v-slot:title>重設密碼通知</template>

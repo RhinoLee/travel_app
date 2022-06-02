@@ -14,3 +14,4 @@ app.use(router)
 app.use(apiHandler, { pinia, router })
 
 app.mount('#app')
+

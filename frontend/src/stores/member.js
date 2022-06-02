@@ -58,8 +58,14 @@ export const useMemberStore = defineStore("member", {
       this.loginParams.email = ""
       this.loginParams.password = ""
     },
+    clearRegisterParams() {
+      this.registerParams.email = ""
+      this.registerParams.password = ""
+      this.registerParams.repassword = ""
+    },
     async registerHandler() {
       const result = await this.$axios.api.apiRegister(this.registerParams)
+      this.clearRegisterParams()
       if (result) return result.data.success
       return false
     },

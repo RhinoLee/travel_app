@@ -51,13 +51,13 @@ async function updateSingleSchedule() {
         <InputTitle v-model:title="travelStore.editScheDuleParams.title"></InputTitle>
       </div>
       <div class="mb-3">
-        <label class="block mb-1">日期</label>
+        <label class="label">日期</label>
         <!-- 天數列表 -->
         <ScheduleDates v-model:selectDate="editScheDuleParams.date" v-model:dayOrder="editScheDuleParams.day_order">
         </ScheduleDates>
       </div>
       <div class="mb-3">
-        <label class="block mb-1">起始時間</label>
+        <label class="label">起始時間</label>
         <!-- :timeRange="nowScheduleTimeRange" -->
         <DatePickerWrap @updateTime="(...args) => updateTime(['editScheDuleParams', ...args])"
         :startTime="nowScheduleStartTime" :timePicker="true">

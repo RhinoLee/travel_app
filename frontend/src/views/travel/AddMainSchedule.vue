@@ -21,7 +21,6 @@ async function addMainSchedule() {
 <template>
   <div class="outer-container middle">
     <div class="container middle pt-[30px]">
-
       <h2 class="font-bold">新增旅程</h2>
       <form>
         <div class="form-group mb-2">

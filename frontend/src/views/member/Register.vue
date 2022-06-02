@@ -3,6 +3,7 @@ import { onMounted } from "vue"
 import { useMemberStore } from "@/stores/member"
 import { useRouter } from "vue-router"
 import RegisterForm from "@/components/form/RegisterForm.vue";
+import LandingPage from "@/components/member/LandingPage.vue"
 
 const router = useRouter()
 const memberStore = useMemberStore()
@@ -15,17 +16,23 @@ async function submitHandler(formParams) {
 
 </script>
 <template>
-  <div>
-    <div class="relative w-screen h-screen">
-      <div
-        class="absolute flex flex-col w-[500px] h-[450px] px-10 py-8 left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 shadow-2xl bg-white">
-        <header class="mb-[20px]">
-          <h1 class="font-bold text-lg">註冊帳號</h1>
-        </header>
-        <main class="h-full">
-          <RegisterForm @submitHandler="submitHandler"></RegisterForm>
-        </main>
+
+  <LandingPage>
+    <template v-slot:nav>
+      <div class="member-form-nav">
+        <router-link class="member-form-nav-text" :to="{ name: 'Login' }">
+          登入
+        </router-link>
       </div>
-    </div>
-  </div>
+      <div class="member-form-nav">
+        <router-link class="member-form-nav-text-active"
+          :to="{ name: 'Register' }">
+          註冊
+        </router-link>
+      </div>
+    </template>
+    <template v-slot:form>
+      <RegisterForm @submitHandler="submitHandler"></RegisterForm>
+    </template>
+  </LandingPage>
 </template>

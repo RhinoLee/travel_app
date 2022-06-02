@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, watch } from "vue"
+import { onMounted, onBeforeUnmount, watch } from "vue"
 import useInputValidator from "@/composition-api/useInputValidator"
 
 const props = defineProps({
@@ -10,7 +10,7 @@ const props = defineProps({
 const emit = defineEmits(["update:email"])
 
 const inputParams = {
-  inputName: "帳號",
+  inputName: "信箱帳號",
   inputKey: "email",
   value: ""
 }
@@ -28,6 +28,10 @@ const validateInput = () => {
   emit("update:email", inputParams.value);
 }
 
+onMounted(() => {
+  validateInit()
+})
+
 onBeforeUnmount(() => {
   validateInit()
 })
@@ -35,9 +39,9 @@ onBeforeUnmount(() => {
 </script>
 <template>
   <div class="mt-[10px] w-full">
-    <label :for="inputParams.inputKey" class="block py-1">{{ inputParams.inputName }}（請填寫信箱）</label>
+    <label :for="inputParams.inputKey" class="label">{{ inputParams.inputName }}</label>
     <input v-model.trim="inputParams.value" @input="validateInput" @blur="validateInput" type="text" :id="inputParams.inputKey"
-      class="w-full px-2 py-2 border outline-none">
+      class="input" placeholder="E-mail">
     <div v-if="errors[inputParams.inputKey]" class="text-alert">{{ errors[inputParams.inputKey] }}</div>
   </div>
 </template>

@@ -18,6 +18,7 @@ module.exports = {
         "travel-lightgreen": "var(--travel-lightgreen)",
         "travel-green": "var(--travel-green)",
         "travel-darkgreen": "var(--travel-darkgreen)",
+        "travel-gray": "var(--travel-gray)",
         "disabled": "var(--disabled)",
         "alert": "var(--alert)",
       },

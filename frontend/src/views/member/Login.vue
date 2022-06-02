@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 import { useRouter } from "vue-router"
 import LoginForm from "@/components/form/LoginForm.vue";
 import LightBox from "@/components/common/LightBox.vue"
+import LandingPage from "@/components/member/LandingPage.vue"
 
 
 const router = useRouter()
@@ -29,10 +30,10 @@ async function sendVerifyEmail() {
   const result = await memberStore.verifyEmail(memberStore.verifyMemberEmail)
   memberStore.isErrorBoxOpen = false
   memberStore.clearLoginParams()
-  
+
   if (result.success) verifyMsg.value = "驗證信寄送成功，請至信箱收信，謝謝"
   else verifyMsg.value = "驗證信寄送失敗，請稍後再嘗試，謝謝"
-  
+
   memberStore.isVerifyResultBoxOpen = true
 }
 
@@ -44,21 +45,25 @@ onMounted(() => {
   if (memberStore.isLogin) return router.push({ name: "MainSchedules" })
 })
 
+
+
 </script>
 <template>
-  <div>
-    <div class="relative w-screen h-screen">
-      <div
-        class="absolute flex flex-col w-[500px] h-[400px] px-10 py-8 left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 shadow-2xl bg-white">
-        <header class="mb-[20px]">
-          <h1 class="font-bold text-lg">登入</h1>
-        </header>
-        <main class="h-full">
-          <LoginForm @submitHandler="submitHandler"></LoginForm>
-        </main>
+  <LandingPage>
+    <template v-slot:nav>
+      <div class="member-form-nav">
+        <router-link class="member-form-nav-text-active" :to="{ name: 'Login' }">
+          登入
+        </router-link>
       </div>
-    </div>
-  </div>
+      <div class="member-form-nav">
+        <router-link class="member-form-nav-text" :to="{ name: 'Register' }">註冊</router-link>
+      </div>
+    </template>
+    <template v-slot:form>
+      <LoginForm @submitHandler="submitHandler"></LoginForm>
+    </template>
+  </LandingPage>
 
   <LightBox v-model:isBoxOpen="memberStore.isErrorBoxOpen">
     <template v-slot:title>登入失敗</template>
@@ -67,7 +72,8 @@ onMounted(() => {
     </template>
     <template v-slot:footer>
       <div class="flex w-full">
-        <button @click="hideBox('isErrorBoxOpen')" type="button" class="block mt-auto mr-4 px-4 py-2 shadow-lg">Cancel</button>
+        <button @click="hideBox('isErrorBoxOpen')" type="button"
+          class="block mt-auto mr-4 px-4 py-2 shadow-lg">Cancel</button>
         <button @click="sendVerifyEmail" type="button" class="mt-auto block px-4 py-2 shadow-lg">發送驗證信</button>
       </div>
     </template>
@@ -80,7 +86,8 @@ onMounted(() => {
     </template>
     <template v-slot:footer>
       <div class="flex w-full">
-        <button @click="hideBox('isVerifyResultBoxOpen')" type="button" class="block mt-auto mr-4 px-4 py-2 shadow-lg">關閉通知</button>
+        <button @click="hideBox('isVerifyResultBoxOpen')" type="button"
+          class="block mt-auto mr-4 px-4 py-2 shadow-lg">關閉通知</button>
       </div>
     </template>
   </LightBox>

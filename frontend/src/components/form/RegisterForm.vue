@@ -23,11 +23,14 @@ function submitHandler() {
 
 </script>
 <template>
-  <form @submit.prevent="submitHandler" class="h-full flex flex-col items-start" novalidate>
+  <form @submit.prevent="submitHandler" class="form" novalidate>
     <InputAccount v-model:email="formParams.email"></InputAccount>
     <InputPassword v-model:password="formParams.password"></InputPassword>
-    <InputPasswordRepeat v-model:repassword="formParams.repassword" :password="formParams.password"></InputPasswordRepeat>
+    <InputPasswordRepeat v-model:repassword="formParams.repassword" :password="formParams.password">
+    </InputPasswordRepeat>
 
-    <button :disabled="isSubmitBtnDisabled" type="submit" class="mt-auto block px-4 py-2 shadow-lg">Submit</button>
+    <button :disabled="isSubmitBtnDisabled"
+      :class="{ 'shadow-travel-textgreen': !isSubmitBtnDisabled, 'bg-travel-textgreen': !isSubmitBtnDisabled, 'shadow-disabled': isSubmitBtnDisabled, 'bg-disabled': isSubmitBtnDisabled }"
+      class="member-form-btn" type="submit">註冊</button>
   </form>
 </template>

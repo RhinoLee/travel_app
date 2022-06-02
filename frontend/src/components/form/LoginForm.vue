@@ -21,13 +21,13 @@ function submitHandler() {
 
 </script>
 <template>
-  <form @submit.prevent="submitHandler" class="h-full flex flex-col items-start" novalidate>
+  <form @submit.prevent="submitHandler" class="form" novalidate>
     <InputAccount v-model:email="memberStore.loginParams.email"></InputAccount>
     <InputPassword v-model:password="memberStore.loginParams.password"></InputPassword>
 
-    <div class="flex items-center mt-auto">
-      <button :disabled="isSubmitBtnDisabled" type="submit" class="block px-4 py-2 shadow-lg">Submit</button>
-      <router-link class="pl-4 py-2" :to="{ name: 'ForgotPassword' }">忘記密碼？</router-link>
-    </div>
+    <button :disabled="isSubmitBtnDisabled"
+      :class="{ 'shadow-travel-textgreen': !isSubmitBtnDisabled, 'bg-travel-textgreen': !isSubmitBtnDisabled, 'shadow-disabled': isSubmitBtnDisabled, 'bg-disabled': isSubmitBtnDisabled }"
+      class="member-form-btn" type="submit">登入</button>
+    <router-link class="border-b border-travel-gray mt-[50px] text-[14px] text-travel-gray tracking-[1px]" :to="{ name: 'ForgotPassword' }">忘記密碼？</router-link>
   </form>
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-import { watch, onBeforeUnmount } from "vue"
+import { watch, onBeforeUnmount, onMounted } from "vue"
 import useInputValidator from "@/composition-api/useInputValidator"
 
 const props = defineProps({
@@ -27,6 +27,10 @@ const validateInput = () => {
   emit("update:password", inputParams.value);
 }
 
+onMounted(() => {
+  validateInit()
+})
+
 onBeforeUnmount(() => {
   validateInit()
 })
@@ -34,9 +38,9 @@ onBeforeUnmount(() => {
 </script>
 <template>
   <div class="mt-[10px] w-full">
-    <label :for="inputParams.inputKey" class="block py-1">{{ inputParams.inputName }}</label>
+    <label :for="inputParams.inputKey" class="label">{{ inputParams.inputName }}</label>
     <input v-model.trim="inputParams.value" @input="validateInput" @blur="validateInput" type="text"
-      :id="inputParams.inputKey" class="w-full px-2 py-2 border outline-none">
+      :id="inputParams.inputKey" class="input" placeholder="Password">
     <div v-if="errors[inputParams.inputKey]" class="text-alert">{{ errors[inputParams.inputKey] }}</div>
   </div>
 </template>

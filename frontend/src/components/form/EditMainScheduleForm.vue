@@ -67,7 +67,7 @@ async function updateMainSchedule() {
       <form @submit.prevent class="w-full h-full flex flex-col items-start" novalidate>
         <InputTitle v-model:title="travelStore.editMainScheduleParams.title"></InputTitle>
         <div class="w-full">
-          <label class="block py-1">日期區間</label>
+          <label class="label">日期區間</label>
           <DatePickerWrap @updateDate="updateDate"
             :nowRange="[editMainScheduleParams.startDateObj, editMainScheduleParams.endDateObj]"
             :durationDays="travelStore.editMainScheduleParams.durationDays">
