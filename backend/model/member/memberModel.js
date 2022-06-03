@@ -109,7 +109,25 @@ const memberModel = {
       console.log("memberModel.resetPassword error", error);
       throw error
     }
-  }
+  },
+  deleteAvatar: async (id) => {
+    const query = {
+      text: `
+      UPDATE member
+      SET avatar = $1
+      WHERE id = $2
+      RETURNING *
+      `,
+      values: [null, id]
+    }
+
+    try {
+      const result = await db.query(query)
+      return result
+    } catch (err) {
+      return err
+    }
+  },
 }
 
 module.exports = memberModel

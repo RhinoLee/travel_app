@@ -1,12 +1,13 @@
 const avatarRules = (req, res, next) => {
   let json;
-  if (!req.file) {
-    json = {
-      success: false,
-      errors: "image 欄位必填"
-    }
-    return res.status(400).json(json)
-  }
+  if (!req.file) return next()
+  // if (!req.file) {
+  //   json = {
+  //     success: false,
+  //     errors: "image 欄位必填"
+  //   }
+  //   return res.status(400).json(json)
+  // }
 
   if (!req.file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
     json = {

@@ -8,13 +8,14 @@ const registerRules = [
   body("email").custom(value => {
     return memberModel.findMemberByEmail(value).then(result => {
       if (result.rows.length >= 1) {
-        throw new Error("帳號已經存在")
+        // 帳號已存在
+        throw new Error("驗證錯誤")
       } else {
         return true
       }
     });
   })
-    .withMessage("帳號已經存在"),
+    .withMessage("驗證錯誤"),
   body("password")
     .isLength({ min: 8 })
     .withMessage("密碼需要至少 8 碼"),

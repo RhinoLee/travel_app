@@ -92,19 +92,26 @@ const memberController = {
 
   },
   updateMemberAvatar: async (req, res) => {
-    const { id } = req.jwtData
+    const member_id = req.jwtData.id
     try {
-      const file = req.file
+      const avatar = req.file
+      const { deleteAvatar } = req.body
       const category = "avatar"
+      let imageUrl = null
 
-      const memberResult = await memberModel.findMemberById(id)
+      const memberResult = await memberModel.findMemberById(member_id)
       const originAvatar = memberResult.rows[0].avatar
-      if (originAvatar) {
-        const deleteResult = await deleteCloudImage({ userId: id, fileLink: originAvatar, category })
+       // 如果前端有傳 avatar 或要刪除 avatar
+      if (avatar || deleteAvatar === "true") {
+        if (originAvatar) {
+          const deleteResult = await deleteCloudImage({ userId: member_id, fileLink: originAvatar, category })
+        }
+        
+        if (deleteAvatar === "true") await memberModel.deleteAvatar(member_id)
+        if (deleteAvatar === "false") imageUrl = await uploadCloudImage(avatar, member_id, category)
       }
 
-      const imageUrl = await uploadCloudImage(file, id, category)
-      const result = await memberModel.updateMemberAvatar({ id, avatar: imageUrl })
+      const result = await memberModel.updateMemberAvatar({ id: member_id, avatar: imageUrl })
       const json = {
         success: true,
         avatar: result.rows[0].avatar,
