@@ -19,8 +19,10 @@ function hideBox(e) {
 </script>
 <template>
   <teleport to="body">
-    <div v-if="isBoxOpen" @click="hideBox" id="lightboxMask" :class="{ 'hidden': !isBoxOpen }" class="fixed inset-0 w-[100vw] h-[100vh] z-10 bg-black/50">
-      <div class="fixed flex flex-col w-[60%] max-h-[620px] min-h-[220px] left-1/2 top-1/4 -translate-x-1/2 bg-white overflow-y-scroll">
+    <div v-if="isBoxOpen" @click="hideBox" id="lightboxMask" :class="{ 'hidden': !isBoxOpen }"
+      class="fixed inset-0 w-[100vw] h-[100vh] z-50 bg-black/50">
+      <div
+        class="fixed flex flex-col w-[300px] xs:w-[472px] lg:w-[572px] max-h-[620px] min-h-[220px] left-1/2 top-1/4 -translate-x-1/2 bg-white overflow-y-scroll no-scrollbar">
         <header class="border-b px-[22px] py-[10px]">
           <div class="flex justify-between items-center">
             <div class="flex items-center">
@@ -36,7 +38,7 @@ function hideBox(e) {
             </div>
           </div>
         </header>
-        
+
         <slot name="banner"></slot>
 
         <main class="px-10 py-4">

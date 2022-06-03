@@ -69,6 +69,7 @@ async function removePlaceCollection(collectId) {
 
 async function confirmdelete() {
   const result = await travelStore.deleteSingleSchedule()
+  closePanel()
   travelStore.isDeleteScheduleBoxOpen = false
 }
 

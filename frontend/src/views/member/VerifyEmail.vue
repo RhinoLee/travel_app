@@ -12,9 +12,8 @@ let redirectTimeout = null
 onMounted(async () => {
 
   try {
-    console.log(111);
     const routes = useRoute()
-    // if (!routes.query.token) return router.push({ name: "Login" })
+    if (!routes.query.token) return router.push({ name: "Login" })
     const token = routes.query.token
     const result = await memberStore.verifyMember(token)
     if (result.success) verifyResult.value = "驗證成功，即將幫您導向登入頁面"

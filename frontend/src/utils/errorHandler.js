@@ -43,6 +43,11 @@ const errorHandler = {
       return Promise.reject(error)
     }
 
+    if (config.url === "/verifyMember") {
+      return Promise.reject(error)
+    }
+
+    // refresh token 流程
     if (!memberStore.isRefreshing) {
       memberStore.isRefreshing = true
 

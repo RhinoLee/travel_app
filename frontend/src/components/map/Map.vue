@@ -63,6 +63,7 @@ watch(
   (newVal) => {
     removeAllMarkers("search")
     emit("closePanel")
+    if (!newVal || newVal.length === 0) return
     renderSearchLocation()
   }
 )
@@ -140,7 +141,7 @@ function scheduleMarkerTirigger(place_id) {
 }
 
 // 設定點位
-function setMarker({ location, placeId, icon, title, label, group, animation, scheduleId = null, zoomImmediate=false }) {
+function setMarker({ location, placeId, icon, title, label, group, animation, scheduleId = null, zoomImmediate = false }) {
   // create marker
   const marker = new google.maps.Marker({
     position: location,
@@ -151,7 +152,9 @@ function setMarker({ location, placeId, icon, title, label, group, animation, sc
   });
   marker.placeId = placeId
   marker.scheduleId = scheduleId
+
   if (zoomImmediate) setZoom(mapZoomIn, marker.position)
+
   // add click event for get location detail
   marker.addListener("click", async (e) => {
     clearMarkersAnitmation()
@@ -196,6 +199,7 @@ function removeAllMarkers(group) {
 
 // 把目前計畫中的點設定到地圖上
 function renderScheduleLocation() {
+  console.log("renderScheduleLocation");
   const group = "schedule"
   const dayScheduleList = props.scheduleList[0] ? props.scheduleList[0].scheduleList : []
   // 如果沒有行程，setZoom 至預設值
@@ -228,7 +232,9 @@ function renderScheduleLocation() {
 
 // 把搜尋結果設定到地圖上
 function renderSearchLocation() {
+  console.log("renderSearchLocation");
   const group = "search"
+  const LatLngBoundsCenter = new google.maps.LatLngBounds()
   props.locationSearchList.forEach(item => {
     setMarker({
       location: item.geometry.location,
@@ -238,10 +244,14 @@ function renderSearchLocation() {
       animation: google.maps.Animation.DROP,
     })
 
+    // 把所有搜尋結果加入邊界
+    LatLngBoundsCenter.extend(item.geometry.location)
   })
 
   setMarkerToMap(map.data, group)
-  // setZoom(mapDefaultZoom, taiwanCenter)
+
+  // zoom in 至邊界
+  setZoom(mapZoomIn, null, LatLngBoundsCenter)
 }
 
 // 把收藏地點設定到地圖上
@@ -264,7 +274,6 @@ function renderPlaceCollections() {
 
 // 設定導航路線
 function addRoutesPolyLine(routesPolyline, routesBounds) {
-  console.log("addRoutesPolyLine");
   const encodeCoordinates = google.maps.geometry.encoding.decodePath(routesPolyline);
   const path = new google.maps.Polyline({
     path: encodeCoordinates,

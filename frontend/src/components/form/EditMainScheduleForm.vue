@@ -62,9 +62,7 @@ async function updateMainSchedule() {
       </div>
     </template>
     <template v-slot:main>
-      <!-- <pre>{{ editMainSchedulePicture }}</pre> -->
-      <!-- <pre>{{ editMainScheduleParams }}</pre> -->
-      <form @submit.prevent class="w-full h-full flex flex-col items-start" novalidate>
+      <form @submit.prevent class="form" novalidate>
         <InputTitle v-model:title="travelStore.editMainScheduleParams.title"></InputTitle>
         <div class="w-full">
           <label class="label">日期區間</label>

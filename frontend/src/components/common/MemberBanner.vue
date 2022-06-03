@@ -3,7 +3,7 @@ import LogoIcon from "@/assets/images/svg/icon_login_whitelogo.svg"
 import LogoBgIcon from "@/assets/images/svg/icon_login_white_logo_bg.svg"
 import ArrowIcon from "@/assets/images/svg/icon_login_arrow.svg"
 import MemberBg from "@/assets/images/png/img_login_bg.png"
-// import LogoGif from "@/assets/images/gif/icon_login_whitelogobg.gif"
+import LogoGif from "@/assets/images/gif/icon_login_whitelogobg.gif"
 </script>
 <template>
   <div class="relative w-full h-[200px] md:h-[320px] lg:h-full">

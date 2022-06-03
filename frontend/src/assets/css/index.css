@@ -94,7 +94,7 @@
   }
   /* member 相關表單 */
   .form {
-    @apply w-full h-full flex flex-col items-center
+    @apply w-full h-full flex flex-col items-center child:py-[8px]
   }
 }
 
@@ -102,7 +102,7 @@
   display: none;
 }
 
-.no-scrollbr {
+.no-scrollbar {
   scrollbar-width: none;
 }
 

@@ -305,48 +305,12 @@ export const useTravelStore = defineStore('travel', {
     closeAction() {
       this.isActionBoxOpenId = null
     },
-    async getLocationInfo(placeId) {
-      const params = {
-        place_id: placeId
-      }
-
-      try {
-        const placeDetailRes = await this.$axios.api.apiGetPlaceDetail(params)
-
-        if (placeDetailRes && placeDetailRes.data.success) {
-          this.placeDetail = placeDetailRes.data.results
-        } else {
-          this.placeDetail = {}
-        }
-      } catch (err) {
-        this.placeDetail = {}
-        return false
-      }
-
-    },
-    async placeSearch(searchTxt) {
-      try {
-        const params = {
-          input: searchTxt,
-          fields: "formatted_address,name,rating,geometry,place_id"
-        }
-        const searchResult = await this.$axios.api.apiPlaceSearch(params)
-        if (searchResult.data.success) {
-          return this.locationSearchList = searchResult.data.results
-        }
-
-        this.locationSearchList = []
-      } catch (error) {
-        this.locationSearchList = []
-        return false
-      }
-    },
     calcSchedulesEndTime() {
       const daySchedule = this.allSchedules.find(daySchedule => daySchedule.date === this.nowSelectDate)
       // EX: 4 個行程，3 個路程時間
 
       if (this.directions.durations.length !== daySchedule.scheduleList.length - 1) return
-    
+
       this.directions.durations.forEach((duration, idx) => {
         let nextStopStart = daySchedule.scheduleList[idx + 1].start_time
         let end_time = dateHandler.calcMinusTime(nextStopStart, duration.value / 60)
@@ -535,6 +499,39 @@ export const useTravelStore = defineStore('travel', {
         return false
       }
     },
+    async removePlaceCollection(collectId) {
+      try {
+        const result = await this.$axios.api.apiDeleteCollections(collectId)
+        if (result.data.success) {
+          this.getPlaceCollections()
+        }
+        return result.data.success
+      } catch (error) {
+        return false
+      }
+    },
+    // 收藏地點 API
+    async addPlaceCollection() {
+      try {
+        const result = await this.$axios.api.apiAddPlaceCollection(this.addPlaceCollectionParams)
+        this.getPlaceCollections()
+        return result.data.success
+      } catch (error) {
+        return false
+      }
+    },
+    async getPlaceCollections() {
+      try {
+        const result = await this.$axios.api.apiGetPlaceCollections()
+        if (result.data.success) {
+          this.placeCollections = result.data.results.placeCollections
+        }
+        return result.data.success
+      } catch (error) {
+        return false
+      }
+    },
+    // Map
     // 路徑 API
     async getDirections() {
       console.log("getDirections");
@@ -580,42 +577,48 @@ export const useTravelStore = defineStore('travel', {
 
         return result && result.data.success
       } catch (error) {
+        console.log("getDirections error", error);
         this.clearDirections()
         return false
       }
     },
-    // 收藏地點 API
-    async addPlaceCollection() {
+    async getLocationInfo(placeId) {
+      const params = {
+        place_id: placeId
+      }
+
       try {
-        const result = await this.$axios.api.apiAddPlaceCollection(this.addPlaceCollectionParams)
-        this.getPlaceCollections()
-        return result.data.success
+        const placeDetailRes = await this.$axios.api.apiGetPlaceDetail(params)
+
+        if (placeDetailRes && placeDetailRes.data.success) {
+          this.placeDetail = placeDetailRes.data.results
+        } else {
+          this.placeDetail = {}
+        }
+      } catch (err) {
+        this.placeDetail = {}
+        return false
+      }
+
+    },
+    async placeSearch(searchTxt) {
+      try {
+        const params = {
+          query: searchTxt,
+          language: "zh-TW",
+          region: "tw"
+        }
+        const searchResult = await this.$axios.api.apiPlaceSearch(params)
+        if (searchResult.data.success) {
+          return this.locationSearchList = searchResult.data.results
+        }
+
+        this.locationSearchList = []
       } catch (error) {
+        this.locationSearchList = []
         return false
       }
     },
-    async getPlaceCollections() {
-      try {
-        const result = await this.$axios.api.apiGetPlaceCollections()
-        if (result.data.success) {
-          this.placeCollections = result.data.results.placeCollections
-        }
-        return result.data.success
-      } catch (error) {
-        return false
-      }
-    },
-    async removePlaceCollection(collectId) {
-      try {
-        const result = await this.$axios.api.apiDeleteCollections(collectId)
-        if (result.data.success) {
-          this.getPlaceCollections()
-        }
-        return result.data.success
-      } catch (error) {
-        return false
-      }
-    }
   }
 
 })

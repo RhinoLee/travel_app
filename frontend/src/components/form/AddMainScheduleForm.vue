@@ -62,7 +62,7 @@ async function addMainSchedule() {
       </div>
     </template>
     <template v-slot:main>
-      <form @submit.prevent class="w-full h-full flex flex-col items-start" novalidate>
+      <form @submit.prevent class="form" novalidate>
         <InputTitle v-model:title="travelStore.addMainScheduleParams.title"></InputTitle>
         <div class="w-full">
           <label class="label">日期區間</label>
