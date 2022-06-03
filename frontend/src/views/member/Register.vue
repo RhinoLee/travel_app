@@ -34,6 +34,10 @@ function hideBox(boxname) {
   memberStore[boxname] = false
 }
 
+onMounted(() => {
+  memberStore.logoutHandler()
+})
+
 onBeforeUnmount(() => {
   clearTimeout(redirectTimeout)
 })

@@ -2,14 +2,25 @@
 import { reactive, computed } from "vue"
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member"
+import useInputValidator from "@/composition-api/useInputValidator"
+import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
 import robot from "@/assets/images/png/robot.png"
-import AvatarForm from "@/components/form/AvatarForm.vue"
+import DefaultAvatar from "@/components/common/DefaultImage.vue"
+import InputAvatar from "@/components/form/input/InputAvatar.vue"
 
 const memberStore = useMemberStore()
-const { memberInfo, avatarSrc } = storeToRefs(memberStore)
+const { memberInfo } = storeToRefs(memberStore)
 
-function openBox(boxname) {
-  memberStore.isEditBoxOpen = true
+const { errors } = useInputValidator()
+const canBeEmptyKeys = ["deleteAvatar", "avatarFile"]
+const { isSubmitBtnDisabled } = useSubmitBtnState(memberStore.editMemberParams, errors, canBeEmptyKeys)
+
+const disabledComputed = computed(() => {
+  return memberStore.editMemberParams.avatarFile === null && !memberStore.editMemberParams.deleteAvatar
+})
+
+async function uploadAvatar() {
+  await memberStore.updateAvatar()
 }
 
 </script>
@@ -23,22 +34,24 @@ function openBox(boxname) {
         </header>
         <main class="h-full">
           <div class="flex justify-center mb-[40px] mt-[10px]">
-            <div class="relative w-[120px] h-[120px] border rounded-full overflow-hidden">
-              <img :src="avatarSrc" class=" w-full h-full object-cover object-center">
-              <div @click="openBox('editBox')"
-                class="absolute bottom-0 w-full h-[30%] flex justify-center pt-1 bg-black/50 text-white text-sm cursor-pointer">
-                編輯頭像
-              </div>
-            </div>
+            <InputAvatar 
+              v-model:avatar="memberStore.editMemberParams.avatarFile"
+              v-model:deleteAvatar="memberStore.editMemberParams.deleteAvatar"
+              :avatarUrl="memberStore.memberInfo.avatar">
+            </InputAvatar>
           </div>
           <ul>
             <li><span>帳號：</span><span>{{ memberInfo.email }}</span></li>
           </ul>
         </main>
+        <footer>
+          <button 
+            :disabled="isSubmitBtnDisabled || disabledComputed"
+            @click="uploadAvatar"
+            :class="{ 'bg-disabled': isSubmitBtnDisabled || disabledComputed, 'bg-travel-textgreen': !isSubmitBtnDisabled && !disabledComputed }"
+            class="lightbox-submit-btn">儲存</button>
+        </footer>
       </div>
     </div>
   </div>
-
-  <!-- 開光箱，設定頭像 -->
-  <AvatarForm></AvatarForm>
 </template>

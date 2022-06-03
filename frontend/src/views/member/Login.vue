@@ -10,8 +10,9 @@ import LandingPage from "@/components/member/LandingPage.vue"
 
 const router = useRouter()
 const memberStore = useMemberStore()
-const { isErrorBoxOpen, isVerifyResultBoxOpen } = storeToRefs(memberStore)
+const { isNotVerifyBoxOpen, isVerifyResultBoxOpen } = storeToRefs(memberStore)
 const verifyMsg = ref("")
+const errorMsg = ref("")
 
 async function submitHandler(formParams) {
   memberStore.loginParams = formParams
@@ -22,13 +23,16 @@ async function submitHandler(formParams) {
   // 登入失敗，信箱未驗證 -> lightbox 請 user 驗證
   if (result.error && result.error === "信箱尚未驗證") {
     memberStore.verifyMemberEmail = result.data.email
+    memberStore.isNotVerifyBoxOpen = true
+  } else {
+    errorMsg.value = "驗證身份失敗，請檢查帳號或信箱是否正確"
     memberStore.isErrorBoxOpen = true
   }
 }
 
 async function sendVerifyEmail() {
   const result = await memberStore.verifyEmail(memberStore.verifyMemberEmail)
-  memberStore.isErrorBoxOpen = false
+  memberStore.isNotVerifyBoxOpen = false
   memberStore.clearLoginParams()
 
   if (result.success) verifyMsg.value = "驗證信寄送成功，請至信箱收信，謝謝"
@@ -65,17 +69,28 @@ onMounted(() => {
     </template>
   </LandingPage>
 
-  <LightBox v-model:isBoxOpen="memberStore.isErrorBoxOpen">
+  <LightBox v-model:isBoxOpen="memberStore.isNotVerifyBoxOpen">
     <template v-slot:title>登入失敗</template>
     <template v-slot:submit-btn>
       <div class="flex">
-        <button @click="hideBox('isErrorBoxOpen')" type="button"
+        <button @click="hideBox('isNotVerifyBoxOpen')" type="button"
           class="mr-4 bg-disabled lightbox-submit-btn">Cancel</button>
         <button @click="sendVerifyEmail" type="button" class="bg-travel-textgreen lightbox-submit-btn">發送驗證信</button>
       </div>
     </template>
     <template v-slot:main>
       <div>信箱尚未驗證</div>
+    </template>
+  </LightBox>
+
+  <LightBox v-model:isBoxOpen="memberStore.isErrorBoxOpen">
+    <template v-slot:title>登入失敗</template>
+    <template v-slot:submit-btn>
+      <button @click="hideBox('isErrorBoxOpen')" type="button"
+          class="bg-travel-textgreen lightbox-submit-btn">關閉通知</button>
+    </template>
+    <template v-slot:main>
+      <div>{{ errorMsg }}</div>
     </template>
   </LightBox>
 

@@ -4,7 +4,8 @@ export const useCommonStore = defineStore("common", {
   state: () => {
     return {
       isLoading: false,
-      isMenuOpen: false
+      isMenuOpen: false,
+      isUserMunuOpen: false
     }
   },
   getters: {
@@ -16,6 +17,9 @@ export const useCommonStore = defineStore("common", {
     },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
-    }
+    },
+    toggleUserMenu() {
+      this.isUserMunuOpen = !this.isUserMunuOpen
+    },
   }
 })

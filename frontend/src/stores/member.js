@@ -25,6 +25,10 @@ export const useMemberStore = defineStore("member", {
         password: "",
         repassword: ""
       },
+      editMemberParams: {
+        avatarFile: null,
+        deleteAvatar: false
+      },
       memberInfo: {
         id: null,
         email: "",
@@ -32,19 +36,16 @@ export const useMemberStore = defineStore("member", {
         nickName: "",
       },
       verifyMemberEmail: null,
-      avatarFile: null,
       // light box state
       isEditBoxOpen: false,
       isErrorBoxOpen: false,
+      isNotVerifyBoxOpen: false,
       isVerifyResultBoxOpen: false,
       isRegisterResultBoxOpen: false,
       isResetPasswordResultBoxOpen: false,
     }
   },
   getters: {
-    avatarSrc() {
-      return this.memberInfo.avatar ? this.memberInfo.avatar : robot
-    },
     memberName() {
       if (!this.memberInfo) return ""
       if (this.memberInfo.nickName) return this.memberInfo.nickName
@@ -63,6 +64,10 @@ export const useMemberStore = defineStore("member", {
       this.registerParams.email = ""
       this.registerParams.password = ""
       this.registerParams.repassword = ""
+    },
+    clearEditMemberParams() {
+      this.editMemberParams.avatarFile = null
+      this.editMemberParams.deleteAvatar = false
     },
     async registerHandler() {
       try {
@@ -111,13 +116,15 @@ export const useMemberStore = defineStore("member", {
     },
     async updateAvatar() {
       const formData = new FormData()
-      formData.append("avatar", this.avatarFile)
+      formData.append("deleteAvatar", this.editMemberParams.deleteAvatar)
+      formData.append("avatar",  this.editMemberParams.avatarFile)
+
       const result = await this.$axios.api.apiUpdateAvatar(formData)
       if (result.data.success) {
         this.memberInfo.avatar = result.data.avatar
       }
 
-      this.avatarFile = null
+      this.clearEditMemberParams()
     },
     async refreshTokenHandler() {
       const refreshToken = localStorage.getItem("refreshToken")
