@@ -23,6 +23,12 @@ watch(
     validateInput()
   }
 )
+watch(
+  () => props.repassword,
+  (newVal) => {
+    if (newVal === "") inputParams.value = ""
+  }
+)
 
 const { errors, validateInit, validatePasswordIRepeatnput } = useInputValidator()
 const validateInput = () => {

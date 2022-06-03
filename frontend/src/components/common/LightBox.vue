@@ -7,13 +7,18 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  // 預設點擊 mask or closebtn 會關閉光箱
+  maskDisabled: {
+    type: Boolean,
+    default: false
+  }
 })
 
 const emit = defineEmits(["update:isBoxOpen"])
 
 function hideBox(e) {
   if (e.target.id === "lightboxMask" || e.target.id === "closeBtn") {
-    emit("update:isBoxOpen", false)
+    if (!props.maskDisabled) emit("update:isBoxOpen", false)
   }
 }
 </script>

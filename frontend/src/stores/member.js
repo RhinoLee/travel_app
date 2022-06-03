@@ -37,6 +37,7 @@ export const useMemberStore = defineStore("member", {
       isEditBoxOpen: false,
       isErrorBoxOpen: false,
       isVerifyResultBoxOpen: false,
+      isRegisterResultBoxOpen: false,
       isResetPasswordResultBoxOpen: false,
     }
   },
@@ -64,10 +65,14 @@ export const useMemberStore = defineStore("member", {
       this.registerParams.repassword = ""
     },
     async registerHandler() {
-      const result = await this.$axios.api.apiRegister(this.registerParams)
-      this.clearRegisterParams()
-      if (result) return result.data.success
-      return false
+      try {
+        const result = await this.$axios.api.apiRegister(this.registerParams)
+        this.clearRegisterParams()
+        if (result && result.data.success) return result.data
+      } catch (error) {
+        this.clearRegisterParams()
+        return error.response.data
+      }
     },
     async loginHandler() {
       try {
@@ -84,6 +89,7 @@ export const useMemberStore = defineStore("member", {
         }
         return result.data
       } catch (error) {
+        this.clearLoginParams()
         return error.response.data
       }
     },

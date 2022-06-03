@@ -67,28 +67,26 @@ onMounted(() => {
 
   <LightBox v-model:isBoxOpen="memberStore.isErrorBoxOpen">
     <template v-slot:title>登入失敗</template>
+    <template v-slot:submit-btn>
+      <div class="flex">
+        <button @click="hideBox('isErrorBoxOpen')" type="button"
+          class="mr-4 bg-disabled lightbox-submit-btn">Cancel</button>
+        <button @click="sendVerifyEmail" type="button" class="bg-travel-textgreen lightbox-submit-btn">發送驗證信</button>
+      </div>
+    </template>
     <template v-slot:main>
       <div>信箱尚未驗證</div>
-    </template>
-    <template v-slot:footer>
-      <div class="flex w-full">
-        <button @click="hideBox('isErrorBoxOpen')" type="button"
-          class="block mt-auto mr-4 px-4 py-2 shadow-lg">Cancel</button>
-        <button @click="sendVerifyEmail" type="button" class="mt-auto block px-4 py-2 shadow-lg">發送驗證信</button>
-      </div>
     </template>
   </LightBox>
 
   <LightBox v-model:isBoxOpen="memberStore.isVerifyResultBoxOpen">
     <template v-slot:title>寄信通知</template>
+    <template v-slot:submit-btn>
+      <button @click="hideBox('isVerifyResultBoxOpen')" type="button"
+        class="bg-travel-textgreen lightbox-submit-btn">關閉通知</button>
+    </template>
     <template v-slot:main>
       <div>{{ verifyMsg }}</div>
-    </template>
-    <template v-slot:footer>
-      <div class="flex w-full">
-        <button @click="hideBox('isVerifyResultBoxOpen')" type="button"
-          class="block mt-auto mr-4 px-4 py-2 shadow-lg">關閉通知</button>
-      </div>
     </template>
   </LightBox>
 </template>

@@ -1,32 +1,31 @@
 <script setup>
-import { ref, reactive } from "vue"
+import { ref, unref, reactive } from "vue"
+import { useMemberStore } from "@/stores/member"
+import { storeToRefs } from 'pinia'
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
 import InputAccount from "@/components/form/input/InputAccount.vue";
 import InputPassword from "@/components/form/input/InputPassword.vue";
 import InputPasswordRepeat from "@/components/form/input/InputPasswordRepeat.vue";
 
-const formParams = reactive({
-  email: "",
-  password: "",
-  repassword: "",
-})
+const memberStore = useMemberStore()
+const { registerParams } = storeToRefs(memberStore)
 
 const emit = defineEmits(["submitHandler"])
 
 const { errors } = useInputValidator()
-const { isSubmitBtnDisabled } = useSubmitBtnState(formParams, errors)
+const { isSubmitBtnDisabled } = useSubmitBtnState(memberStore.registerParams, errors)
 
 function submitHandler() {
-  emit("submitHandler", formParams)
+  emit("submitHandler", registerParams)
 }
 
 </script>
 <template>
   <form @submit.prevent="submitHandler" class="form" novalidate>
-    <InputAccount v-model:email="formParams.email"></InputAccount>
-    <InputPassword v-model:password="formParams.password"></InputPassword>
-    <InputPasswordRepeat v-model:repassword="formParams.repassword" :password="formParams.password">
+    <InputAccount v-model:email="memberStore.registerParams.email"></InputAccount>
+    <InputPassword v-model:password="memberStore.registerParams.password"></InputPassword>
+    <InputPasswordRepeat v-model:repassword="memberStore.registerParams.repassword" :password="memberStore.registerParams.password">
     </InputPasswordRepeat>
 
     <button :disabled="isSubmitBtnDisabled"

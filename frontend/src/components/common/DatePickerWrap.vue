@@ -232,7 +232,7 @@ const minDate = computed(() => {
 
   <!-- time picker (just start time) 版本 -->
   <Datepicker v-if="timePicker" v-model="time" :startTime="startTime" @update:modelValue="handleTime"
-    :utc="utc" :timePicker="timePicker" :readonly="readonly" format="HH:mm" :transitions="false">
+    :utc="utc" :timePicker="timePicker" :readonly="readonly" format="HH:mm" :transitions="false" autoApply>
   </Datepicker>
 
   <div v-if="errors[inputStartDate.inputKey]" class="text-alert">{{ errors[inputStartDate.inputKey] }}</div>

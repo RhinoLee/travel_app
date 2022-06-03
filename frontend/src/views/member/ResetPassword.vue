@@ -50,16 +50,10 @@ function hideBox(boxname) {
     </template>
   </LandingPage>
 
-  <LightBox v-model:isBoxOpen="memberStore.isResetPasswordResultBoxOpen">
+  <LightBox v-model:isBoxOpen="memberStore.isResetPasswordResultBoxOpen" :maskDisabled="true">
     <template v-slot:title>重設密碼通知</template>
     <template v-slot:main>
       <div>{{ verifyMsg }}</div>
-    </template>
-    <template v-slot:footer>
-      <div class="flex w-full">
-        <button @click="hideBox('isResetPasswordResultBoxOpen')" type="button"
-          class="block mt-auto mr-4 px-4 py-2 shadow-lg">關閉通知</button>
-      </div>
     </template>
   </LightBox>
 </template>
