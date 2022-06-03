@@ -50,10 +50,10 @@ function closeMemberBox() {
       <nav class="ml-auto" v-if="memberStore.isLogin">
         <ul class="flex">
           <li class="relative">
-            <div class="flex items-center" @click.stop="commonStore.toggleUserMenu">
+            <div class="flex items-center cursor-pointer" @click.stop="commonStore.toggleUserMenu">
               <div class="hidden md:block">{{ memberName }}</div>
-              <div class="border-[2px] border-travel-lightgreen ml-[10px] w-[32px] h-[32px] rounded-full overflow-hidden">
-                <DefaultAvatar :picture="memberInfo.avatar"></DefaultAvatar>
+              <div class="border-[2px] border-travel-lightgreen ml-[10px] w-[28px] h-[28px] rounded-full overflow-hidden">
+                <DefaultAvatar :picture="memberInfo.avatar" height="h-[28px]"></DefaultAvatar>
               </div>
               <!-- <div v-if="memberInfo.avatar"
                 class="border-[2px] border-travel-lightgreen ml-[10px] w-[32px] h-[32px] rounded-full overflow-hidden">

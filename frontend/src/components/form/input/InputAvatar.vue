@@ -96,45 +96,23 @@ onBeforeUnmount(() => {
   <div class="flex justify-center w-full">
     <div class="group relative w-full blur-mask">
       <!-- <img v-if="image.src" :src="image.src" class=" w-full h-full object-cover object-center"> -->
-      <div class="relative m-auto w-[120px] border rounded-full overflow-hidden">
-        <DefaultAvatar height="h-[120px]" :picture="image.src"></DefaultAvatar>
+      <div class="relative m-auto w-[88px] border rounded-full overflow-hidden">
+        <DefaultAvatar height="h-[88px]" :picture="image.src"></DefaultAvatar>
       </div>
       <div v-if="errors[inputParams.inputKey]" class="text-alert text-center">{{ errors[inputParams.inputKey] }}</div>
       <!-- buttons -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-10">
         <button @click="chooseImage" type="button"
-          class="icon-circle group-hover:opacity-100 group-hover:pointer-events-auto">
+          class="icon-circle-small group-hover:opacity-100 group-hover:pointer-events-auto">
           <img :src="iconUploadImg" class="w-full h-full object-contain" alt="選擇圖片">
         </button>
         <button v-if="image.src" @click="clearInput" type="button"
           :class="{ 'group-hover:opacity-100': image.src, 'group-hover:pointer-events-auto': image.src }"
-          class="icon-circle">
+          class="icon-circle-small">
           <img :src="iconCancel" class="w-full h-full object-contain" alt="取消">
         </button>
       </div>
     </div>
   </div>
-  <div class="flex justify-center w-full">
-
-    <input class="hidden" ref="fileInput" type="file" @input="onSelectFile">
-  </div>
+  <input class="hidden" ref="fileInput" type="file" @input="onSelectFile">
 </template>
-
-<!-- <template>
-  <div class="flex justify-center w-full mb-[40px] mt-[10px]">
-    <div class="relative w-[120px] h-[120px] border rounded-full overflow-hidden">
-      <img v-if="image.src" :src="image.src" class=" w-full h-full object-cover object-center">
-    </div>
-  </div>
-
-  <div class="flex justify-center w-full">
-    <div>
-      <button @click="chooseImage" type="button" class="border px-4 py-2">
-        請選擇照片
-      </button>
-      <div v-if="errors[inputParams.inputKey]" class="text-alert text-center">{{ errors[inputParams.inputKey] }}</div>
-    </div>
-
-    <input class="hidden" ref="fileInput" type="file" @input="onSelectFile">
-  </div>
-</template> -->

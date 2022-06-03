@@ -70,6 +70,9 @@
   .icon-circle {
     @apply mx-[10px] w-[40px] h-[40px] rounded-full overflow-hidden pointer-events-none opacity-0 transition-opacity duration-700 hover:opacity-100
   }
+  .icon-circle-small {
+    @apply mx-[10px] w-[30px] h-[30px] rounded-full overflow-hidden pointer-events-none opacity-0 transition-opacity duration-700 hover:opacity-100
+  }
   /* login / register button */
   .member-form-btn {
     @apply block mt-[38px] px-[54px] py-[10px] shadow-md rounded-[5px]  text-white tracking-[2px]
