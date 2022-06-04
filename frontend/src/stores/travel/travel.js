@@ -336,7 +336,6 @@ export const useTravelStore = defineStore('travel', {
         if (result && result.data.success) this.getMainScheduleList()
 
       } catch (error) {
-        console.log("error", error);
         return false
       }
     },
@@ -367,7 +366,6 @@ export const useTravelStore = defineStore('travel', {
       }
     },
     async getMainSchedule() {
-      console.log("getMainSchedule");
       try {
         const result = await this.$axios.api.apiGetMainSchedule(this.nowMainScheduleId)
         if (!result || !result.data.success) return
@@ -537,7 +535,6 @@ export const useTravelStore = defineStore('travel', {
     // Map
     // 路徑 API
     async getDirections() {
-      console.log("getDirections");
       // this.clearDirections()
       if (!this.nowDateScheduleList[0] || this.nowDateScheduleList[0].scheduleList.length === 1) return
       const { scheduleList } = this.nowDateScheduleList[0]
@@ -580,7 +577,6 @@ export const useTravelStore = defineStore('travel', {
 
         return result && result.data.success
       } catch (error) {
-        console.log("getDirections error", error);
         this.clearDirections()
         return false
       }

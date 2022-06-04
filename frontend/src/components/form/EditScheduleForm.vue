@@ -19,7 +19,6 @@ const canBeEmptyKeys = ["place_name"]
 const { isSubmitBtnDisabled } = useSubmitBtnState(travelStore.editScheDuleParams, errors, canBeEmptyKeys)
 
 function updateTime(args) {
-  console.log("args", args);
   const parmasKey = args[0] // addScheDuleParams or editScheDuleParams ... 
   const startTime = args[1]
   travelStore[parmasKey].start_time = startTime

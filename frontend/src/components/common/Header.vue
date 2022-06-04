@@ -3,7 +3,7 @@ import { ref } from "vue"
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member"
 import { useCommonStore } from "@/stores/common"
-import DefaultAvatar from "@/components/common/DefaultImage.vue"
+import DefaultAvatar from "@/components/common/DefaultAvatar.vue"
 import logoIcon from "@/assets/images/svg/logo.svg"
 import searchIcon from "@/assets/images/svg/icon_search.svg"
 import LightBox from "@/components/common/LightBox.vue"
@@ -28,7 +28,7 @@ function closeMemberBox() {
 </script>
 
 <template>
-  <header class="relative py-2 h-[54px] border-b-[2px] border-travel-green bg-white z-50">
+  <header class="relative py-2 h-[54px] border-b-[2px] border-travel-green bg-white z-30">
     <div class="flex items-center h-full px-[24px] xl:px-4 max-w-[1600px] mx-auto">
       <!-- burgur-menu -->
       <div @click="commonStore.toggleMenu" class="md:hidden w-[20px] h-[12px] cursor-pointer">
@@ -55,11 +55,8 @@ function closeMemberBox() {
               <div class="border-[2px] border-travel-lightgreen ml-[10px] w-[28px] h-[28px] rounded-full overflow-hidden">
                 <DefaultAvatar :picture="memberInfo.avatar" height="h-[28px]"></DefaultAvatar>
               </div>
-              <!-- <div v-if="memberInfo.avatar"
-                class="border-[2px] border-travel-lightgreen ml-[10px] w-[32px] h-[32px] rounded-full overflow-hidden">
-                <img :src="memberInfo.avatar" class="w-full h-full object-cover object-center"></div> -->
             </div>
-            <ul :class="{ 'block': isUserMunuOpen, 'hidden': !isUserMunuOpen }" class="absolute top-[calc(100%+20px)] w-full py-[7px] px-[15px] bg-white rounded-[10px] z-10
+            <ul :class="{ 'block': isUserMunuOpen, 'hidden': !isUserMunuOpen }" class="absolute right-0 top-[calc(100%+20px)] w-[120px] py-[7px] px-[15px] bg-white rounded-[10px] z-10
               drop-shadow-[0_0_6px_rgba(0,0,0,0.25)]
               child:py-[5px] child:w-full child:text-center child:tracking-[1px] child:cursor-pointer
               ">

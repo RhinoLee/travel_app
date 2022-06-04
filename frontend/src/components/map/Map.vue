@@ -199,7 +199,6 @@ function removeAllMarkers(group) {
 
 // 把目前計畫中的點設定到地圖上
 function renderScheduleLocation() {
-  console.log("renderScheduleLocation");
   const group = "schedule"
   const dayScheduleList = props.scheduleList[0] ? props.scheduleList[0].scheduleList : []
   // 如果沒有行程，setZoom 至預設值
@@ -232,7 +231,6 @@ function renderScheduleLocation() {
 
 // 把搜尋結果設定到地圖上
 function renderSearchLocation() {
-  console.log("renderSearchLocation");
   const group = "search"
   const LatLngBoundsCenter = new google.maps.LatLngBounds()
   props.locationSearchList.forEach(item => {

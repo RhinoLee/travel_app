@@ -26,6 +26,15 @@ module.exports = {
       backgroundImage: {
         "select-arrow": "url('@/assets/images/svg/icon_select.svg')",
         // "select-arrow": "url('@/assets/images/svg/icon_arrow.svg')",
+      },
+      keyframes: {
+        loadingBg: {
+          "0%, 100%": { "background-color": "rgba(0,0,0,0)", "opacity": "0" },
+          "50%": { "background-color": "rgba(0,0,0,.5)", "opacity": "1" },
+        },
+      },
+      animation: {
+        loadingBg: "loadingBg 1s linear infinite",
       }
     },
   },

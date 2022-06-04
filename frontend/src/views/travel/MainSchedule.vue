@@ -74,7 +74,6 @@ async function confirmdelete() {
 }
 
 onMounted(async () => {
-  console.log("mainSchedule page mounted");
   // 根據網址設定參數
   travelStore.nowMainScheduleId = route.params.mainScheduleId
   travelStore.nowSelectDate = route.params.date

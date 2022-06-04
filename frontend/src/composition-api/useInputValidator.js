@@ -5,11 +5,8 @@ const errors = reactive({})
 
 export default function useInputValidator() {
   const validateInit = () => {
-    console.log("validateInit");
     for (let key in errors) {
-      console.log("delete errors[key]", errors);
       delete errors[key];
-      console.log("delete2 errors[key]", errors);
     }
   }
 

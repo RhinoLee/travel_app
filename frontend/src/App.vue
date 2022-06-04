@@ -34,5 +34,5 @@ onBeforeUnmount(() => {
     <RouterView />
     <Sidebar v-if="isLogin"></Sidebar>
   </div>
-  <!-- <Loading></Loading> -->
+  <Loading></Loading>
 </template>

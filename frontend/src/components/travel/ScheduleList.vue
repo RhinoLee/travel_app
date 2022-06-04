@@ -45,9 +45,6 @@ function dropHandler(e) {
 
 async function changeHandler({ moved }) {
   const moveResult = travelStore.exchangeSchedule(moved)
-  // if (moveResult) {
-  //   await travelStore.updateSingleScheduleGroup(moved.element.date)
-  // }
 }
 
 </script>

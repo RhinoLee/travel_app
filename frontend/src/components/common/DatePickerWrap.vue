@@ -160,7 +160,6 @@ function handleDate(modelData) {
 
 // 更新時間
 function handleTime(modelData) {
-  console.log("handleTime", modelData);
   if (!modelData) {
     inputStartTime.value = ""
     // inputEndTime.value = ""
