@@ -20,7 +20,7 @@ function searchTextHandler() {
 
 </script>
 <template>
-  <div class="mb-[47px] w-full">
+  <div class="w-full">
     <div class="flex items-center justify-center w-full border border-travel-green rounded-[5px] overflow-hidden">
       <div class="box-content border-r border-travel-green w-[24px] h-[24px] px-[10px]">
         <img :src="litneraryIcon" class="w-full h-full object-cover object-center">

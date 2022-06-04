@@ -5,6 +5,7 @@ export const useCommonStore = defineStore("common", {
     return {
       isLoading: false,
       isMenuOpen: false,
+      isMenuMaskOpen: false,
       isUserMunuOpen: false
     }
   },
@@ -17,6 +18,7 @@ export const useCommonStore = defineStore("common", {
     },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen
+      this.isMenuMaskOpen = !this.isMenuMaskOpen
     },
     toggleUserMenu() {
       this.isUserMunuOpen = !this.isUserMunuOpen

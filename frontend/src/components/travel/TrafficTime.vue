@@ -15,7 +15,7 @@ const props = defineProps({
     <div class="w-[5px] h-[52px]">
       <img :src="ArrowIcon" class="w-full h-full object-cover object-center">
     </div>
-    <div class="pl-[16px] child:text-[14px] child:text-travel-darkgold child:leading-6">
+    <div class="pl-[16px] child:text-[14px] child:text-travel-gold child:leading-6">
       <p>預計時間：{{ distance }}</p>
       <p>車程：{{ duration }}</p>  
     </div>

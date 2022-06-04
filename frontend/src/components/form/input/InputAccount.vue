@@ -40,7 +40,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="mt-[10px] w-full">
     <label :for="inputParams.inputKey" class="label">{{ inputParams.inputName }}</label>
-    <input v-model.trim="inputParams.value" @input="validateInput" @blur="validateInput" type="text" :id="inputParams.inputKey"
+    <input v-model.trim="inputParams.value" @input="validateInput" @blur="validateInput" type="email" :id="inputParams.inputKey"
       class="input" placeholder="E-mail">
     <div v-if="errors[inputParams.inputKey]" class="text-alert">{{ errors[inputParams.inputKey] }}</div>
   </div>

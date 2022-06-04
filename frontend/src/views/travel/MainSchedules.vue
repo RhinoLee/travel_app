@@ -37,11 +37,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="pt-[50px] pb-[40px]">
+  <div class="pt-[80px] pb-[40px]">
     <div class="container">
       <!-- title -->
       <div class="mb-[40px]">
-        <h2>規劃行程</h2>
+        <h2 class="text-[20px] lg:text-[40px]">規劃行程</h2>
       </div>
       <!-- select -->
       <div class="mb-[16px]">

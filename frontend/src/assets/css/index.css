@@ -6,7 +6,7 @@
   --travel-textgray: #232d23;
   --travel-textgreen: #145049;
   --travel-gold: #c79e74;
-  --travel-darkgold: #c79e74;
+  --travel-blue: #1080BF;
   --travel-lightgreen: #f0f1e9;
   --travel-green: #e7ebd5;
   --travel-darkgreen: #9b9f89;
@@ -48,11 +48,11 @@
   }
   /* 側邊欄樣式 */
   .sidebar-menu {
-    @apply fixed top-[54px] border-r-[2px] h-[calc(100vh-54px)] bg-white tracking-[1px] transition-all duration-700
+    @apply fixed top-[54px] border-r-[2px] h-screen bg-white tracking-[1px] transition-all duration-700
   }
   /* schedule 側邊欄樣式 */
   .sidebar-menu-schedule {
-    @apply fixed top-[54px] lg:relative lg:top-auto border-r-[2px] h-[calc(100vh-54px)] bg-white tracking-[1px] transition-all duration-700
+    @apply fixed top-[54px] lg:relative lg:top-auto border-r-[2px] h-screen bg-white tracking-[1px] transition-all duration-700
   }
   /* scheduleItem 動作下拉選單 */
   .actionlist-item {

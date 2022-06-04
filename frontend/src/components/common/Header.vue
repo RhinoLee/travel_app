@@ -28,20 +28,20 @@ function closeMemberBox() {
 </script>
 
 <template>
-  <header class="relative py-2 h-[54px] border-b-[2px] border-travel-green bg-white z-30">
+  <header class="fixed top-0 left-0 py-2 w-full h-[54px] border-b-[2px] border-travel-green bg-white z-30">
     <div class="flex items-center h-full px-[24px] xl:px-4 max-w-[1600px] mx-auto">
       <!-- burgur-menu -->
-      <div @click="commonStore.toggleMenu" class="md:hidden w-[20px] h-[12px] cursor-pointer">
+      <div @click="commonStore.toggleMenu" class="lg:hidden w-[20px] h-[12px] cursor-pointer">
         <div class="burger-menu"></div>
       </div>
       <!-- logo -->
-      <div class="ml-auto w-[94px] md:ml-0 md:w-[108px] ">
+      <div class="ml-auto w-[94px] lg:ml-0 lg:w-[108px] ">
         <router-link :to="{ name: 'MainSchedules' }" class="block w-full">
           <img :src="logoIcon" class="w-full h-auto" alt="旅行筆記">
         </router-link>
       </div>
       <!-- search -->
-      <div class="hidden md:flex items-center ml-[70px]">
+      <div class="hidden lg:flex items-center ml-[70px]">
         <!-- <div class="mr-[18px] w-[15px]"><img :src="searchIcon" class="w-full h-auto"></div>
         <input class="text-[14px] placeholder:tracking-widest placeholder:text-[14px] outline-none" type="text"
           placeholder="輸入行程名稱以搜尋"> -->
@@ -51,7 +51,7 @@ function closeMemberBox() {
         <ul class="flex">
           <li class="relative">
             <div class="flex items-center cursor-pointer" @click.stop="commonStore.toggleUserMenu">
-              <div class="hidden md:block">{{ memberName }}</div>
+              <div class="hidden lg:block">{{ memberName }}</div>
               <div class="border-[2px] border-travel-lightgreen ml-[10px] w-[28px] h-[28px] rounded-full overflow-hidden">
                 <DefaultAvatar :picture="memberInfo.avatar" height="h-[28px]"></DefaultAvatar>
               </div>

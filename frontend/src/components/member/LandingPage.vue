@@ -16,7 +16,7 @@ const props = defineProps({
 </script>
 <template>
   <div>
-    <div :class="{ 'lg:h-[calc(100vh-54px)]': hasHeader, 'lg:h-screen': !hasHeader }" class="relative w-screen">
+    <div class="relative w-screen lg:h-screen">
       <div class="flex flex-wrap w-screen lg:h-full">
         <div class="w-full h-full lg:w-1/2">
           <MemberBanner></MemberBanner>

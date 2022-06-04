@@ -5,20 +5,30 @@ import LitneraryIcon from "@/assets/images/svg/icon_litnerary.svg"
 import CollectIcon from "@/assets/images/svg/icon_collect.svg"
 
 const commonStore = useCommonStore()
-const { isMenuOpen } = storeToRefs(commonStore)
+const { isMenuOpen, isMenuMaskOpen } = storeToRefs(commonStore)
+
+function closeMenuHandler() {
+  commonStore.isMenuOpen = false
+  commonStore.isMenuMaskOpen = false
+}
 
 </script>
 <template>
-  <nav
-    @mouseenter="commonStore.isMenuOpen = true"
-    @mouseleave="commonStore.isMenuOpen = false"
-    :class="{ 'left-0': isMenuOpen, 'md:-left-[268px]': !isMenuOpen, '-left-[280px]': !isMenuOpen }"
-    class="sidebar-menu border-travel-green w-[280px] bg-white z-20">
+  <div
+    @click="closeMenuHandler"
+    :class="{ 'hidden': !isMenuMaskOpen, 'block': isMenuMaskOpen }"
+    class="fixed top-0 left-[0px] w-full h-full bg-black/50 z-20 lg:hidden">
+  </div>
+
+  <nav @mouseenter="commonStore.isMenuOpen = true" @mouseleave="commonStore.isMenuOpen = false"
+    :class="{ 'left-0': isMenuOpen, 'lg:-left-[268px]': !isMenuOpen, '-left-[280px]': !isMenuOpen }"
+    class="sidebar-menu border-travel-green w-[280px] bg-white z-40">
     <div class="relative w-full h-full px-[30px]">
       <div class="pt-[54px]">
         <h3 class="mb-[10px] px-[15px] text-travel-textgreen text-xs">主功能</h3>
         <ul class="child:mt-[8px]">
-          <li class="rounded-[10px] overflow-hidden hover:bg-travel-lightgreen">
+          <li class="rounded-[10px] overflow-hidden hover:bg-travel-lightgreen"
+            @click.stop="closeMenuHandler">
             <router-link :to="{ name: 'MainSchedules' }" class="flex items-center py-[10px] px-[20px] text-sm">
               <div class="block mr-[8px] w-[24px]">
                 <img class="w-full h-auto" :src="LitneraryIcon">
@@ -50,7 +60,8 @@ const { isMenuOpen } = storeToRefs(commonStore)
       </div> -->
 
       <!-- sidebar-trigger -->
-      <button @click="commonStore.toggleMenu" class="sidebar-trigger hidden md:block top-[140px] text-travel-darkgreen bg-travel-green">
+      <button @click="commonStore.toggleMenu"
+        class="sidebar-trigger hidden lg:block top-[140px] text-travel-darkgreen bg-travel-green">
         {{ isMenuOpen ? "收起選單" : "展開選單" }}
       </button>
     </div>

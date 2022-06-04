@@ -12,9 +12,10 @@ import LightBox from "@/components/common/LightBox.vue"
 import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
 import EditScheduleForm from "@/components/form/EditScheduleForm.vue";
 import AddScheduleForm from "@/components/form/AddScheduleForm.vue";
+import MotorIcon from "@/assets/images/svg/icon_motor.svg"
 
 const travelStore = useTravelStore()
-const { mainScheduleInfo, locationSearchList, nowDateScheduleList, directions, placeCollectionsList, placeInfoComputed, durationDateList, nowSelectDate, isMenuOpen, isDeleteScheduleBoxOpen } = storeToRefs(travelStore)
+const { mainScheduleInfo, locationSearchList, nowDateScheduleList, directions, placeCollectionsList, placeInfoComputed, durationDateList, nowSelectDate, isMenuOpen, isDeleteScheduleBoxOpen, universalUrl } = storeToRefs(travelStore)
 const route = useRoute()
 const router = useRouter()
 
@@ -84,6 +85,7 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
+  travelStore.isMenuOpen = false
   travelStore.unMountMainSchedulePage()
 })
 
@@ -95,9 +97,22 @@ onBeforeUnmount(() => {
   <div v-if="mainScheduleInfo" class="flex relative">
     <div :class="{ 'left-0': isMenuOpen, '-left-[288px]': !isMenuOpen }"
       class="sidebar-menu-schedule lg:left-0 border-travel-textgreen w-[300px] lg:w-[400px] bg-white z-10">
-      <div class="relative w-full h-full pt-[20px] px-[15px] lg:pt-[37px] lg:px-[40px] overflow-y-scroll no-scrollbar">
-        <!-- 搜尋匡 -->
-        <SearchPlace @searchTextHandler="searchTextHandler"></SearchPlace>
+      <div class="relative w-full h-full pt-[20px] px-[15px] lg:pt-[93px] lg:px-[40px] overflow-y-scroll no-scrollbar">
+
+        <div class="mb-[48px]">
+          <!-- 搜尋匡 -->
+          <SearchPlace @searchTextHandler="searchTextHandler"></SearchPlace>
+          <!-- google map 連結 -->
+          <a v-if="universalUrl" :href="universalUrl" target="_blank" class="inline-block mt-[8px]">
+            <div  class="flex items-center">
+              <div class="mr-[6px] w-[42px]">
+                <img class="w-full h-auto" :src="MotorIcon" />
+              </div>
+              <span class="text-[16px] text-travel-blue">Google 導航行程</span>
+            </div>
+          </a>
+        </div>
+
         <h2 class="mb-[8px] text-travel-textgreen text-[18px] lg:text-[24px]">{{ mainScheduleInfo.title }}</h2>
         <!-- 天數列表 -->
         <ScheduleDates v-model:selectDate="nowSelectDate"></ScheduleDates>
@@ -116,7 +131,7 @@ onBeforeUnmount(() => {
       @addPlaceCollection="addPlaceCollection" @removePlaceCollection="removePlaceCollection" @closePanel="closePanel">
     </PlaceDetailPanel>
     <!-- 地圖 -->
-    <div class="w-screen lg:w-[calc(100vw-400px)] h-[calc(100vh-54px)]">
+    <div class="w-screen lg:w-[calc(100vw-400px)] h-[calc(100vh)]">
       <Map :scheduleList="nowDateScheduleList" :locationSearchList="locationSearchList" :placeDetail="placeInfoComputed"
         :directions="directions" :placeCollectionsList="placeCollectionsList" @closePanel="closePanel"></Map>
     </div>

@@ -15,7 +15,7 @@ module.exports = {
         "travel-textgray": "var(--travel-textgray)",
         "travel-textgreen": "var(--travel-textgreen)",
         "travel-gold": "var(--travel-gold)",
-        "travel-darkgold": "var(--travel-darkgold)",
+        "travel-blue": "var(--travel-blue)",
         "travel-lightgreen": "var(--travel-lightgreen)",
         "travel-green": "var(--travel-green)",
         "travel-darkgreen": "var(--travel-darkgreen)",

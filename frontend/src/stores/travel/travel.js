@@ -71,6 +71,7 @@ export const useTravelStore = defineStore('travel', {
         durations: [],
         distances: []
       },
+      universalUrl: "",
       // lightbox state
       isEditMainScheduleBoxOpen: false,
       isAddMainScheduleBoxOpen: false,
@@ -540,14 +541,18 @@ export const useTravelStore = defineStore('travel', {
       const { scheduleList } = this.nowDateScheduleList[0]
       // 起點行程
       const origin = scheduleList[0].place_id
+      const originName = scheduleList[0].place_name
       // 終點行程
       const destination = scheduleList[scheduleList.length - 1].place_id
+      const destinationName = scheduleList[scheduleList.length - 1].place_name
       // waypoints = 中繼站
       const waypoints = []
+      const waypointsNames = []
       if (scheduleList.length > 1) {
         scheduleList.forEach((schedule, idx) => {
           if (idx > 0 && idx < scheduleList.length - 1) {
             waypoints.push(schedule.place_id)
+            waypointsNames.push(schedule.place_name)
           }
         })
       }
@@ -571,8 +576,14 @@ export const useTravelStore = defineStore('travel', {
             this.calcSchedulesEndTime()
           }
 
+          // 組合連結
+          this.universalUrlHandler({ origin, originName, destination, destinationName, waypoints, waypointsNames })
+
         } else {
           this.clearDirections()
+
+          // 清空連結
+          this.universalUrl = ""
         }
 
         return result && result.data.success
@@ -617,6 +628,18 @@ export const useTravelStore = defineStore('travel', {
         this.locationSearchList = []
         return false
       }
+    },
+    universalUrlHandler({ origin, originName, destination, destinationName, waypoints, waypointsNames }) {
+
+      let waypointStr = waypoints.join("|")
+      let waypointsNameStr = waypointsNames.join("|")
+
+      const url = `https://www.google.com/maps/dir/?api=1&origin=${originName}&origin_place_id=${origin}&destination=${destinationName}&destination_place_id=${destination}&waypoints=${waypointsNameStr}&waypoint_place_ids=${waypointStr}`
+
+      const encoded = encodeURI(url);
+      // console.log("url", url);
+      // console.log("encoded", encoded);
+      this.universalUrl = encoded
     },
   }
 

@@ -3,6 +3,7 @@ import Home from "@/views/Home.vue"
 import Login from "@/views/member/Login.vue"
 import AddMainSchedule from "@/views/travel/AddMainSchedule.vue"
 import { useMemberStore } from "@/stores/member"
+import { useCommonStore } from "@/stores/common"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
