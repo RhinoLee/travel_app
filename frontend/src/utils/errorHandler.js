@@ -6,6 +6,13 @@ const errorHandler = {
   catchError: (error, axiosInstance, router) => {
     return new Promise(async (resolve, reject) => {
       const status = error.response ? error.response.status : null
+      const url = error.config.url
+      if (url === "/refreshToken") {
+        const memberStore = useMemberStore()
+        memberStore.logoutHandler()
+        router.push({ name: "Login" })
+        return reject(error);
+      }
       switch (status) {
         case 401:
           {
