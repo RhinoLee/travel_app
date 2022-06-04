@@ -1,5 +1,8 @@
 <script setup>
 import { ref, watch } from "vue"
+import cancelIcon from "@/assets/images/svg/icon_cancel_gray.svg"
+import LitneraryIcon from "@/assets/images/svg/icon_litnerary.svg"
+
 const props = defineProps({
   placeDetail: {
     type: Object
@@ -36,32 +39,51 @@ function triggerPanel(isOpen) {
 </script>
 
 <template>
-  <div v-if="placeDetail" :class="{ hidden: !isPanelOpen }" class="absolute w-[30%] h-[90vh] left-[31%] top-[50%] -translate-y-[50%] bg-white z-10 shadow-lg p-[30px]">
-    <div class="flex justify-end mb-4">
-      <button @click="triggerPanel(false)" class="border px-2 py-1 text-sm">X</button>
+  <div v-if="placeDetail" :class="{ hidden: !isPanelOpen }" class="flex flex-col
+      absolute w-[300px] md:w-[358px] h-[calc(94vh-54px)] left-1/2 md:left-[308px] top-[50%] -translate-y-[50%] -translate-x-[50%] md:-translate-x-0 py-[14px] px-[20px] 
+      bg-white/80 backdrop-blur-[4px] z-10 shadow-lg overflow-y-scroll no-scrollbar rounded-[10px] descendant:tracking-[1px]
+      lg:left-[408px]  
+    ">
+    <div class="flex items-center mb-[5px]">
+      <!-- close btn -->
+      <button @click.stop="triggerPanel(false)" class="w-[20px] h-[20px]" type="button">
+        <img class="w-full h-full object-cover object-center" :src="cancelIcon" alt="刪除">
+      </button>
+      <!-- 景點名稱 -->
+      <p class="ml-[20px] text-travel-textgreen text-[24px] tracking-[1px]">{{ placeDetail.name }}</p>
     </div>
-    <div>
+    <!-- 景點圖片 -->
+    <div class="mb-[12px] rounded-[10px] overflow-hidden">
       <img v-if="placeDetail.photos && placeDetail.photos.length > 0" :src="placeDetail.photos[0]" alt="">
     </div>
+    <!-- 景點資訊 -->
     <div>
-      <div class="py-2">評價：{{ placeDetail.rating }} / 5</div>
-      <div class="py-2">評價數：{{ placeDetail.user_ratings_total }}</div>
-      <div class="py-2"><p>名稱：{{ placeDetail.name }}</p></div>
-      <div class="py-2"><p>地址：{{ placeDetail.address }}</p></div>
-      <div class="py-2"><p>聯絡電話：{{ placeDetail.phone_number }}</p></div>
-      <div class="py-2">
+      <!-- 景點評價 -->
+      <div class="py-[8px]">地址：{{ placeDetail.address }}</div>
+      <div class="py-[8px]">聯絡電話：{{ placeDetail.phone_number }}</div>
+      <div class="py-[8px]">評價：{{ placeDetail.rating }} / 5</div>
+      <div class="py-[8px]">評價數：{{ placeDetail.user_ratings_total }}</div>
+      <div class="py-[8px]">
         <p class="pb-1">營業時間：</p>
-        <div v-if="placeDetail.opening_hours">
-          <p v-for="(text, idx) in placeDetail.opening_hours.weekday_text" :key="idx">{{ text }}</p>
+        <div v-if="placeDetail.opening_hours" class="max-h-[200px] overflow-y-scroll">
+          <p v-for="(text, idx) in placeDetail.opening_hours.weekday_text" :key="idx" class="pt-1">{{ text }}</p>
         </div>
-      </div>
-
-      <div>
-        <button @click="addLocateToSchedule" class="border px-4 py-2 ml-2">加入行程</button>
-        <button v-if="!placeDetail.isCollect" @click="addPlaceCollection" class="border px-4 py-2 ml-2">加入收藏</button>
-        <button v-if="placeDetail.isCollect" @click="removePlaceCollection(placeDetail.collectId)" class="border px-4 py-2 ml-2">移除收藏</button>
       </div>
     </div>
 
-  </div>  
+    <!-- 按鈕區 -->
+    <div class="mt-auto">
+      <button @click="addLocateToSchedule"
+        class="flex items-center justify-center border border-travel-textgreen px-[23px] py-[8px] rounded-[5px]">
+        <div class="mr-[4px] w-[24px]">
+          <img :src="LitneraryIcon" class="w-full h-auto" />
+        </div>
+        <span class="text-travel-textgreen">加入行程</span>
+      </button>
+      <!-- <button v-if="!placeDetail.isCollect" @click="addPlaceCollection" class="border px-4 py-2 ml-2">加入收藏</button>
+      <button v-if="placeDetail.isCollect" @click="removePlaceCollection(placeDetail.collectId)"
+        class="border px-4 py-2 ml-2">移除收藏</button> -->
+    </div>
+
+  </div>
 </template>

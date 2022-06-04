@@ -42,9 +42,9 @@ function closeMemberBox() {
       </div>
       <!-- search -->
       <div class="hidden md:flex items-center ml-[70px]">
-        <div class="mr-[18px] w-[15px]"><img :src="searchIcon" class="w-full h-auto"></div>
+        <!-- <div class="mr-[18px] w-[15px]"><img :src="searchIcon" class="w-full h-auto"></div>
         <input class="text-[14px] placeholder:tracking-widest placeholder:text-[14px] outline-none" type="text"
-          placeholder="輸入行程名稱以搜尋">
+          placeholder="輸入行程名稱以搜尋"> -->
       </div>
       <!-- account & avatar -->
       <nav class="ml-auto" v-if="memberStore.isLogin">

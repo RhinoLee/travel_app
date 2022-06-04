@@ -1,6 +1,8 @@
 <script setup>
 import { storeToRefs } from 'pinia'
 import { useCommonStore } from "@/stores/common"
+import LitneraryIcon from "@/assets/images/svg/icon_litnerary.svg"
+import CollectIcon from "@/assets/images/svg/icon_collect.svg"
 
 const commonStore = useCommonStore()
 const { isMenuOpen } = storeToRefs(commonStore)
@@ -18,26 +20,24 @@ const { isMenuOpen } = storeToRefs(commonStore)
         <ul class="child:mt-[8px]">
           <li class="rounded-[10px] overflow-hidden hover:bg-travel-lightgreen">
             <router-link :to="{ name: 'MainSchedules' }" class="flex items-center py-[10px] px-[20px] text-sm">
-              <i class="block mr-[8px]">i</i>
-              <div>行程列表</div>
+              <div class="block mr-[8px] w-[24px]">
+                <img class="w-full h-auto" :src="LitneraryIcon">
+              </div>
+              <div>規劃行程</div>
             </router-link>
           </li>
-          <li class="rounded-[10px] overflow-hidden hover:bg-travel-lightgreen">
+          <!-- <li class="rounded-[10px] overflow-hidden hover:bg-travel-lightgreen">
             <router-link :to="{ name: 'AddMainSchedule' }" class="flex items-center py-[10px] px-[20px] text-sm">
-              <i class="block mr-[8px]">i</i>
-              <div>新增行程</div>
-            </router-link>
-          </li>
-          <li class="rounded-[10px] overflow-hidden hover:bg-travel-lightgreen">
-            <router-link :to="{ name: 'AddMainSchedule' }" class="flex items-center py-[10px] px-[20px] text-sm">
-              <i class="block mr-[8px]">i</i>
+              <div class="block mr-[8px] w-[24px]">
+                <img class="w-full h-auto" :src="CollectIcon">
+              </div>
               <div>收藏地點</div>
             </router-link>
-          </li>
+          </li> -->
         </ul>
       </div>
 
-      <div class="pt-[54px]">
+      <!-- <div class="pt-[54px]">
         <h3 class="mb-[10px] px-[15px] text-travel-textgreen text-xs">捷徑</h3>
         <ul class="child:mt-[8px]">
           <li class="rounded-[10px] overflow-hidden hover:bg-travel-lightgreen">
@@ -47,7 +47,7 @@ const { isMenuOpen } = storeToRefs(commonStore)
             </router-link>
           </li>
         </ul>
-      </div>
+      </div> -->
 
       <!-- sidebar-trigger -->
       <button @click="commonStore.toggleMenu" class="sidebar-trigger hidden md:block top-[140px] text-travel-darkgreen bg-travel-green">

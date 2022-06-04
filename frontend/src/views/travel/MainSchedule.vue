@@ -96,21 +96,21 @@ onBeforeUnmount(() => {
   <div v-if="mainScheduleInfo" class="flex relative">
     <div :class="{ 'left-0': isMenuOpen, '-left-[288px]': !isMenuOpen }"
       class="sidebar-menu-schedule lg:left-0 border-travel-textgreen w-[300px] lg:w-[400px] bg-white z-10">
-      <div class="relative w-full h-full pt-[37px] px-[40px] overflow-y-scroll no-scrollbar">
+      <div class="relative w-full h-full pt-[20px] px-[15px] lg:pt-[37px] lg:px-[40px] overflow-y-scroll no-scrollbar">
+        <!-- 搜尋匡 -->
         <SearchPlace @searchTextHandler="searchTextHandler"></SearchPlace>
-        <h2 class="mb-[8px] text-travel-textgreen text-[24px]">{{ mainScheduleInfo.title }}</h2>
+        <h2 class="mb-[8px] text-travel-textgreen text-[18px] lg:text-[24px]">{{ mainScheduleInfo.title }}</h2>
         <!-- 天數列表 -->
         <ScheduleDates v-model:selectDate="nowSelectDate"></ScheduleDates>
         <!-- 行程列表 -->
         <ScheduleList>
         </ScheduleList>
-
-        <!-- sidebar-trigger -->
-        <button @click="travelStore.toggleMenu"
-          class="sidebar-trigger lg:hidden top-[236px] text-travel-gold bg-travel-textgreen">
-          {{ isMenuOpen ? "收起行程" : "展開行程" }}
-        </button>
       </div>
+      <!-- sidebar-trigger -->
+      <button @click="travelStore.toggleMenu"
+        class="sidebar-trigger lg:hidden top-[236px] text-travel-gold bg-travel-textgreen">
+        {{ isMenuOpen ? "收起行程" : "展開行程" }}
+      </button>
     </div>
     <!-- 地點詳細資訊面板 -->
     <PlaceDetailPanel :placeDetail="placeInfoComputed" @addLocateToSchedule="addLocateToSchedule"

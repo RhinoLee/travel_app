@@ -6,6 +6,7 @@
   --travel-textgray: #232d23;
   --travel-textgreen: #145049;
   --travel-gold: #c79e74;
+  --travel-darkgold: #c79e74;
   --travel-lightgreen: #f0f1e9;
   --travel-green: #e7ebd5;
   --travel-darkgreen: #9b9f89;
@@ -43,7 +44,7 @@
   }
   /* 側邊欄開關 */
   .sidebar-trigger {
-    @apply absolute left-full w-[20px] h-[88px] text-[12px] tracking-normal rounded-tr-[10px] rounded-br-[10px]
+    @apply absolute left-full w-[20px] h-[88px] text-[12px] tracking-normal rounded-tr-[10px] rounded-br-[10px] z-20
   }
   /* 側邊欄樣式 */
   .sidebar-menu {
@@ -112,9 +113,4 @@
 /* map marker label text */
 .location-label {
   margin-bottom: 12px;
-}
-
-.jf-inactive * {
-  font-family: "jf-jinxuanlatte";
-  font-weight: 500;
 }

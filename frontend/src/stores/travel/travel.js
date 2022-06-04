@@ -264,43 +264,45 @@ export const useTravelStore = defineStore('travel', {
     },
     // 單一行程拖拉排序
     exchangeSchedule({ element, oldIndex, newIndex }) {
-      // const list = this.allSchedules.filter(schedule => schedule.date === element.date)[0].scheduleList
+      // element =  拖拉項目
+      // oldIndex =  拖拉項目原本位置
+      // newIndex =  拖拉項目更新後位置
 
-      // if (newIndex === list.length - 1) {
-      //   element.start_time = list[newIndex - 1].end_time
-      //   element.end_time = dateHandler.calcPlusTime(element.start_time, 60)
+      const list = this.allSchedules.filter(schedule => schedule.date === element.date)[0].scheduleList
 
-      //   return true
-      // }
+      // 如果 oldIndex & newIndex 只差 1 -> 直接對調，不跑迴圈
+      if (Math.abs(newIndex - oldIndex) === 1) {
+        const start_time = list[oldIndex].start_time
+        list[oldIndex].start_time = element.start_time
+        element.start_time = start_time
 
-      // if (newIndex === 0) {
-      //   list.forEach((schedule, idx) => {
-      //     if (idx === 0) {
-      //       element.start_time = list[1].start_time
-      //       // element.end_time = list[1].end_time
-      //     }
-      //     if (idx > 0) {
-      //       schedule.start_time = list[idx - 1].end_time
-      //       schedule.end_time = dateHandler.calcPlusTime(schedule.start_time, 60)
-      //     }
-      //   })
+        this.updateSingleScheduleGroup(element.date)
+        return
+      }
 
-      //   return true
-      // }
+      // 往下拖
+      if (newIndex - oldIndex > 0) {
+        const start_time = element.start_time
+        for(let i = newIndex; i > oldIndex; i--) {
+          list[i].start_time = list[i - 1].start_time
+        }
+        list[oldIndex].start_time = start_time
 
-      // list.forEach((schedule, idx) => {
-      //   if (idx === newIndex) {
-      //     element.start_time = list[idx - 1].end_time
-      //     element.end_time = dateHandler.calcPlusTime(element.start_time, 60)
-      //   }
-      //   if (idx > newIndex) {
-      //     schedule.start_time = list[newIndex].end_time
-      //     schedule.end_time = dateHandler.calcPlusTime(element.end_time, 60)
-      //   }
-      // })
+        this.updateSingleScheduleGroup(element.date)
+        return
+      }
 
-      // return true
+      // 往上拖
+      if (newIndex - oldIndex < 0) {
+        const start_time = element.start_time
+        for(let i = newIndex; i < oldIndex; i++) {
+          list[i].start_time = list[i + 1].start_time
+        }
+        list[oldIndex].start_time = start_time
 
+        this.updateSingleScheduleGroup(element.date)
+        return
+      }
     },
     closeAction() {
       this.isActionBoxOpenId = null
@@ -472,8 +474,8 @@ export const useTravelStore = defineStore('travel', {
       const promiseArr = []
 
       list.forEach(schedule => {
-        const { id, title, date, start_time, end_time, day_order } = schedule
-        const params = { id, title, date, start_time, end_time, day_order }
+        const { id, title, date, start_time, day_order } = schedule
+        const params = { id, title, date, start_time, day_order }
         promiseArr.push(this.$axios.api.apiUpdateSingleSchedule(params))
       })
 
@@ -481,6 +483,7 @@ export const useTravelStore = defineStore('travel', {
         const result = await Promise.all(promiseArr)
         if (result) {
           const getResult = await this.getMainSchedule()
+          await this.getDirections()
           return true
         }
       } catch (error) {
