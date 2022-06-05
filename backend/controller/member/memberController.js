@@ -5,6 +5,7 @@ const sendEmail = require("../../utils/sendEmail.js")
 const memberModel = require("../../model/member/memberModel")
 const uploadCloudImage = require("../../utils/uploadCloudImage")
 const deleteCloudImage = require("../../utils/deleteCloudImage")
+const deleteAllCloudImage = require("../../utils/deleteAllCloudImage")
 const responseHandler = require("../../utils/response")
 
 const memberController = {
@@ -217,6 +218,10 @@ const memberController = {
     const email = req.jwtData.email
 
     try {
+      // 刪除該 user 雲端上的資料
+      const deleteResult = await deleteAllCloudImage({ userId: member_id })
+      
+      // 刪除使用者
       const result = await memberModel.delete({ member_id, email })
 
       const json = {
