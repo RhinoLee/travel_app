@@ -128,6 +128,21 @@ const memberModel = {
       return err
     }
   },
+  delete: async ({ member_id, email }) => {
+    const query = {
+      text: `DELETE FROM member 
+              WHERE id = $1 AND email = $2
+            `,
+      values: [member_id, email]
+    }
+
+    try {
+      const result = await db.query(query)
+      return result
+    } catch (err) {
+      return err
+    }
+  },
 }
 
 module.exports = memberModel

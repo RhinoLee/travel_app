@@ -69,6 +69,7 @@ app.post("/api/member/verifyMember", jwtHandler.verifyAccessToken, memberControl
 app.post("/api/member/verifyEmail", verifyEmailRules, validateRequest.validates, memberController.verifyEmail)
 app.post("/api/member/resetPasswordEmail", verifyEmailRules, validateRequest.validates, memberController.resetPasswordEmail)
 app.post("/api/member/resetPassword", jwtHandler.verifyAccessToken, resetPasswordRules, validateRequest.validates, memberController.resetPassword)
+app.delete("/api/member/delete", jwtHandler.verifyAccessToken, memberController.delete)
 
 // Travel Schedule - main schedule
 app.get("/api/schedule/mainSchedules", jwtHandler.verifyAccessToken, mainScheduleController.getAllSchedules)

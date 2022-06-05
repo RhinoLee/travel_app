@@ -47,7 +47,7 @@ const memberController = {
     })
 
     bcrypt.compare(req.body.password, findMemberResult.rows[0].password, async (bcryptErr, bcryptRes) => {
-      if (bcryptErr) return responseHandler.catchErr(res, bcryptErr)
+      if (bcryptErr || !bcryptRes) return responseHandler.catchErr(res, bcryptErr)
 
       const jwtData = {
         id: findMemberResult.rows[0].id,
@@ -101,12 +101,12 @@ const memberController = {
 
       const memberResult = await memberModel.findMemberById(member_id)
       const originAvatar = memberResult.rows[0].avatar
-       // 如果前端有傳 avatar 或要刪除 avatar
+      // 如果前端有傳 avatar 或要刪除 avatar
       if (avatar || deleteAvatar === "true") {
         if (originAvatar) {
           const deleteResult = await deleteCloudImage({ userId: member_id, fileLink: originAvatar, category })
         }
-        
+
         if (deleteAvatar === "true") await memberModel.deleteAvatar(member_id)
         if (deleteAvatar === "false") imageUrl = await uploadCloudImage(avatar, member_id, category)
       }
@@ -207,6 +207,22 @@ const memberController = {
           return responseHandler.catchErr(res, error)
         }
       })
+
+    } catch (error) {
+      return responseHandler.catchErr(res, error)
+    }
+  },
+  delete: async (req, res) => {
+    const member_id = req.jwtData.id
+    const email = req.jwtData.email
+
+    try {
+      const result = await memberModel.delete({ member_id, email })
+
+      const json = {
+        success: true,
+      }
+      return res.status(200).json(json)
 
     } catch (error) {
       return responseHandler.catchErr(res, error)
