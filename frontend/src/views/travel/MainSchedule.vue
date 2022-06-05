@@ -100,7 +100,7 @@ onBeforeUnmount(() => {
   <div v-if="mainScheduleInfo" class="flex relative">
     <div :class="{ 'left-0': isMenuOpen, '-left-[288px]': !isMenuOpen }"
       class="sidebar-menu-schedule lg:left-0 border-travel-textgreen w-[300px] lg:w-[400px] bg-white z-10">
-      <div class="relative w-full h-full pt-[20px] px-[15px] lg:pt-[93px] lg:px-[40px] overflow-y-scroll no-scrollbar">
+      <div class="relative w-full h-full pt-[20px] px-[15px] lg:pt-[38px] lg:px-[40px] overflow-y-scroll no-scrollbar">
 
         <div class="mb-[48px]">
           <!-- 搜尋匡 -->
