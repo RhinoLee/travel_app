@@ -25,11 +25,10 @@ onBeforeUnmount(() => {
   window.removeEventListener("click", closeUserMenu)
 })
 
-
 </script>
 
 <template>
-  <div>
+  <div class="h-full">
     <Header v-if="isLogin"></Header>
     <RouterView />
     <Sidebar v-if="isLogin"></Sidebar>

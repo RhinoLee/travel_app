@@ -169,7 +169,7 @@ function setMarker({ location, placeId, icon, title, label, group, animation, sc
 }
 
 // 點位設定到地圖上
-function setMarkerToMap(map, group) {
+function setMarkerToMap(map, group = null) {
 
   if (group) {
     markerGroup[group].forEach(marker => {
@@ -187,7 +187,7 @@ function setMarkerToMap(map, group) {
   })
 }
 // 移除點位
-function removeAllMarkers(group) {
+function removeAllMarkers(group = null) {
   setMarkerToMap(null, group)
   if (group) return markerGroup[group] = []
 

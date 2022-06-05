@@ -25,7 +25,7 @@ function hideBox(e) {
 <template>
   <teleport to="body">
     <div v-if="isBoxOpen" @click="hideBox" id="lightboxMask" :class="{ 'hidden': !isBoxOpen }"
-      class="fixed inset-0 w-[100vw] h-[100vh] z-40 bg-black/50">
+      class="fixed inset-0 w-[100vw] h-full z-40 bg-black/50">
       <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] xs:w-[472px] lg:w-[572px] max-h-[620px] min-h-[220px] bg-white rounded-[5px] overflow-hidden">
         <div
           class="flex flex-col w-full h-full overflow-y-scroll no-scrollbar">

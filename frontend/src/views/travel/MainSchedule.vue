@@ -84,7 +84,6 @@ onMounted(async () => {
   // 先設定好新增行程的 main_schedule_id 參數
   travelStore.addScheDuleParams.main_schedule_id = route.params.mainScheduleId
   const getMainFirstDate = await travelStore.getMainSchedule()
-
 })
 
 onBeforeUnmount(() => {
@@ -95,12 +94,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div v-if="mainScheduleInfo" class="lg:flex relative mt-[54px] h-[calc(100vh-54px)]">
+  <div v-if="mainScheduleInfo" class="lg:flex relative pt-[54px] h-full">
     <!-- 左側行程面板 -->
     <div :class="{ 'left-0': isMenuOpen, '-left-[288px]': !isMenuOpen }"
-      class="sidebar-menu-schedule lg:left-0 border-travel-textgreen w-[300px] lg:w-[400px] bg-white z-10">
+      class="sidebar-menu-schedule lg:left-0">
       
-      <div class="relative w-full h-full pt-[20px] px-[15px] lg:pt-[38px] lg:px-[40px] overflow-y-scroll no-scrollbar">
+      <div class="relative w-full h-full pt-[20px] px-[15px] overflow-y-scroll no-scrollbar
+      lg:pt-[38px] lg:px-[40px]
+      ">
 
         <div class="mb-[48px]">
           <!-- 搜尋匡 -->

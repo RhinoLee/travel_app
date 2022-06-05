@@ -6,20 +6,22 @@
   --travel-textgray: #232d23;
   --travel-textgreen: #145049;
   --travel-gold: #c79e74;
-  --travel-blue: #1080BF;
+  --travel-blue: #1080bf;
   --travel-lightgreen: #f0f1e9;
   --travel-green: #e7ebd5;
   --travel-darkgreen: #9b9f89;
   --travel-gray: #969696;
-  --disabled: #B4B4B4;
-  --alert: #C55252;
+  --disabled: #b4b4b4;
+  --alert: #c55252;
 }
 
 @layer base {
   * {
     color: var(--travel-textgray);
   }
-  html, body {
+  html,
+  body {
+    height: 100%;
     font-weight: 400;
   }
   h2 {
@@ -36,69 +38,70 @@
   }
   /* 下拉選單箭頭 */
   .select-arrow {
-    @apply block absolute right-[15px] top-1/2 -translate-y-2/4 w-[12px] h-[12px] bg-select-arrow bg-contain bg-no-repeat pointer-events-none
+    @apply block absolute right-[15px] top-1/2 -translate-y-2/4 w-[12px] h-[12px] bg-select-arrow bg-contain bg-no-repeat pointer-events-none;
   }
   /* 手機版漢堡選單 */
   .burger-menu {
-    @apply relative w-full h-full border-y border-black after:content-[''] after:block after:absolute after:top-1/2 after:-translate-y-1/2 after:w-full after:h-[1px] after:bg-black
+    @apply relative w-full h-full border-y border-black after:content-[''] after:block after:absolute after:top-1/2 after:-translate-y-1/2 after:w-full after:h-[1px] after:bg-black;
   }
   /* 側邊欄開關 */
   .sidebar-trigger {
-    @apply absolute left-full w-[20px] h-[88px] text-[12px] tracking-normal rounded-tr-[10px] rounded-br-[10px] z-20
+    @apply absolute left-full w-[20px] h-[88px] text-[12px] tracking-normal rounded-tr-[10px] rounded-br-[10px] z-20;
   }
   /* 側邊欄樣式 */
   .sidebar-menu {
-    @apply fixed top-[54px] border-r-[2px] h-[calc(100vh-54px)] bg-white tracking-[1px] transition-all duration-700
+    @apply fixed top-[54px] border-r-[2px] h-[calc(100%-54px)] bg-white tracking-[1px] transition-all duration-700;
   }
   /* schedule 側邊欄樣式 */
   .sidebar-menu-schedule {
-    @apply fixed h-[calc(100vh-54px)] top-[54px] lg:relative lg:top-0 border-r-[2px] lg:h-full bg-white tracking-[1px] transition-all duration-700
+    @apply absolute top-[54px] border-r-[2px] w-[300px] h-[calc(100%-54px)] bg-white tracking-[1px] transition-all duration-700 border-travel-textgreen z-10
+    lg:relative lg:top-0 lg:w-[400px] lg:h-full;
   }
   /* scheduleItem 動作下拉選單 */
   .actionlist-item {
-    @apply flex items-center justify-center py-[8px] px-[14px] rounded-[5px] overflow-hidden cursor-pointer hover:bg-travel-lightgreen
+    @apply flex items-center justify-center py-[8px] px-[14px] rounded-[5px] overflow-hidden cursor-pointer hover:bg-travel-lightgreen;
   }
   /* lightbox 確認按鈕 */
   .lightbox-submit-btn {
-    @apply block px-[8px] py-[2px] text-[14px] text-white text-center rounded-[5px] tracking-[1px]
+    @apply block px-[8px] py-[2px] text-[14px] text-white text-center rounded-[5px] tracking-[1px];
   }
   /* hover blur 背景效果 */
   .blur-mask {
     @apply after:absolute after:left-0 after:top-0 after:w-full after:h-full after:bg-[rgba(255,255,255,0)] after:transition-all after:duration-700
-    hover:after:bg-[rgba(255,255,255,.4)]
+    hover:after:bg-[rgba(255,255,255,.4)];
   }
   /* 圓形 icon */
   .icon-circle {
-    @apply mx-[10px] w-[40px] h-[40px] rounded-full overflow-hidden pointer-events-none opacity-0 transition-opacity duration-700 hover:opacity-100
+    @apply mx-[10px] w-[40px] h-[40px] rounded-full overflow-hidden pointer-events-none opacity-0 transition-opacity duration-700 hover:opacity-100;
   }
   .icon-circle-small {
-    @apply mx-[10px] w-[30px] h-[30px] rounded-full overflow-hidden pointer-events-none opacity-0 transition-opacity duration-700 hover:opacity-100
+    @apply mx-[10px] w-[30px] h-[30px] rounded-full overflow-hidden pointer-events-none opacity-0 transition-opacity duration-700 hover:opacity-100;
   }
   /* login / register button */
   .member-form-btn {
-    @apply block mt-[38px] px-[54px] py-[10px] shadow-md rounded-[5px]  text-white tracking-[2px]
+    @apply block mt-[38px] px-[54px] py-[10px] shadow-md rounded-[5px]  text-white tracking-[2px];
   }
   /* landing page nav */
   .member-form-nav {
-    @apply px-[26px] py-[2px] text-[22px] lg:text-[30px] tracking-[2px]
+    @apply px-[26px] py-[2px] text-[22px] lg:text-[30px] tracking-[2px];
   }
   /* landing page nav text */
   .member-form-nav-text {
-    @apply pb-[4px] text-travel-gray
+    @apply pb-[4px] text-travel-gray;
   }
   /* landing page nav text active */
   .member-form-nav-text-active {
-    @apply pb-[4px] border-b-[2px] border-travel-gold text-travel-textgreen
+    @apply pb-[4px] border-b-[2px] border-travel-gold text-travel-textgreen;
   }
   .input {
-    @apply w-full px-2 py-2 border border-travel-gray outline-none tracking-[2px] text-[16px] rounded-[5px]
+    @apply w-full px-2 py-2 border border-travel-gray outline-none tracking-[2px] text-[16px] rounded-[5px];
   }
   .label {
-    @apply block py-1 text-travel-textgreen text-[16px] tracking-[1px]
+    @apply block py-1 text-travel-textgreen text-[16px] tracking-[1px];
   }
   /* member 相關表單 */
   .form {
-    @apply w-full h-full flex flex-col items-center child:py-[8px]
+    @apply w-full h-full flex flex-col items-center child:py-[8px];
   }
 }
 
@@ -113,4 +116,8 @@
 /* map marker label text */
 .location-label {
   margin-bottom: 12px;
+}
+
+body > #app {
+  height: 100%;
 }

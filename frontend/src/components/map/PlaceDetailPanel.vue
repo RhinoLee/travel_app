@@ -39,14 +39,14 @@ function triggerPanel(isOpen) {
 </script>
 
 <template>
-  <div v-if="placeDetail" :class="{ hidden: !isPanelOpen }" class="w-[300px] md:w-[358px] h-[calc(94vh-54px)]
+  <div v-if="placeDetail" :class="{ hidden: !isPanelOpen }" class="w-[300px] md:w-[358px] h-[calc(94%-54px)]
       absolute left-1/2 md:left-[320px] top-[50%] -translate-y-[calc(50%-27px)] -translate-x-[50%] md:-translate-x-0 py-[14px] px-[20px] 
       bg-white/80 backdrop-blur-[4px] z-10 shadow-lg rounded-[10px] descendant:tracking-[1px]
       lg:left-[408px] overflow-y-scroll no-scrollbar
     ">
 
     <!-- 按鈕區 -->
-    <div class="fixed top-0 left-0 flex items-center border-t border-travel-green px-[20px] w-full h-[64px] z-10  bg-travel-lightgreen rounded-tr-[10px] rounded-tl-[10px] overflow-hidden">
+    <div class="absolute top-0 left-0 flex items-center border-t border-travel-green px-[20px] w-full h-[64px] z-10  bg-travel-lightgreen rounded-tr-[10px] rounded-tl-[10px] overflow-hidden">
       <!-- close btn -->
       <div class="flex items-center mr-auto">
         <button @click.stop="triggerPanel(false)" class="w-[20px] h-[20px]" type="button">
