@@ -95,11 +95,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- 左側行程面板 -->
-  <!-- @mouseenter="travelStore.isMenuOpen = true" -->
-  <div v-if="mainScheduleInfo" class="flex relative">
+  <div v-if="mainScheduleInfo" class="lg:flex relative mt-[54px] h-[calc(100vh-54px)]">
+    <!-- 左側行程面板 -->
     <div :class="{ 'left-0': isMenuOpen, '-left-[288px]': !isMenuOpen }"
       class="sidebar-menu-schedule lg:left-0 border-travel-textgreen w-[300px] lg:w-[400px] bg-white z-10">
+      
       <div class="relative w-full h-full pt-[20px] px-[15px] lg:pt-[38px] lg:px-[40px] overflow-y-scroll no-scrollbar">
 
         <div class="mb-[48px]">
@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
       @addPlaceCollection="addPlaceCollection" @removePlaceCollection="removePlaceCollection" @closePanel="closePanel">
     </PlaceDetailPanel>
     <!-- 地圖 -->
-    <div class="mt-[54px] w-screen lg:w-[calc(100vw-400px)] h-[calc(100vh-54px)]">
+    <div class="w-screen h-full lg:w-[calc(100vw-400px)]">
       <Map :scheduleList="nowDateScheduleList" :locationSearchList="locationSearchList" :placeDetail="placeInfoComputed"
         :directions="directions" :placeCollectionsList="placeCollectionsList" @closePanel="closePanel"></Map>
     </div>

@@ -52,7 +52,7 @@
   }
   /* schedule 側邊欄樣式 */
   .sidebar-menu-schedule {
-    @apply fixed top-[54px] lg:relative border-r-[2px] h-[calc(100vh-54px)] bg-white tracking-[1px] transition-all duration-700
+    @apply fixed h-[calc(100vh-54px)] top-[54px] lg:relative lg:top-0 border-r-[2px] lg:h-full bg-white tracking-[1px] transition-all duration-700
   }
   /* scheduleItem 動作下拉選單 */
   .actionlist-item {

@@ -67,12 +67,6 @@ function triggerPanel(isOpen) {
     </div>
 
     <div class="flex flex-col pt-[64px] h-full overflow-y-scroll no-scrollbar">
-      <!-- <div class="flex items-center mb-[5px]">
-        <button @click.stop="triggerPanel(false)" class="w-[20px] h-[20px]" type="button">
-          <img class="w-full h-full object-cover object-center" :src="cancelIcon" alt="刪除">
-        </button>
-        <p class="ml-[20px] text-travel-textgreen text-[20px] md:text-[24px] tracking-[1px]">{{ placeDetail.name }}</p>
-      </div> -->
 
       <!-- 景點名稱 -->
       <div class="mb-[5px]">
