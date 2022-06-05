@@ -30,6 +30,7 @@ watch(
     travelStore.placeDetail = null
     // 重新取得路線
     travelStore.clearDirections()
+    travelStore.universalUrl = ""
     await travelStore.getDirections()
     if (newVal) return router.push({ name: "MainSchedule", params: { date: newVal } })
   }
@@ -42,6 +43,8 @@ function closePanel() {
 
 async function searchTextHandler(searchText) {
   const res = await travelStore.placeSearch(searchText)
+  // 關閉手機版行程面板
+  travelStore.isMenuOpen = false
 }
 
 function updateTime(args) {
@@ -122,7 +125,7 @@ onBeforeUnmount(() => {
       </div>
       <!-- sidebar-trigger -->
       <button @click="travelStore.toggleMenu"
-        class="sidebar-trigger lg:hidden top-[236px] text-travel-gold bg-travel-textgreen">
+        class="sidebar-trigger lg:hidden top-[50%] -translate-y-1/2 text-travel-gold bg-travel-textgreen">
         {{ isMenuOpen ? "收起行程" : "展開行程" }}
       </button>
     </div>
@@ -131,7 +134,7 @@ onBeforeUnmount(() => {
       @addPlaceCollection="addPlaceCollection" @removePlaceCollection="removePlaceCollection" @closePanel="closePanel">
     </PlaceDetailPanel>
     <!-- 地圖 -->
-    <div class="w-screen lg:w-[calc(100vw-400px)] h-[calc(100vh)]">
+    <div class="mt-[54px] w-screen lg:w-[calc(100vw-400px)] h-[calc(100vh-54px)]">
       <Map :scheduleList="nowDateScheduleList" :locationSearchList="locationSearchList" :placeDetail="placeInfoComputed"
         :directions="directions" :placeCollectionsList="placeCollectionsList" @closePanel="closePanel"></Map>
     </div>

@@ -117,16 +117,16 @@ export const useTravelStore = defineStore('travel', {
     // 收藏地點列表（去除跟計劃點位重複的地點）
     placeCollectionsList(state) {
       if (!state.nowDateScheduleList[0]) return []
-      const nowSelectScheduleList = state.nowDateScheduleList[0].scheduleList
-      if (nowSelectScheduleList.length === 0) return state.placeCollections
+      // const nowSelectScheduleList = state.nowDateScheduleList[0].scheduleList
+      // if (nowSelectScheduleList.length === 0) return state.placeCollections
 
-      let placeCollections = JSON.parse(JSON.stringify(state.placeCollections))
-      nowSelectScheduleList.forEach(item => {
-        const removeIdx = placeCollections.findIndex(place => place.place_id === item.place_id)
-        if (removeIdx >= 0) placeCollections.splice(removeIdx, 1)
-      })
+      // let placeCollections = JSON.parse(JSON.stringify(state.placeCollections))
+      // nowSelectScheduleList.forEach(item => {
+      //   const removeIdx = placeCollections.findIndex(place => place.place_id === item.place_id)
+      //   if (removeIdx >= 0) placeCollections.splice(removeIdx, 1)
+      // })
 
-      return placeCollections
+      // return placeCollections
     },
     // 被選到的單一計畫資訊
     nowSchedule(state) {
@@ -537,11 +537,17 @@ export const useTravelStore = defineStore('travel', {
     // 路徑 API
     async getDirections() {
       // this.clearDirections()
-      if (!this.nowDateScheduleList[0] || this.nowDateScheduleList[0].scheduleList.length === 1) return
+      if (!this.nowDateScheduleList[0]) return
       const { scheduleList } = this.nowDateScheduleList[0]
       // 起點行程
       const origin = scheduleList[0].place_id
       const originName = scheduleList[0].place_name
+
+      // 只以一個點，不走 server
+      if (this.nowDateScheduleList[0].scheduleList.length === 1) {
+        return this.universalUrlHandler({ origin, originName })
+      }
+
       // 終點行程
       const destination = scheduleList[scheduleList.length - 1].place_id
       const destinationName = scheduleList[scheduleList.length - 1].place_name
@@ -630,12 +636,18 @@ export const useTravelStore = defineStore('travel', {
       }
     },
     universalUrlHandler({ origin, originName, destination, destinationName, waypoints, waypointsNames }) {
+      let url = ""
+      let waypointStr = ""
+      let waypointsNameStr = ""
 
-      let waypointStr = waypoints.join("|")
-      let waypointsNameStr = waypointsNames.join("|")
-
-      const url = `https://www.google.com/maps/dir/?api=1&origin=${originName}&origin_place_id=${origin}&destination=${destinationName}&destination_place_id=${destination}&waypoints=${waypointsNameStr}&waypoint_place_ids=${waypointStr}`
-
+      if (waypoints) {
+        waypointStr = waypoints.join("|")
+        waypointsNameStr = waypointsNames.join("|")
+        url = `https://www.google.com/maps/dir/?api=1&origin=${originName}&origin_place_id=${origin}&destination=${destinationName}&destination_place_id=${destination}&waypoints=${waypointsNameStr}&waypoint_place_ids=${waypointStr}`
+      } else {
+        url = `https://www.google.com/maps/dir/?api=1&origin=${originName}&origin_place_id=${origin}`
+      }
+      
       const encoded = encodeURI(url);
       // console.log("url", url);
       // console.log("encoded", encoded);

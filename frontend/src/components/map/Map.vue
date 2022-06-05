@@ -73,7 +73,7 @@ watch(
   () => props.placeCollectionsList,
   (newObj) => {
     if (!newObj) return
-    renderPlaceCollections()
+    // renderPlaceCollections()
   }
 )
 
