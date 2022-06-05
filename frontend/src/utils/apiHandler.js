@@ -168,6 +168,14 @@ export default {
           const instance = $axios.instances.memberRequest()
           return instance.post("/refreshToken", { refreshToken })
         },
+        apiDeleteMember: () => {
+          const instance = $axios.instances.memberRequest()
+          return instance.delete(`/delete`, {
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+          })
+        },
         apiCreateMainSchedule: (params) => {
           const instance = $axios.instances.scheduleRequest()
           return instance.post("/mainSchedule", params, {

@@ -1,5 +1,5 @@
 import { reactive } from "vue"
-import { isEmpty, isEmail, isRepeatCorrect, isImageFormat, isSizeUnderLimit } from "@/utils/inputValidation"
+import { isEmpty, isEmail, isRepeatCorrect, isImageFormat, isSizeUnderLimit, isAccountCorrect } from "@/utils/inputValidation"
 
 const errors = reactive({})
 
@@ -26,6 +26,10 @@ export default function useInputValidator() {
     errors[inputKey] = isEmpty(inputName, value)
   }
 
+  const validateDeleteAccount = ({ inputName, inputKey, value }, account) => {
+    errors[inputKey] = isAccountCorrect(inputName, value, account)
+  }
+
   const validateSingeImageInput = ({ inputName, inputKey, value }) => {
     if (isEmpty(inputName, value)) return errors[inputKey] = isEmpty(inputName, value)
     if (isImageFormat(inputName, value)) return errors[inputKey] = isImageFormat(inputName, value)
@@ -34,5 +38,5 @@ export default function useInputValidator() {
     errors[inputKey] = ""
   }
 
-  return { errors, validateInit, validateAccountInput, validatePasswordInput, validateRequiredInput, validatePasswordIRepeatnput, validateSingeImageInput }
+  return { errors, validateInit, validateAccountInput, validatePasswordInput, validateRequiredInput, validatePasswordIRepeatnput, validateSingeImageInput, validateDeleteAccount }
 }

@@ -11,6 +11,10 @@ const isRepeatCorrect = (inputName, inputVal, originVal) => {
   return inputVal !== originVal ? `${inputName}與密碼不符` : "";
 }
 
+const isAccountCorrect = (inputName, inputVal, originVal) => {
+  return inputVal !== originVal ? `${inputName}錯誤` : "";
+}
+
 const isImageFormat = (inputName, inputVal) => {
   const format = /\/(jpg|jpeg|png)$/
   if (!inputVal.type.match(/\/(jpg|jpeg|png)$/)) return `${inputName}格式須為 jpg, jpeg, png`
@@ -22,4 +26,4 @@ const isSizeUnderLimit = (inputName, inputVal, size = 5) => {
   return inputVal.size > limit ? `${inputName}須小於 5 MB` : "";
 }
 
-export { isEmpty, isEmail, isRepeatCorrect, isImageFormat, isSizeUnderLimit }
+export { isEmpty, isEmail, isRepeatCorrect, isImageFormat, isSizeUnderLimit, isAccountCorrect }

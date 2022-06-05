@@ -1,18 +1,23 @@
 <script setup>
-import { reactive, computed } from "vue"
+import { computed, ref, onBeforeUnmount } from "vue"
+import { useRouter } from "vue-router"
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member"
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
 import InputAvatar from "@/components/form/input/InputAvatar.vue"
 import LandingPage from "@/components/member/LandingPage.vue"
+import LightBox from "@/components/common/LightBox.vue"
+import DeleteAccountForm from "@/components/form/DeleteAccountForm.vue"
 
+const router = useRouter()
 const memberStore = useMemberStore()
-const { memberInfo } = storeToRefs(memberStore)
-
+const { memberInfo, isDeleteAccountBoxOpen } = storeToRefs(memberStore)
 const { errors } = useInputValidator()
 const canBeEmptyKeys = ["deleteAvatar", "avatarFile"]
 const { isSubmitBtnDisabled } = useSubmitBtnState(memberStore.editMemberParams, errors, canBeEmptyKeys)
+const verifyMsg = ref("")
+let redirectTimeout = null
 
 const disabledComputed = computed(() => {
   return memberStore.editMemberParams.avatarFile === null && !memberStore.editMemberParams.deleteAvatar
@@ -21,6 +26,38 @@ const disabledComputed = computed(() => {
 async function uploadAvatar() {
   await memberStore.updateAvatar()
 }
+
+async function deleteHandler() {
+  try {
+    const result = await memberStore.deleteAccountHandler()
+
+    if (result.success) {
+      verifyMsg.value = "帳號刪除成功"
+      memberStore.logoutHandler()
+    }
+    else verifyMsg.value = "帳號刪除失敗，請稍後再嘗試"
+
+    memberStore.isDeleteResultBoxOpen = true
+
+    redirectTimeout = setTimeout(() => {
+      hideBox('isDeleteResultBoxOpen')
+      router.push({ name: "Login" })
+    }, 3000)
+
+
+  } catch (err) {
+    verifyMsg.value = "帳號刪除失敗，請稍後再嘗試"
+    memberStore.isDeleteResultBoxOpen = true
+  }
+}
+
+function hideBox(boxname) {
+  memberStore[boxname] = false
+}
+
+onBeforeUnmount(() => {
+  clearTimeout(redirectTimeout)
+})
 
 </script>
 <template>
@@ -41,39 +78,24 @@ async function uploadAvatar() {
           <li><span>帳號：</span><span>{{ memberInfo.email }}</span></li>
         </ul>
       </main>
-      <footer>
+      <footer class="flex justify-center mt-[62px]">
         <button :disabled="isSubmitBtnDisabled || disabledComputed" @click="uploadAvatar"
           :class="{ 'bg-disabled': isSubmitBtnDisabled || disabledComputed, 'bg-travel-textgreen': !isSubmitBtnDisabled && !disabledComputed }"
-          class="lightbox-submit-btn mt-[62px]">儲存</button>
+          class="lightbox-submit-btn mx-[10px]">儲存</button>
+
+        <button @click="memberStore.isDeleteAccountBoxOpen = true"
+          class="lightbox-submit-btn mx-[10px] bg-alert">刪除帳號</button>
       </footer>
     </template>
   </LandingPage>
 
+  <!-- 刪除帳號 -->
+  <DeleteAccountForm @deleteHandler="deleteHandler"></DeleteAccountForm>
 
-  <!-- <div>
-    <div class="relative w-screen h-screen">
-      <div
-        class="absolute flex flex-col w-[500px] h-[400px] px-10 py-8 left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 shadow-2xl bg-white">
-        <header class="mb-[20px]">
-          <h1 class="font-bold text-lg">用戶資訊</h1>
-        </header>
-        <main class="h-full">
-          <div class="flex justify-center mb-[40px] mt-[10px]">
-            <InputAvatar v-model:avatar="memberStore.editMemberParams.avatarFile"
-              v-model:deleteAvatar="memberStore.editMemberParams.deleteAvatar"
-              :avatarUrl="memberStore.memberInfo.avatar">
-            </InputAvatar>
-          </div>
-          <ul>
-            <li><span>帳號：</span><span>{{ memberInfo.email }}</span></li>
-          </ul>
-        </main>
-        <footer>
-          <button :disabled="isSubmitBtnDisabled || disabledComputed" @click="uploadAvatar"
-            :class="{ 'bg-disabled': isSubmitBtnDisabled || disabledComputed, 'bg-travel-textgreen': !isSubmitBtnDisabled && !disabledComputed }"
-            class="lightbox-submit-btn">儲存</button>
-        </footer>
-      </div>
-    </div>
-  </div> -->
+  <LightBox v-model:isBoxOpen="memberStore.isDeleteResultBoxOpen">
+    <template v-slot:title>刪除帳號通知</template>
+    <template v-slot:main>
+      <div>{{ verifyMsg }}</div>
+    </template>
+  </LightBox>
 </template>

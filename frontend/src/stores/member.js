@@ -29,6 +29,9 @@ export const useMemberStore = defineStore("member", {
         avatarFile: null,
         deleteAvatar: false
       },
+      deleteMember: {
+        deleteEmail: "",
+      },
       memberInfo: {
         id: null,
         email: "",
@@ -43,6 +46,8 @@ export const useMemberStore = defineStore("member", {
       isVerifyResultBoxOpen: false,
       isRegisterResultBoxOpen: false,
       isResetPasswordResultBoxOpen: false,
+      isDeleteAccountBoxOpen: false,
+      isDeleteResultBoxOpen: false,
     }
   },
   getters: {
@@ -117,7 +122,7 @@ export const useMemberStore = defineStore("member", {
     async updateAvatar() {
       const formData = new FormData()
       formData.append("deleteAvatar", this.editMemberParams.deleteAvatar)
-      formData.append("avatar",  this.editMemberParams.avatarFile)
+      formData.append("avatar", this.editMemberParams.avatarFile)
 
       const result = await this.$axios.api.apiUpdateAvatar(formData)
       if (result.data.success) {
@@ -168,11 +173,20 @@ export const useMemberStore = defineStore("member", {
         return error.response.data
       }
     },
-    async resetPasswordandler(token) {
+    async resetPasswordHandler(token) {
       if (!token) return
       try {
         const params = this.resetPasswordParams
         const result = await this.$axios.api.apiResetPassword(token, params)
+        return result.data
+      } catch (error) {
+        return error.response.data
+      }
+    },
+    async deleteAccountHandler() {
+      try {
+        const params = this.resetPasswordParams
+        const result = await this.$axios.api.apiDeleteMember()
         return result.data
       } catch (error) {
         return error.response.data

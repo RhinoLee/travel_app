@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue"
 import { useMemberStore } from "@/stores/member"
 import { storeToRefs } from 'pinia'
 import { useRouter } from "vue-router"
+import useInputValidator from "@/composition-api/useInputValidator"
 import LoginForm from "@/components/form/LoginForm.vue";
 import LightBox from "@/components/common/LightBox.vue"
 import LandingPage from "@/components/member/LandingPage.vue"
@@ -13,11 +14,13 @@ const memberStore = useMemberStore()
 const { isNotVerifyBoxOpen, isVerifyResultBoxOpen } = storeToRefs(memberStore)
 const verifyMsg = ref("")
 const errorMsg = ref("")
+const { validateInit } = useInputValidator()
 
 async function submitHandler(formParams) {
   memberStore.loginParams = formParams
 
   const result = await memberStore.loginHandler()
+  validateInit()
   if (result.success) return router.push({ name: "MainSchedules" })
 
   // 登入失敗，信箱未驗證 -> lightbox 請 user 驗證
