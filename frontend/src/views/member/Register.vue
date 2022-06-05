@@ -20,7 +20,7 @@ async function submitHandler(formParams) {
 
   validateInit()
 
-  if (result.success) verifyMsg.value = "驗證信寄送成功，請至信箱收信，謝謝"
+  if (result.success) verifyMsg.value = "驗證信寄送成功，請至信箱收信（或垃圾信箱），謝謝"
   else verifyMsg.value = "註冊流程出現錯誤，請稍後再嘗試，謝謝"
 
   memberStore.isRegisterResultBoxOpen = true

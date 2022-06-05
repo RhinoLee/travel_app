@@ -16,7 +16,7 @@ async function sendVerifyEmail() {
   const result = await memberStore.resetPasswordEmail(memberStore.forgotPasswordParams.email)
   memberStore.forgotPasswordParams.email = ""
 
-  if (result.success) verifyMsg.value = "驗證信寄送成功，請至信箱收信，謝謝"
+  if (result.success) verifyMsg.value = "驗證信寄送成功，請至信箱收信（或垃圾信箱），謝謝"
   else verifyMsg.value = "驗證信寄送失敗，請稍後再嘗試，謝謝"
 
   memberStore.isVerifyResultBoxOpen = true
