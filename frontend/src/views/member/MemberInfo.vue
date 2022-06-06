@@ -1,14 +1,8 @@
 <script setup>
-import { computed, ref, onBeforeUnmount } from "vue"
-import { useRouter } from "vue-router"
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member"
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
-import InputAvatar from "@/components/form/input/InputAvatar.vue"
-import LandingPage from "@/components/member/LandingPage.vue"
-import LightBox from "@/components/common/LightBox.vue"
-import DeleteAccountForm from "@/components/form/DeleteAccountForm.vue"
 
 const router = useRouter()
 const memberStore = useMemberStore()

@@ -1,11 +1,6 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue"
 import { useMemberStore } from "@/stores/member"
-import { useRouter } from "vue-router"
 import useInputValidator from "@/composition-api/useInputValidator"
-import RegisterForm from "@/components/form/RegisterForm.vue";
-import LandingPage from "@/components/member/LandingPage.vue"
-import LightBox from "@/components/common/LightBox.vue"
 
 const router = useRouter()
 const memberStore = useMemberStore()

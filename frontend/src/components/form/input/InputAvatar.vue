@@ -1,6 +1,4 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted, onBeforeUnmount } from "vue"
-import DefaultAvatar from "@/components/common/DefaultAvatar.vue"
 import robot from "@/assets/images/png/robot.png"
 import useInputValidator from "@/composition-api/useInputValidator"
 import iconUploadImg from "@/assets/images/svg/icon_uploadimg.svg"

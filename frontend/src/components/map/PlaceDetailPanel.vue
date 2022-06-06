@@ -1,5 +1,4 @@
 <script setup>
-import { ref, watch } from "vue"
 import cancelIcon from "@/assets/images/svg/icon_cancel_gray.svg"
 import LitneraryIcon from "@/assets/images/svg/icon_litnerary.svg"
 

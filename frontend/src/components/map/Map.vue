@@ -1,5 +1,4 @@
 <script setup>
-import { onMounted, onUnmounted, reactive, watch } from "vue";
 import { useTravelStore } from "@/stores/travel/travel"
 import iconCollect from "@/assets/images/map/collect.svg"
 import iconLocation from "@/assets/images/map/location.svg"

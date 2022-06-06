@@ -1,17 +1,6 @@
 <script setup>
-import { onMounted, onBeforeUnmount, watch } from "vue";
-import { useRoute, useRouter } from "vue-router"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from 'pinia'
-import Map from "@/components/map/Map.vue"
-import SearchPlace from "@/components/map/SearchPlace.vue"
-import PlaceDetailPanel from "@/components/map/PlaceDetailPanel.vue"
-import ScheduleList from "@/components/travel/ScheduleList.vue"
-import ScheduleDates from "@/components/travel/ScheduleDates.vue"
-import LightBox from "@/components/common/LightBox.vue"
-import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
-import EditScheduleForm from "@/components/form/EditScheduleForm.vue";
-import AddScheduleForm from "@/components/form/AddScheduleForm.vue";
 import MotorIcon from "@/assets/images/svg/icon_motor.svg"
 
 const travelStore = useTravelStore()

@@ -1,7 +1,4 @@
 <script setup>
-import { ref, watch } from "vue"
-import CloseBtn from "@/components/common/CloseBtn.vue"
-
 const props = defineProps({
   isBoxOpen: {
     type: Boolean,

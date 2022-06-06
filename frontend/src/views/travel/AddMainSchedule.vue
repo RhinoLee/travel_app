@@ -1,7 +1,5 @@
 <script setup>
-import { useRouter } from "vue-router"
 import { storeToRefs } from 'pinia'
-import DatePickerWrap from "@/components/common/DatePickerWrap.vue"
 import { useTravelStore } from "@/stores/travel/travel"
 
 const router = useRouter()

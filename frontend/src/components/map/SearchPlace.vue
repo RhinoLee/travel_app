@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from "vue"
 import litneraryIcon from "@/assets/images/svg/icon_litnerary.svg"
 import cancelIcon from "@/assets/images/svg/icon_cancel_gray.svg"
 // import { useTravelStore } from "@/stores/travel/travel"

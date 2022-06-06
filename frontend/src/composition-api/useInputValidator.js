@@ -1,4 +1,3 @@
-import { reactive } from "vue"
 import { isEmpty, isEmail, isRepeatCorrect, isImageFormat, isSizeUnderLimit, isAccountCorrect } from "@/utils/inputValidation"
 
 const errors = reactive({})

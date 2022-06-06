@@ -1,8 +1,6 @@
 <script setup>
-import { onMounted, onBeforeUnmount, ref } from "vue"
 import { useRoute, useRouter } from 'vue-router';
 import { useMemberStore } from "@/stores/member"
-import LandingPage from "@/components/member/LandingPage.vue"
 
 const router = useRouter()
 const memberStore = useMemberStore()

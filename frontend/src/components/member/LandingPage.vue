@@ -1,5 +1,4 @@
 <script setup>
-import MemberBanner from "@/components/common/MemberBanner.vue"
 import LogoIcon from "@/assets/images/svg/icon_login_biglogo.svg"
 
 const props = defineProps({

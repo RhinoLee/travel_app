@@ -1,8 +1,6 @@
 <script setup>
-import { computed, ref, watch } from "vue"
 import { storeToRefs } from 'pinia'
 import { useTravelStore } from "@/stores/travel/travel"
-import DefaultImage from "@/components/common/DefaultImage.vue"
 import iconAction from "@/assets/images/svg/icon_action.svg"
 import iconDelete from "@/assets/images/svg/icon_delete.svg"
 import iconUpload from "@/assets/images/svg/icon_upload.svg"
