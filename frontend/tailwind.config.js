@@ -22,6 +22,7 @@ module.exports = {
         "travel-gray": "var(--travel-gray)",
         "disabled": "var(--disabled)",
         "alert": "var(--alert)",
+        "black-rgba": "var(--black-rgba)",
       },
       backgroundImage: {
         "select-arrow": "url('@/assets/images/svg/icon_select.svg')",

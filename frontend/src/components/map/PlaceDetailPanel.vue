@@ -1,6 +1,11 @@
 <script setup>
+import { storeToRefs } from 'pinia'
+import { useTravelStore } from "@/stores/travel/travel"
 import cancelIcon from "@/assets/images/svg/icon_cancel_gray.svg"
 import LitneraryIcon from "@/assets/images/svg/icon_litnerary.svg"
+
+const travelStore = useTravelStore()
+const { isMenuOpen } = storeToRefs(travelStore)
 
 const props = defineProps({
   placeDetail: {
@@ -38,10 +43,12 @@ function triggerPanel(isOpen) {
 </script>
 
 <template>
-  <div v-if="placeDetail" :class="{ hidden: !isPanelOpen }" class="w-[300px] md:w-[358px] h-[calc(94%-54px)]
-      absolute left-1/2 md:left-[320px] top-[50%] -translate-y-[calc(50%-27px)] -translate-x-[50%] md:-translate-x-0 py-[14px] px-[20px] 
+  <div v-if="placeDetail" 
+      :class="{ hidden: !isPanelOpen, 'xs:left-[330px]': isMenuOpen, 'xs:left-[40px]': !isMenuOpen }" 
+      class="w-[280px] left-[30px] md:w-[320px] h-[calc(94%-54px)]
+      absolute top-[50%] -translate-y-[calc(50%-27px)] md:-translate-x-0 py-[14px] px-[20px] 
       bg-white/80 backdrop-blur-[4px] z-10 shadow-lg rounded-[10px] descendant:tracking-[1px]
-      lg:left-[408px] overflow-y-scroll no-scrollbar
+      lg:left-[408px] overflow-y-scroll no-scrollbar xs:transition-all xs:duration-700
     ">
 
     <!-- 按鈕區 -->
