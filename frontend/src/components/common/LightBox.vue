@@ -44,7 +44,7 @@ function hideBox(e) {
 
           <slot name="banner"></slot>
 
-          <main class="px-10 py-4">
+          <main class="px-[20px] xs:px-10 py-4">
             <slot name="main"></slot>
           </main>
           <footer class="mt-auto ml-auto mb-[30px] mr-[40px]">
