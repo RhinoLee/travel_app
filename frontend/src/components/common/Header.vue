@@ -1,13 +1,9 @@
 <script setup>
-import { ref } from "vue"
 import { storeToRefs } from 'pinia'
 import { useMemberStore } from "@/stores/member"
 import { useCommonStore } from "@/stores/common"
-import DefaultAvatar from "@/components/common/DefaultAvatar.vue"
 import logoIcon from "@/assets/images/svg/logo.svg"
 import searchIcon from "@/assets/images/svg/icon_search.svg"
-import LightBox from "@/components/common/LightBox.vue"
-import { useRouter } from "vue-router"
 
 const router = useRouter()
 const memberStore = useMemberStore()

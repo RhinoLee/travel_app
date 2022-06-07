@@ -1,5 +1,6 @@
 import { fileURLToPath, URL } from 'url'
-
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
 import { defineConfig, loadEnv, mode } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { createHtmlPlugin } from 'vite-plugin-html'
@@ -18,6 +19,14 @@ export default defineConfig({
           `,
         }
       }
+    }),
+    AutoImport({
+      imports: ['vue', 'vue-router'],
+    }),
+    Components({
+      dirs: ['src/components'],
+      extensions: ['vue'],
+      deep: true,
     })
   ],
   server: {

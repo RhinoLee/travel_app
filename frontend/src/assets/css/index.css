@@ -13,6 +13,7 @@
   --travel-gray: #969696;
   --disabled: #b4b4b4;
   --alert: #c55252;
+  --black-rgba: rgba(20, 80, 73, 0.3);
 }
 
 @layer base {

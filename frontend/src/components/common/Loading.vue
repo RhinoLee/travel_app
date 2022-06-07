@@ -1,5 +1,4 @@
 <script setup>
-import { ref, reactive } from "vue"
 // import loadingGIF from "@/assets/images/svg/loading.svg"
 import loadingGIF from "@/assets/images/gif/icon_login_whitelogobg.gif"
 import { useCommonStore } from "@/stores/common"

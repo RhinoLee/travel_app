@@ -2,7 +2,6 @@
 import { dateHandler } from "@/utils/dateTransform"
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { ref, onMounted, watch, computed } from "vue"
 import { storeToRefs } from 'pinia'
 import useInputValidator from "@/composition-api/useInputValidator"
 
@@ -196,7 +195,7 @@ const disabledDates = computed(() => {
   const startDate = selectDate.value[0]
   const dates = []
 
-  for (let day = 1; day < props.durationDays - 1; day++) {
+  for (let day = 1; day <= props.durationDays - 1; day++) {
     let date = new Date(startDate)
     date.setDate(startDate.getDate() + day)
     dates.push(date)

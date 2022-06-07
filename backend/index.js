@@ -36,6 +36,8 @@ const placeCollectionController = require("./controller/placeCollectionControlle
 
 const corsOptions = {
   origin: process.env.CLIENT_ORIGIN,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  allowedHeaders: ['Content-Type', 'Origin', 'Authorization'],
 }
 
 app.use(cors(corsOptions))

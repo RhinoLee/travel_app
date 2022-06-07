@@ -2,10 +2,6 @@
 import { storeToRefs } from 'pinia'
 import { useTravelStore } from "@/stores/travel/travel"
 import { onMounted, onBeforeUnmount } from '@vue/runtime-core'
-import ScheduleItem from "@/components/travel/ScheduleItem.vue"
-import AddMainScheduleForm from "@/components/form/AddMainScheduleForm.vue"
-import EditMainScheduleForm from "@/components/form/EditMainScheduleForm.vue"
-import LightBox from "@/components/common/LightBox.vue"
 
 const travelStore = useTravelStore()
 const { mainScheduleList } = storeToRefs(travelStore)

@@ -1,9 +1,6 @@
 <script setup>
-import { ref } from "vue"
 import { useTravelStore } from "@/stores/travel/travel"
 import { storeToRefs } from "pinia";
-import DatePickerWrap from "@/components/common/DatePickerWrap.vue";
-import TrafficTime from "@/components/travel/TrafficTime.vue"
 import draggable from 'vuedraggable'
 import dragIcon from "@/assets/images/svg/icon_drag.svg"
 import editIcon from "@/assets/images/svg/icon_edit.svg"

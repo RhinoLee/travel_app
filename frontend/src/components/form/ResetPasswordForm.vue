@@ -1,11 +1,8 @@
 <script setup>
-import { ref, reactive, unref } from "vue"
 import { useMemberStore } from "@/stores/member"
 import { storeToRefs } from 'pinia'
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
-import InputPassword from "@/components/form/input/InputPassword.vue";
-import InputPasswordRepeat from "@/components/form/input/InputPasswordRepeat.vue";
 
 
 const memberStore = useMemberStore()

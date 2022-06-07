@@ -1,6 +1,4 @@
 <script setup>
-import { ref, reactive, watch, onMounted, onBeforeUnmount } from "vue"
-import DefaultImage from "@/components/common/DefaultImage.vue"
 import useInputValidator from "@/composition-api/useInputValidator"
 import iconUploadImg from "@/assets/images/svg/icon_uploadimg.svg"
 import iconCancel from "@/assets/images/svg/icon_cancel.svg"

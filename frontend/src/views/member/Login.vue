@@ -1,12 +1,7 @@
 <script setup>
-import { onMounted, ref } from "vue"
 import { useMemberStore } from "@/stores/member"
 import { storeToRefs } from 'pinia'
-import { useRouter } from "vue-router"
 import useInputValidator from "@/composition-api/useInputValidator"
-import LoginForm from "@/components/form/LoginForm.vue";
-import LightBox from "@/components/common/LightBox.vue"
-import LandingPage from "@/components/member/LandingPage.vue"
 
 
 const router = useRouter()

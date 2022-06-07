@@ -1,8 +1,6 @@
 <script setup>
-import { computed, ref, watch } from "vue"
 import { storeToRefs } from 'pinia'
 import { useTravelStore } from "@/stores/travel/travel"
-import DefaultImage from "@/components/common/DefaultImage.vue"
 import iconAction from "@/assets/images/svg/icon_action.svg"
 import iconDelete from "@/assets/images/svg/icon_delete.svg"
 import iconUpload from "@/assets/images/svg/icon_upload.svg"
@@ -56,32 +54,40 @@ async function deleteMainSchedule() {
     hover:after:opacity-100
   ">
     <div class="relative rounded-[10px] bg-white shadow overflow-hidden">
-      <button @click.stop="toggleActions" class="absolute top-[12px] right-[12px] w-[26px] cursor-pointer z-10"><img :src="iconAction" class="w-full h-auto" alt="動作"></button>
-      <!-- 動作選單 -->
-      <!-- <div :class="{ 'block': isActionsOpen, 'hidden': !isActionsOpen }" class="absolute top-[36px] right-[12px] py-[8px] px-[6px] w-[140px] bg-white shadow-md rounded-[5px] overflow-hidden z-10"> -->
-      <div :class="{ 'block': isActionBoxOpenId === mainSchedule.id, 'hidden': isActionBoxOpenId !== mainSchedule.id }" class="absolute top-[36px] right-[12px] py-[8px] px-[6px] w-[140px] bg-white shadow-md rounded-[5px] overflow-hidden z-10">
-        <ul class="w-full">
-          <li @click.stop="editMainSchedule" class="actionlist-item">
-            <div class="w-[16px]"><img class="w-full h-auto" :src="iconUpload"></div>
-            <div class="ml-[6px] text-[14px] tracking-wider">編輯行程</div>
-          </li>
-          <!-- <li class="actionlist-item">
+
+
+      <router-link
+        :to="{ name: 'MainSchedule', params: { mainScheduleId: mainSchedule.id, date: mainSchedule.startDate } }"
+        class="block">
+        <button @click.prevent.stop="toggleActions"
+          class="absolute top-[12px] right-[12px] w-[26px] h-[26px] rounded-full bg-black-rgba overflow-hidden cursor-pointer z-10">
+          <img :src="iconAction" class="w-full h-auto" alt="動作">
+        </button>
+        <!-- 動作選單 -->
+        <div
+          :class="{ 'block': isActionBoxOpenId === mainSchedule.id, 'hidden': isActionBoxOpenId !== mainSchedule.id }"
+          class="absolute top-[36px] right-[12px] py-[8px] px-[6px] w-[140px] bg-white shadow-md rounded-[5px] overflow-hidden z-10">
+          <ul class="w-full">
+            <li @click.prevent.stop="editMainSchedule" class="actionlist-item">
+              <div class="w-[16px]"><img class="w-full h-auto" :src="iconUpload"></div>
+              <div class="ml-[6px] text-[14px] tracking-wider">編輯行程</div>
+            </li>
+            <!-- <li class="actionlist-item">
             <div class="w-[16px]"><img class="w-full h-auto" :src="iconCopy"></div>
             <div class="ml-[6px] text-[14px] tracking-wider">複製行程</div>
           </li> -->
-          <li @click.stop="deleteMainSchedule" class="actionlist-item">
-            <div class="w-[16px]"><img class="w-full h-auto" :src="iconDelete"></div>
-            <div class="ml-[6px] text-[14px] tracking-wider">刪除行程</div>
-          </li>
-          
-        </ul>
-      </div>
-      <!-- 圖片 -->
-      <div>
-        <DefaultImage :picture="mainSchedule.picture"></DefaultImage>
-      </div>
-      <!-- 卡片文字 -->
-      <router-link :to="{ name: 'MainSchedule', params: { mainScheduleId: mainSchedule.id, date: mainSchedule.startDate } }" class="block">
+            <li @click.prevent.stop="deleteMainSchedule" class="actionlist-item">
+              <div class="w-[16px]"><img class="w-full h-auto" :src="iconDelete"></div>
+              <div class="ml-[6px] text-[14px] tracking-wider">刪除行程</div>
+            </li>
+
+          </ul>
+        </div>
+        <!-- 圖片 -->
+        <div>
+          <DefaultImage :picture="mainSchedule.picture"></DefaultImage>
+        </div>
+        <!-- 卡片文字 -->
         <div class="py-[18px] px-[30px]">
           <div class="mb-[10px]">
             <p>{{ mainSchedule.title }}</p>

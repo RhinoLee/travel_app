@@ -3,12 +3,7 @@ import { storeToRefs } from 'pinia'
 import { useTravelStore } from "@/stores/travel/travel"
 import useInputValidator from "@/composition-api/useInputValidator"
 import useSubmitBtnState from "@/composition-api/useSubmitBtnState"
-import LightBox from "@/components/common/LightBox.vue"
-import InputTitle from "@/components/form/input/InputTitle.vue";
-import DatePickerWrap from "@/components/common/DatePickerWrap.vue"
 import { dateHandler } from "@/utils/dateTransform"
-import DefaultImage from "@/components/common/DefaultImage.vue"
-import ScheduleDates from "@/components/travel/ScheduleDates.vue"
 
 
 const travelStore = useTravelStore()

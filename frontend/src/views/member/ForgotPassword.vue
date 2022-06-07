@@ -1,10 +1,6 @@
 <script setup>
-import { ref, onBeforeUnmount } from "vue"
 import { useRouter } from 'vue-router';
 import { useMemberStore } from "@/stores/member"
-import ForgotPasswordForm from "@/components/form/ForgotPasswordForm.vue";
-import LightBox from "@/components/common/LightBox.vue"
-import LandingPage from "@/components/member/LandingPage.vue"
 
 let redirectTimeout = null
 
