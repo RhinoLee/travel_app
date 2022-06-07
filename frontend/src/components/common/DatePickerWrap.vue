@@ -195,7 +195,7 @@ const disabledDates = computed(() => {
   const startDate = selectDate.value[0]
   const dates = []
 
-  for (let day = 1; day < props.durationDays - 1; day++) {
+  for (let day = 1; day <= props.durationDays - 1; day++) {
     let date = new Date(startDate)
     date.setDate(startDate.getDate() + day)
     dates.push(date)
